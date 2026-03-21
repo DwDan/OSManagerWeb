@@ -1,0 +1,50 @@
+<po-table
+  [p-auto-collapse]="true"
+  [p-actions]="tableActions"
+  [p-columns]="columns"
+  [p-hide-columns-manager]="true"
+  [p-hide-table-search]="false"
+  [p-items]="items()"
+  [p-loading]="loading()"
+  [p-sort]="true"
+  [p-striped]="true"
+  [p-spacing]="spacing.Large"
+>
+</po-table>
+
+<po-modal
+  #editUserModal
+  p-title="Editar usuário"
+  [p-primary-action]="saveEditAction"
+  [p-secondary-action]="cancelEditAction"
+>
+  <div class="po-row">
+    <div class="po-md-6">
+      <po-input name="firstName" p-label="Nome" [(ngModel)]="editForm.firstName"> </po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input name="lastName" p-label="Sobrenome" [(ngModel)]="editForm.lastName"> </po-input>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #changeRoleModal
+  p-title="Alterar perfil"
+  [p-primary-action]="saveRoleAction"
+  [p-secondary-action]="cancelRoleAction"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="role"
+        p-label="Perfil"
+        [p-options]="roleOptions"
+        [ngModel]="selectedRole"
+        (ngModelChange)="selectedRole = $event"
+      >
+      </po-select>
+    </div>
+  </div>
+</po-modal>

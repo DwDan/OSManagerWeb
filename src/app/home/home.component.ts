@@ -1,113 +1,143 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import {
-  PoToolbarModule,
-  PoPageModule,
-  PoMenuModule,
   PoMenuItem,
+  PoMenuModule,
+  PoPageModule,
+  PoToolbarAction,
+  PoToolbarModule,
+  PoToolbarProfile,
 } from '@po-ui/ng-components';
+import { filter } from 'rxjs';
+import { AuthenticationService } from '../services/authentication/authentication.service';
+import { MenuService } from '../services/menu/menu.service';
+import { UsuariosService } from '../services/usuarios/usuarios.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [PoToolbarModule, PoPageModule, PoMenuModule],
+  imports: [PoToolbarModule, PoPageModule, PoMenuModule, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
-  samplePoMenuHumanResourcesService = inject(SamplePoMenuHumanResourcesService);
+export class HomeComponent implements OnInit {
+  private readonly router = inject(Router);
+  private readonly usuariosService = inject(UsuariosService);
+  private readonly authenticationService = inject(AuthenticationService);
 
-  menuItemSelected: string = 'Register user';
+  public readonly menuFilterService = inject(MenuService);
 
-  menus: Array<PoMenuItem> = [
+  menuItemSelected = 'Dashboard';
+  nomeSistema = 'DWS: OSManager';
+  nomeUsuario = 'Carregando...';
+
+  profile: PoToolbarProfile = {
+    title: 'Carregando...',
+  };
+
+  profileActions: PoToolbarAction[] = [
     {
-      label: 'Register user',
-      action: this.printMenuAction.bind(this),
-      icon: 'an an-user',
-      shortLabel: 'Register',
-    },
-    {
-      label: 'Timekeeping',
-      action: this.printMenuAction.bind(this),
-      icon: 'an an-clock',
-      shortLabel: 'Timekeeping',
-      badge: { value: 1 },
-    },
-    {
-      label: 'Useful links',
-      icon: 'an an-share',
-      shortLabel: 'Links',
-      subItems: [
-        {
-          label: 'Ministry of Labour',
-          action: this.printMenuAction.bind(this),
-          link: 'http://trabalho.gov.br/',
-        },
-        {
-          label: 'SindPD Syndicate',
-          action: this.printMenuAction.bind(this),
-          link: 'http://www.sindpd.com.br/',
-        },
-      ],
-    },
-    {
-      label: 'Benefits',
-      icon: 'an an-star',
-      shortLabel: 'Benefits',
-      subItems: [
-        {
-          label: 'Meal tickets',
-          subItems: [
-            {
-              label: 'Acceptance network ',
-              action: this.printMenuAction.bind(this),
-            },
-            {
-              label: 'Extracts',
-              action: this.printMenuAction.bind(this),
-              subItems: [
-                {
-                  label: 'Monthly',
-                  action: this.printMenuAction.bind(this),
-                  badge: { value: 3, color: 'color-03' },
-                },
-                { label: 'Custom', action: this.printMenuAction.bind(this) },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Transportation tickets',
-          action: this.printMenuAction.bind(this),
-          badge: { value: 12 },
-        },
-      ],
+      label: 'Sair',
+      icon: 'po-icon-exit',
+      action: () => this.logout(),
     },
   ];
 
-  printMenuAction(menu: PoMenuItem) {
-    this.menuItemSelected = menu.label;
+  menus: PoMenuItem[] = [
+    {
+      label: 'Dashboard',
+      icon: 'an an-house',
+      shortLabel: 'Dashboard',
+      link: '/dashboard',
+    },
+    {
+      label: 'Gerenciar Usuários',
+      icon: 'an an-user',
+      shortLabel: 'Usuários',
+      link: '/users',
+    },
+    {
+      label: 'Ordens de Serviço',
+      icon: 'an an-clock',
+      shortLabel: 'Ordens',
+      link: '/orders',
+    },
+  ];
+
+  ngOnInit(): void {
+    this.menuFilterService.setMenus(this.menus);
+    this.carregarUsuarioLogado();
+    this.atualizarTituloPorRota(this.router.url);
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        const navigation = event as NavigationEnd;
+        this.atualizarTituloPorRota(navigation.urlAfterRedirects);
+      });
   }
-}
 
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+  private carregarUsuarioLogado(): void {
+    const userId = sessionStorage.getItem('userId');
 
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+    if (!userId) {
+      this.nomeUsuario = 'Usuário';
 
-import { PoMenuFilter, PoMenuItemFiltered } from '@po-ui/ng-components';
+      this.profile = {
+        title: 'Usuário',
+      };
 
-@Injectable({
-  providedIn: 'root'
-})
-export class SamplePoMenuHumanResourcesService implements PoMenuFilter {
-  private http = inject(HttpClient);
+      return;
+    }
 
-  private url: string = 'https://po-sample-api.onrender.com/v1/menus';
+    this.usuariosService.getById(userId).subscribe({
+      next: (user) => {
+        this.nomeUsuario = `${user.firstName} ${user.lastName}`;
 
-  getFilteredData(search: string): Observable<Array<PoMenuItemFiltered>> {
-    const params = { search };
+        this.profile = {
+          title: this.nomeUsuario,
+          subtitle: user.email,
+        };
+      },
+      error: () => {
+        this.nomeUsuario = 'Usuário';
 
-    return this.http.get(this.url, { params }).pipe(map((response: any) => response.items));
+        this.profile = {
+          title: 'Usuário',
+        };
+      },
+    });
+  }
+
+  private logout(): void {
+    this.authenticationService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  private atualizarTituloPorRota(url: string): void {
+    const urlNormalizada = this.normalizarUrl(url);
+
+    const menuEncontrado = this.menus.find((menu) => {
+      const link = this.normalizarUrl(menu.link ?? '');
+      return link === urlNormalizada;
+    });
+
+    this.menuItemSelected = menuEncontrado?.label ?? 'Dashboard';
+  }
+
+  private normalizarUrl(url: string): string {
+    if (!url) {
+      return '/dashboard';
+    }
+
+    const urlSemQuery = url.split('?')[0].split('#')[0];
+
+    if (urlSemQuery === '/' || urlSemQuery === '') {
+      return '/dashboard';
+    }
+
+    return urlSemQuery.endsWith('/') && urlSemQuery !== '/'
+      ? urlSemQuery.slice(0, -1)
+      : urlSemQuery;
   }
 }
