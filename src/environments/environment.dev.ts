@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
-  apiUrl: 'https://osmanager.onrender.com/api',
+  production: false,
+  apiUrl: 'https://localhost:44378/api',
 };
