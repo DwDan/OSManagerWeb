@@ -73,8 +73,8 @@ export class UsuariosComponent {
   selectedRole: UserRole = 'Technician';
 
   roleOptions: PoSelectOption[] = [
-    { label: 'Administrador', value: 'Admin' },
-    { label: 'Técnico', value: 'Technician' },
+    { label: 'Administrador', value: 1 },
+    { label: 'Técnico', value: 2 },
   ];
 
   columns: PoTableColumn[] = [
@@ -88,8 +88,8 @@ export class UsuariosComponent {
       type: 'label',
       width: '8%',
       labels: [
-        { value: 'Admin', color: 'rgb(201, 53, 125)', label: 'Administrador', icon: 'an an-user' },
-        { value: 'Technician', color: 'rgb(6, 146, 211)', label: 'Técnico', icon: 'an an-user' },
+        { value: 1, color: 'rgb(201, 53, 125)', label: 'Administrador', icon: 'an an-user' },
+        { value: 2, color: 'rgb(6, 146, 211)', label: 'Técnico', icon: 'an an-user' },
       ],
     },
     { property: 'isActive', label: 'Ativo', type: 'boolean' },
