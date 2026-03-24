@@ -1,11 +1,16 @@
 import { Component, signal } from '@angular/core';
-import { PoTableColumn, PoTableColumnSpacing, PoTableModule } from '@po-ui/ng-components';
+import {
+  PoPageModule,
+  PoTableColumn,
+  PoTableColumnSpacing,
+  PoTableModule,
+} from '@po-ui/ng-components';
 import { OrdemServicoResponse } from '../../models/ordens-servico/responses/ordem-servico.response';
 
 @Component({
   selector: 'app-ordens-servico',
   standalone: true,
-  imports: [PoTableModule],
+  imports: [PoTableModule, PoPageModule],
   templateUrl: './ordens-servico.component.html',
   styleUrl: './ordens-servico.component.scss',
 })

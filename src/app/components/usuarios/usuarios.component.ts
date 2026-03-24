@@ -9,6 +9,8 @@ import {
   PoModalComponent,
   PoModalModule,
   PoNotificationService,
+  PoPageAction,
+  PoPageModule,
   PoSelectOption,
   PoTableAction,
   PoTableColumn,
@@ -18,6 +20,7 @@ import {
 } from '@po-ui/ng-components';
 import { finalize } from 'rxjs';
 import { ChangeUserRoleRequest } from '../../models/usuarios/requests/change-user-role.request';
+import { CreateUserRequest } from '../../models/usuarios/requests/create-user.request';
 import { UpdateUserRequest } from '../../models/usuarios/requests/update-user.request';
 import { UserResponse } from '../../models/usuarios/responses/user.response';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
@@ -37,9 +40,11 @@ type UserRole = 'Admin' | 'Technician';
     PoModalModule,
     PoButtonModule,
     PoFieldModule,
+    PoPageModule,
   ],
 })
 export class UsuariosComponent {
+  @ViewChild('createUserModal', { static: true }) createUserModal!: PoModalComponent;
   @ViewChild('editUserModal', { static: true }) editUserModal!: PoModalComponent;
   @ViewChild('changeRoleModal', { static: true }) changeRoleModal!: PoModalComponent;
 
@@ -53,6 +58,13 @@ export class UsuariosComponent {
 
   selectedUser = signal<UserResponse | null>(null);
 
+  createForm: CreateUserRequest = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  };
+
   editForm: UpdateUserRequest = {
     firstName: '',
     lastName: '',
@@ -61,8 +73,8 @@ export class UsuariosComponent {
   selectedRole: UserRole = 'Technician';
 
   roleOptions: PoSelectOption[] = [
-    { label: 'Administrador', value: 1 },
-    { label: 'Técnico', value: 2 },
+    { label: 'Administrador', value: 'Admin' },
+    { label: 'Técnico', value: 'Technician' },
   ];
 
   columns: PoTableColumn[] = [
@@ -76,12 +88,19 @@ export class UsuariosComponent {
       type: 'label',
       width: '8%',
       labels: [
-        { value: 1, color: 'rgb(201, 53, 125)', label: 'Administrador', icon: 'an an-user' },
-        { value: 2, color: 'rgb(6, 146, 211)', label: 'Técnico', icon: 'an an-user' },
+        { value: 'Admin', color: 'rgb(201, 53, 125)', label: 'Administrador', icon: 'an an-user' },
+        { value: 'Technician', color: 'rgb(6, 146, 211)', label: 'Técnico', icon: 'an an-user' },
       ],
     },
     { property: 'isActive', label: 'Ativo', type: 'boolean' },
     { property: 'emailConfirmed', label: 'E-mail confirmado', type: 'boolean' },
+  ];
+
+  pageActions: PoPageAction[] = [
+    {
+      label: 'Criar usuário',
+      action: () => this.openCreateModal(),
+    },
   ];
 
   tableActions: PoTableAction[] = [
@@ -105,28 +124,95 @@ export class UsuariosComponent {
     },
   ];
 
-  saveEditAction: PoModalAction = {
-    label: 'Salvar',
-    action: () => this.updateUser(),
-  };
+  get saveCreateAction(): PoModalAction {
+    return {
+      label: 'Criar',
+      action: () => this.createUser(),
+      loading: this.loading(),
+    };
+  }
 
-  cancelEditAction: PoModalAction = {
-    label: 'Cancelar',
-    action: () => this.editUserModal.close(),
-  };
+  get cancelCreateAction(): PoModalAction {
+    return {
+      label: 'Cancelar',
+      action: () => this.createUserModal.close(),
+      loading: this.loading(),
+    };
+  }
 
-  saveRoleAction: PoModalAction = {
-    label: 'Salvar',
-    action: () => this.changeRole(),
-  };
+  get saveEditAction(): PoModalAction {
+    return {
+      label: 'Salvar',
+      action: () => this.updateUser(),
+      loading: this.loading(),
+    };
+  }
 
-  cancelRoleAction: PoModalAction = {
-    label: 'Cancelar',
-    action: () => this.changeRoleModal.close(),
-  };
+  get cancelEditAction(): PoModalAction {
+    return {
+      label: 'Cancelar',
+      action: () => this.editUserModal.close(),
+      loading: this.loading(),
+    };
+  }
+
+  get saveRoleAction(): PoModalAction {
+    return {
+      label: 'Salvar',
+      action: () => this.changeRole(),
+      loading: this.loading(),
+    };
+  }
+
+  get cancelRoleAction(): PoModalAction {
+    return {
+      label: 'Cancelar',
+      action: () => this.changeRoleModal.close(),
+      loading: this.loading(),
+    };
+  }
 
   ngOnInit(): void {
     this.loadUsers();
+  }
+
+  openCreateModal(): void {
+    this.createForm = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+    };
+
+    this.createUserModal.open();
+  }
+
+  private createUser(): void {
+    if (
+      !this.createForm.firstName?.trim() ||
+      !this.createForm.lastName?.trim() ||
+      !this.createForm.email?.trim() ||
+      !this.createForm.password?.trim()
+    ) {
+      this.notification.warning('Preencha todos os campos para criar o usuário.');
+      return;
+    }
+
+    this.loading.set(true);
+
+    this.service
+      .create(this.createForm)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.notification.success('Usuário criado com sucesso.');
+          this.createUserModal.close();
+          this.loadUsers();
+        },
+        error: () => {
+          this.notification.error('Não foi possível criar o usuário.');
+        },
+      });
   }
 
   private loadUsers(): void {

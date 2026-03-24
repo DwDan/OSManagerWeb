@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import {
   PoMenuItem,
   PoMenuModule,
@@ -8,7 +8,6 @@ import {
   PoToolbarModule,
   PoToolbarProfile,
 } from '@po-ui/ng-components';
-import { filter } from 'rxjs';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { MenuService } from '../services/menu/menu.service';
 import { UsuariosService } from '../services/usuarios/usuarios.service';
@@ -27,7 +26,6 @@ export class HomeComponent implements OnInit {
 
   public readonly menuFilterService = inject(MenuService);
 
-  menuItemSelected = 'Dashboard';
   nomeSistema = 'DWS: OSManager';
   nomeUsuario = 'Carregando...';
 
@@ -36,6 +34,11 @@ export class HomeComponent implements OnInit {
   };
 
   profileActions: PoToolbarAction[] = [
+    {
+      label: 'Alterar Senha',
+      icon: 'po-icon-lock',
+      action: () => this.changePassword(),
+    },
     {
       label: 'Sair',
       icon: 'po-icon-exit',
@@ -67,14 +70,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.menuFilterService.setMenus(this.menus);
     this.carregarUsuarioLogado();
-    this.atualizarTituloPorRota(this.router.url);
-
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event) => {
-        const navigation = event as NavigationEnd;
-        this.atualizarTituloPorRota(navigation.urlAfterRedirects);
-      });
   }
 
   private carregarUsuarioLogado(): void {
@@ -109,20 +104,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  private changePassword(): void {
+    this.router.navigate(['/change-password']);
+  }
+
   private logout(): void {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
-  }
-
-  private atualizarTituloPorRota(url: string): void {
-    const urlNormalizada = this.normalizarUrl(url);
-
-    const menuEncontrado = this.menus.find((menu) => {
-      const link = this.normalizarUrl(menu.link ?? '');
-      return link === urlNormalizada;
-    });
-
-    this.menuItemSelected = menuEncontrado?.label ?? 'Dashboard';
   }
 
   private normalizarUrl(url: string): string {

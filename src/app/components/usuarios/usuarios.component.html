@@ -1,16 +1,50 @@
-<po-table
-  [p-auto-collapse]="true"
-  [p-actions]="tableActions"
-  [p-columns]="columns"
-  [p-hide-columns-manager]="true"
-  [p-hide-table-search]="false"
-  [p-items]="items()"
-  [p-loading]="loading()"
-  [p-sort]="true"
-  [p-striped]="true"
-  [p-spacing]="spacing.Large"
+<po-page-default p-title="Gerenciar Usuários" [p-actions]="pageActions">
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="tableActions"
+    [p-columns]="columns"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="false"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  >
+  </po-table>
+</po-page-default>
+
+<po-modal
+  #createUserModal
+  p-title="Criar usuário"
+  [p-primary-action]="saveCreateAction"
+  [p-secondary-action]="cancelCreateAction"
 >
-</po-table>
+  <div class="po-row">
+    <div class="po-md-6">
+      <po-input name="createFirstName" p-label="Nome" [(ngModel)]="createForm.firstName">
+      </po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input name="createLastName" p-label="Sobrenome" [(ngModel)]="createForm.lastName">
+      </po-input>
+    </div>
+  </div>
+
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-input name="createEmail" p-label="E-mail" [(ngModel)]="createForm.email"> </po-input>
+    </div>
+  </div>
+
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-password name="createPassword" p-label="Senha" [(ngModel)]="createForm.password">
+      </po-password>
+    </div>
+  </div>
+</po-modal>
 
 <po-modal
   #editUserModal

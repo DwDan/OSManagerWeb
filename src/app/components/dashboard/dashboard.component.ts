@@ -3,6 +3,7 @@ import {
   PoChartModule,
   PoChartSerie,
   PoChartType,
+  PoPageModule,
   PoTableColumn,
   PoTableModule,
   PoWidgetModule,
@@ -11,7 +12,7 @@ import {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [PoWidgetModule, PoChartModule, PoTableModule],
+  imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

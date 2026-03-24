@@ -1,46 +1,48 @@
-<div class="po-row">
-  <div class="po-md-3">
-    <po-widget p-title="Usuários">
-      <h2 class="kpi">{{ totalUsuarios }}</h2>
-    </po-widget>
+<po-page-default p-title="Dashboard">
+  <div class="po-row">
+    <div class="po-md-3">
+      <po-widget p-title="Usuários">
+        <h2 class="kpi">{{ totalUsuarios }}</h2>
+      </po-widget>
+    </div>
+
+    <div class="po-md-3">
+      <po-widget p-title="Ordens">
+        <h2 class="kpi">{{ totalOrdens }}</h2>
+      </po-widget>
+    </div>
+
+    <div class="po-md-3">
+      <po-widget p-title="Abertas">
+        <h2 class="kpi text-warning">{{ ordensAbertas }}</h2>
+      </po-widget>
+    </div>
+
+    <div class="po-md-3">
+      <po-widget p-title="Finalizadas">
+        <h2 class="kpi text-success">{{ ordensFinalizadas }}</h2>
+      </po-widget>
+    </div>
   </div>
 
-  <div class="po-md-3">
-    <po-widget p-title="Ordens">
-      <h2 class="kpi">{{ totalOrdens }}</h2>
-    </po-widget>
-  </div>
+  <div class="po-row po-mt-1">
+    <div class="po-md-6">
+      <po-widget p-title="Ordens na semana">
+        <po-chart [p-type]="chartType" [p-categories]="chartCategories" [p-series]="chartSeries">
+        </po-chart>
+      </po-widget>
+    </div>
 
-  <div class="po-md-3">
-    <po-widget p-title="Abertas">
-      <h2 class="kpi text-warning">{{ ordensAbertas }}</h2>
-    </po-widget>
+    <div class="po-md-6">
+      <po-widget p-title="Últimas ordens">
+        <po-table
+          [p-columns]="columns"
+          [p-items]="items"
+          [p-hide-table-search]="true"
+          [p-striped]="true"
+        >
+        </po-table>
+      </po-widget>
+    </div>
   </div>
-
-  <div class="po-md-3">
-    <po-widget p-title="Finalizadas">
-      <h2 class="kpi text-success">{{ ordensFinalizadas }}</h2>
-    </po-widget>
-  </div>
-</div>
-
-<div class="po-row po-mt-1">
-  <div class="po-md-6">
-    <po-widget p-title="Ordens na semana">
-      <po-chart [p-type]="chartType" [p-categories]="chartCategories" [p-series]="chartSeries">
-      </po-chart>
-    </po-widget>
-  </div>
-
-  <div class="po-md-6">
-    <po-widget p-title="Últimas ordens">
-      <po-table
-        [p-columns]="columns"
-        [p-items]="items"
-        [p-hide-table-search]="true"
-        [p-striped]="true"
-      >
-      </po-table>
-    </po-widget>
-  </div>
-</div>
+</po-page-default>
