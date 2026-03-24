@@ -3,6 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ChangePasswordRequest } from '../../models/auth/requests/change-password.request';
+import { ForgotPasswordRequest } from '../../models/auth/requests/forgot-password.request';
+import { ResetPasswordRequest } from '../../models/auth/requests/reset-password.request';
 import { LoginRequest } from '../../models/login/requests/login.request';
 import { LoginResponse } from '../../models/login/responses/login.response';
 
@@ -22,8 +24,16 @@ export class AuthenticationService {
     );
   }
 
+  resetPassword(request: ResetPasswordRequest) {
+    return this.httpService.post<void>(`${this.baseUrl}/reset-password`, request);
+  }
+
   changePassword(request: ChangePasswordRequest) {
     return this.httpService.post<void>(`${this.baseUrl}/change-password`, request);
+  }
+
+  forgotPassword(request: ForgotPasswordRequest) {
+    return this.httpService.post<{ message: string }>(`${this.baseUrl}/forgot-password`, request);
   }
 
   logout(): void {

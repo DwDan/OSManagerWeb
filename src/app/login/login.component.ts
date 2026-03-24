@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PoButtonModule, PoModule, PoNotificationService } from '@po-ui/ng-components';
-import { PoPageLogin, PoPageLoginModule } from '@po-ui/ng-templates';
+import { PoNotificationService } from '@po-ui/ng-components';
+import { PoModalPasswordRecoveryType, PoPageLogin, PoPageLoginRecovery } from '@po-ui/ng-templates';
 import { finalize } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { LoginRequest } from '../models/login/requests/login.request';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 
@@ -11,14 +11,18 @@ import { AuthenticationService } from '../services/authentication/authentication
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  imports: [PoModule, PoButtonModule, ReactiveFormsModule, PoPageLoginModule],
-  standalone: true,
 })
 export class LoginComponent {
   private service = inject(AuthenticationService);
   private readonly notification = inject(PoNotificationService);
   public router = inject(Router);
   loading = signal(false);
+
+  recovery: PoPageLoginRecovery = {
+    url: `${environment.apiUrl}/auth/forgot-password`,
+    type: PoModalPasswordRecoveryType.Email,
+    contactMail: 'suporte@osmanager.com.br',
+  };
 
   login(event: PoPageLogin) {
     const request = <LoginRequest>{
