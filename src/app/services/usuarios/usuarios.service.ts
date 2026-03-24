@@ -38,6 +38,10 @@ export class UsuariosService {
     return this.http.patch<void>(`${this.baseUrl}/${id}/deactivate`, {});
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   confirmEmailByLink(id: string, token: string): Observable<{ message: string }> {
     const params = new HttpParams().set('token', token);
 

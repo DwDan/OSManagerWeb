@@ -122,6 +122,11 @@ export class UsuariosComponent {
       action: (user: UserResponse) => this.deactivate(user),
       visible: (user: UserResponse) => user.isActive,
     },
+    {
+      label: 'Excluir',
+      action: (user: UserResponse) => this.deleteUser(user),
+      visible: (user: UserResponse) => !user.emailConfirmed,
+    },
   ];
 
   get saveCreateAction(): PoModalAction {
@@ -340,6 +345,29 @@ export class UsuariosComponent {
             },
             error: () => {
               this.notification.error('Não foi possível desativar o usuário.');
+            },
+          });
+      },
+    });
+  }
+
+  deleteUser(user: UserResponse) {
+    this.dialog.confirm({
+      title: 'Excluir usuário',
+      message: `Deseja excluir o usuário ${user.firstName} ${user.lastName}?`,
+      confirm: () => {
+        this.loading.set(true);
+
+        this.service
+          .delete(user.id)
+          .pipe(finalize(() => this.loading.set(false)))
+          .subscribe({
+            next: () => {
+              this.notification.success('Usuário excluído com sucesso.');
+              this.loadUsers();
+            },
+            error: () => {
+              this.notification.error('Não foi possível excluir o usuário.');
             },
           });
       },
