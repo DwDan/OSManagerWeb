@@ -127,6 +127,11 @@ export class UsuariosComponent {
       action: (user: UserResponse) => this.deleteUser(user),
       visible: (user: UserResponse) => !user.emailConfirmed,
     },
+    {
+      label: 'Reenviar email confirmação',
+      action: (user: UserResponse) => this.resendEmailConfirmation(user),
+      visible: (user: UserResponse) => !user.emailConfirmed,
+    },
   ];
 
   get saveCreateAction(): PoModalAction {
@@ -368,6 +373,29 @@ export class UsuariosComponent {
             },
             error: () => {
               this.notification.error('Não foi possível excluir o usuário.');
+            },
+          });
+      },
+    });
+  }
+
+  resendEmailConfirmation(user: UserResponse) {
+    this.dialog.confirm({
+      title: 'Reenviar email de confirmação',
+      message: `Deseja reenviar o email de confirmação para o usuário ${user.firstName} ${user.lastName}?`,
+      confirm: () => {
+        this.loading.set(true);
+
+        this.service
+          .resendEmailConfirmation(user.id)
+          .pipe(finalize(() => this.loading.set(false)))
+          .subscribe({
+            next: () => {
+              this.notification.success('Email de confirmação reenviado com sucesso.');
+              this.loadUsers();
+            },
+            error: () => {
+              this.notification.error('Não foi possível reenviar o email de confirmação.');
             },
           });
       },
