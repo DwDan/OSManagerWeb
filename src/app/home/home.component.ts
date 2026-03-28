@@ -10,7 +10,7 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '../services/authentication/authentication.service';
 import { MenuService } from '../services/menu/menu.service';
-import { UsuariosService } from '../services/usuarios/usuarios.service';
+import { UsersService } from '../services/users/users.service';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +21,7 @@ import { UsuariosService } from '../services/usuarios/usuarios.service';
 })
 export class HomeComponent implements OnInit {
   private readonly router = inject(Router);
-  private readonly usuariosService = inject(UsuariosService);
+  private readonly usersService = inject(UsersService);
   private readonly authenticationService = inject(AuthenticationService);
 
   public readonly menuFilterService = inject(MenuService);
@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.usuariosService.getById(userId).subscribe({
+    this.usersService.getById(userId).subscribe({
       next: (user) => {
         this.nomeUsuario = `${user.firstName} ${user.lastName}`;
 

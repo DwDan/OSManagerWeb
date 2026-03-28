@@ -19,18 +19,18 @@ import {
   PoWidgetModule,
 } from '@po-ui/ng-components';
 import { finalize } from 'rxjs';
-import { ChangeUserRoleRequest } from '../../models/usuarios/requests/change-user-role.request';
-import { CreateUserRequest } from '../../models/usuarios/requests/create-user.request';
-import { UpdateUserRequest } from '../../models/usuarios/requests/update-user.request';
-import { UserResponse } from '../../models/usuarios/responses/user.response';
-import { UsuariosService } from '../../services/usuarios/usuarios.service';
+import { ChangeUserRoleRequest } from '../../models/users/requests/change-user-role.request';
+import { CreateUserRequest } from '../../models/users/requests/create-user.request';
+import { UpdateUserRequest } from '../../models/users/requests/update-user.request';
+import { UserResponse } from '../../models/users/responses/user.response';
+import { UsersService } from '../../services/users/users.service';
 
 type UserRole = 'Admin' | 'Technician';
 
 @Component({
   selector: 'app-usuarios',
-  templateUrl: './usuarios.component.html',
-  styleUrl: './usuarios.component.scss',
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
   standalone: true,
   imports: [
     CommonModule,
@@ -43,12 +43,12 @@ type UserRole = 'Admin' | 'Technician';
     PoPageModule,
   ],
 })
-export class UsuariosComponent {
+export class UsersComponent {
   @ViewChild('createUserModal', { static: true }) createUserModal!: PoModalComponent;
   @ViewChild('editUserModal', { static: true }) editUserModal!: PoModalComponent;
   @ViewChild('changeRoleModal', { static: true }) changeRoleModal!: PoModalComponent;
 
-  private readonly service = inject(UsuariosService);
+  private readonly service = inject(UsersService);
   private readonly notification = inject(PoNotificationService);
   private readonly dialog = inject(PoDialogService);
 

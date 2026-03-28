@@ -26,14 +26,12 @@ export const routes: Routes = [
       {
         path: 'users',
         loadComponent: () =>
-          import('./components/usuarios/usuarios.component').then((m) => m.UsuariosComponent),
+          import('./components/users/users.component').then((m) => m.UsersComponent),
       },
       {
         path: 'orders',
         loadComponent: () =>
-          import('./components/ordens-servico/ordens-servico.component').then(
-            (m) => m.OrdensServicoComponent,
-          ),
+          import('./components/orders/orders.component').then((m) => m.OrdersComponent),
       },
       {
         path: 'change-password',

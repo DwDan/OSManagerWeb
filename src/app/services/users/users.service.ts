@@ -2,15 +2,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { ChangeUserRoleRequest } from '../../models/usuarios/requests/change-user-role.request';
-import { CreateUserRequest } from '../../models/usuarios/requests/create-user.request';
-import { UpdateUserRequest } from '../../models/usuarios/requests/update-user.request';
-import { UserResponse } from '../../models/usuarios/responses/user.response';
+import { ChangeUserRoleRequest } from '../../models/users/requests/change-user-role.request';
+import { CreateUserRequest } from '../../models/users/requests/create-user.request';
+import { UpdateUserRequest } from '../../models/users/requests/update-user.request';
+import { UserResponse } from '../../models/users/responses/user.response';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UsuariosService {
+export class UsersService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/users`;
 

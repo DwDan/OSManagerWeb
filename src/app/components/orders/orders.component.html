@@ -1,0 +1,267 @@
+<po-page-default p-title="Ordens de Serviço" [p-actions]="pageActions">
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="tableActions"
+    [p-columns]="columns"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="false"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  >
+  </po-table>
+</po-page-default>
+
+<po-modal
+  #createModal
+  p-title="Nova ordem de serviço"
+  [p-primary-action]="{ label: 'Salvar', action: saveCreate.bind(this), disabled: saving() }"
+  [p-secondary-action]="{ label: 'Cancelar', action: createModal.close.bind(createModal) }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-input name="createClient" p-label="Cliente" [(ngModel)]="createForm.client"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="createPostalCode"
+        p-label="CEP"
+        [(ngModel)]="createForm.postalCode"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input name="createStreet" p-label="Rua" [(ngModel)]="createForm.street"></po-input>
+    </div>
+
+    <div class="po-md-2">
+      <po-input name="createNumber" p-label="Número" [(ngModel)]="createForm.number"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="createCity" p-label="Cidade" [(ngModel)]="createForm.city"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="createState" p-label="Estado" [(ngModel)]="createForm.state"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="createCountry" p-label="País" [(ngModel)]="createForm.country"></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createComplement"
+        p-label="Complemento"
+        [(ngModel)]="createForm.complement"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createReference"
+        p-label="Referência"
+        [(ngModel)]="createForm.reference"
+      ></po-input>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #editModal
+  p-title="Editar ordem de serviço"
+  [p-primary-action]="{ label: 'Salvar', action: saveEdit.bind(this), disabled: saving() }"
+  [p-secondary-action]="{ label: 'Cancelar', action: editModal.close.bind(editModal) }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-input name="editClient" p-label="Cliente" [(ngModel)]="editForm.client"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="editPostalCode" p-label="CEP" [(ngModel)]="editForm.postalCode"></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input name="editStreet" p-label="Rua" [(ngModel)]="editForm.street"></po-input>
+    </div>
+
+    <div class="po-md-2">
+      <po-input name="editNumber" p-label="Número" [(ngModel)]="editForm.number"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="editCity" p-label="Cidade" [(ngModel)]="editForm.city"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="editState" p-label="Estado" [(ngModel)]="editForm.state"></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input name="editCountry" p-label="País" [(ngModel)]="editForm.country"></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editComplement"
+        p-label="Complemento"
+        [(ngModel)]="editForm.complement"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editReference"
+        p-label="Referência"
+        [(ngModel)]="editForm.reference"
+      ></po-input>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #assignTechnicianModal
+  p-title="Atribuir técnico"
+  [p-primary-action]="{
+    label: 'Salvar',
+    action: saveAssignTechnician.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: 'Cancelar',
+    action: assignTechnicianModal.close.bind(assignTechnicianModal),
+  }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="technicianId"
+        p-label="Técnico"
+        [p-options]="technicians()"
+        [ngModel]="assignTechnicianForm.technicianId"
+        (ngModelChange)="assignTechnicianForm.technicianId = $event"
+      >
+      </po-select>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #closeModal
+  p-title="Fechar ordem"
+  [p-primary-action]="{ label: 'Salvar', action: saveClose.bind(this), disabled: saving() }"
+  [p-secondary-action]="{ label: 'Cancelar', action: closeModal.close.bind(closeModal) }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="executionResult"
+        p-label="Resultado da execução"
+        [p-options]="executionResultOptions"
+        [ngModel]="closeForm.executionResult"
+        (ngModelChange)="closeForm.executionResult = $event"
+      >
+      </po-select>
+    </div>
+
+    <div class="po-md-12">
+      <po-textarea
+        name="executionNotes"
+        p-label="Observações"
+        [(ngModel)]="closeForm.executionNotes"
+      >
+      </po-textarea>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #evidencesModal
+  p-title="Adicionar evidências"
+  [p-primary-action]="{ label: 'Enviar', action: saveEvidences.bind(this), disabled: saving() }"
+  [p-secondary-action]="{ label: 'Cancelar', action: evidencesModal.close.bind(evidencesModal) }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <input type="file" multiple (change)="onEvidenceFilesChange($event)" />
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #detailsModal
+  p-title="Detalhes da ordem"
+  [p-primary-action]="{ label: 'Fechar', action: detailsModal.close.bind(detailsModal) }"
+>
+  @if (selectedOrder(); as order) {
+    <div class="po-row">
+      <div class="po-md-4"><strong>Código:</strong> {{ order.code }}</div>
+
+      <div class="po-md-8"><strong>Cliente:</strong> {{ order.client }}</div>
+
+      <div class="po-md-4"><strong>Status:</strong> {{ order.status }}</div>
+
+      <div class="po-md-4"><strong>Resultado:</strong> {{ order.executionResult || '-' }}</div>
+
+      <div class="po-md-4"><strong>Técnico:</strong> {{ order.technician?.name || '-' }}</div>
+
+      <div class="po-md-12">
+        <strong>Endereço:</strong>
+        {{ order.address.street }}, {{ order.address.number }} - {{ order.address.city }}/{{
+          order.address.state
+        }}
+        -
+        {{ order.address.country }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>Complemento:</strong> {{ order.address.complement || '-' }}
+      </div>
+
+      <div class="po-md-12"><strong>Referência:</strong> {{ order.address.reference || '-' }}</div>
+
+      <div class="po-md-12"><strong>Observações:</strong> {{ order.executionNotes || '-' }}</div>
+
+      <div class="po-md-12 po-mt-2">
+        <strong>Auditoria</strong>
+      </div>
+
+      <div class="po-md-12">
+        @for (audit of order.audits; track audit.id) {
+          <div class="po-row">
+            <div class="po-md-3">{{ audit.status }}</div>
+            <div class="po-md-5">{{ audit.userName || audit.userId }}</div>
+            <div class="po-md-4">{{ audit.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+          </div>
+        }
+      </div>
+
+      <div class="po-md-12 po-mt-2">
+        <strong>Evidências</strong>
+      </div>
+
+      <div class="po-md-12">
+        @for (evidence of order.evidences; track evidence.id) {
+          <div class="po-row">
+            <div class="po-md-6">{{ evidence.fileName }}</div>
+            <div class="po-md-3">{{ evidence.contentType }}</div>
+            <div class="po-md-3">
+              <button
+                type="button"
+                class="po-button po-button-default"
+                (click)="downloadEvidence(order.id, evidence.id, evidence.fileName)"
+              >
+                Baixar
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</po-modal>
