@@ -129,6 +129,7 @@ export class OrdersComponent implements OnInit {
     {
       label: 'Cancelar',
       action: (row: OrderListItemResponse) => this.cancelOrder(row.id),
+      visible: (row: OrderListItemResponse) => row.status !== OrderStatus.Closed,
     },
     {
       label: 'Evidências',

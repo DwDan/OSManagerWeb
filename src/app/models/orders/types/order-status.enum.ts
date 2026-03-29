@@ -1,7 +1,7 @@
 export enum OrderStatus {
-  Pending,
-  Open,
-  InProgress,
-  Closed,
-  Canceled,
+  Pending = 'Pending',
+  Open = 'Open',
+  InProgress = 'InProgress',
+  Closed = 'Closed',
+  Canceled = 'Canceled',
 }
