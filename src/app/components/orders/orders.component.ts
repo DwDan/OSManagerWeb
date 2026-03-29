@@ -6,7 +6,9 @@ import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
 import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
 import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
+import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
 import { OrderResponse } from '@models/orders/responses/order.response';
+import { OrderStatus } from '@models/orders/types/order-status.enum';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoButtonModule,
@@ -25,17 +27,6 @@ import {
 import { OrdersService } from '@services/orders/orders.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
-
-interface OrdemServicoListItem {
-  id: string;
-  code: string;
-  client: string;
-  technicianName: string;
-  status: string;
-  executionResult: string;
-  city: string;
-  state: string;
-}
 
 @Component({
   selector: 'app-orders',
@@ -68,7 +59,7 @@ export class OrdersComponent implements OnInit {
 
   readonly loading = signal(false);
   readonly saving = signal(false);
-  readonly items = signal<OrdemServicoListItem[]>([]);
+  readonly items = signal<OrderListItemResponse[]>([]);
   readonly selectedOrder = signal<OrderDetailsResponse | null>(null);
   readonly selectedOrderId = signal<string | null>(null);
 
@@ -108,35 +99,41 @@ export class OrdersComponent implements OnInit {
   readonly tableActions: PoTableAction[] = [
     {
       label: 'Detalhes',
-      action: (row: OrdemServicoListItem) => this.openDetails(row.id),
+      action: (row: OrderListItemResponse) => this.openDetails(row.id),
     },
     {
       label: 'Editar',
-      action: (row: OrdemServicoListItem) => this.openEditModal(row.id),
+      action: (row: OrderListItemResponse) => this.openEditModal(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
       label: 'Atribuir técnico',
-      action: (row: OrdemServicoListItem) => this.openAssignTechnicianModal(row.id),
+      action: (row: OrderListItemResponse) => this.openAssignTechnicianModal(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
       label: 'Abrir',
-      action: (row: OrdemServicoListItem) => this.openOrder(row.id),
+      action: (row: OrderListItemResponse) => this.openOrder(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
       label: 'Iniciar execução',
-      action: (row: OrdemServicoListItem) => this.startExecution(row.id),
+      action: (row: OrderListItemResponse) => this.startExecution(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.Open,
     },
     {
       label: 'Fechar',
-      action: (row: OrdemServicoListItem) => this.openCloseModal(row.id),
+      action: (row: OrderListItemResponse) => this.openCloseModal(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.InProgress,
     },
     {
       label: 'Cancelar',
-      action: (row: OrdemServicoListItem) => this.cancelOrder(row.id),
+      action: (row: OrderListItemResponse) => this.cancelOrder(row.id),
     },
     {
       label: 'Evidências',
-      action: (row: OrdemServicoListItem) => this.openEvidencesModal(row.id),
+      action: (row: OrderListItemResponse) => this.openEvidencesModal(row.id),
+      visible: (row: OrderListItemResponse) => row.status === OrderStatus.InProgress,
     },
   ];
 
@@ -445,7 +442,7 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  private mapOrderToListItem(order: OrderResponse): OrdemServicoListItem {
+  private mapOrderToListItem(order: OrderResponse): OrderListItemResponse {
     return {
       id: order.id,
       code: order.code,

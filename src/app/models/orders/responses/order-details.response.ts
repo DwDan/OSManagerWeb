@@ -1,3 +1,4 @@
+import { OrderStatus } from '../types/order-status.enum';
 import { AddressResponse } from './address.response';
 import { OrderAuditResponse } from './order-audit.response';
 import { OrderEvidenceResponse } from './order-evidence.response';
@@ -7,7 +8,7 @@ export interface OrderDetailsResponse {
   id: string;
   code: string;
   client: string;
-  status: string;
+  status: OrderStatus;
   executionResult?: string;
   executionNotes?: string;
   address: AddressResponse;
