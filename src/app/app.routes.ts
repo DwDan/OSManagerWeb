@@ -1,22 +1,22 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/authentication-guard';
+import { authGuard } from '@core/authentication-guard';
 
 export const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then((m) => m.LoginModule),
+    loadChildren: () => import('./components/auth/login/login.module').then((m) => m.LoginModule),
   },
   {
     path: 'reset-password',
     loadComponent: () =>
-      import('./components/reset-password/reset-password.component').then(
+      import('./components/auth/reset-password/reset-password.component').then(
         (m) => m.ResetPasswordComponent,
       ),
   },
   {
     path: '',
     canActivate: [authGuard],
-    loadComponent: () => import('./home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('./components/home/home.component').then((m) => m.HomeComponent),
     children: [
       {
         path: 'dashboard',
@@ -36,7 +36,7 @@ export const routes: Routes = [
       {
         path: 'change-password',
         loadComponent: () =>
-          import('./components/change-password/change-password.component').then(
+          import('./components/auth/change-password/change-password.component').then(
             (m) => m.ChangePasswordComponent,
           ),
       },

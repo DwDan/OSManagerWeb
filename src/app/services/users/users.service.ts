@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '@environments/environment';
+import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
+import { CreateUserRequest } from '@models/users/requests/create-user.request';
+import { UpdateUserRequest } from '@models/users/requests/update-user.request';
+import { UserResponse } from '@models/users/responses/user.response';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ChangeUserRoleRequest } from '../../models/users/requests/change-user-role.request';
-import { CreateUserRequest } from '../../models/users/requests/create-user.request';
-import { UpdateUserRequest } from '../../models/users/requests/update-user.request';
-import { UserResponse } from '../../models/users/responses/user.response';
 
 @Injectable({
   providedIn: 'root',

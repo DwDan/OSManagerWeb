@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
+import { CreateUserRequest } from '@models/users/requests/create-user.request';
+import { UpdateUserRequest } from '@models/users/requests/update-user.request';
+import { UserResponse } from '@models/users/responses/user.response';
+import { UserRole } from '@models/users/types/user-role.type';
 import {
   PoButtonModule,
   PoDialogService,
@@ -18,14 +23,8 @@ import {
   PoTableModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
+import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
-import { ChangeUserRoleRequest } from '../../models/users/requests/change-user-role.request';
-import { CreateUserRequest } from '../../models/users/requests/create-user.request';
-import { UpdateUserRequest } from '../../models/users/requests/update-user.request';
-import { UserResponse } from '../../models/users/responses/user.response';
-import { UsersService } from '../../services/users/users.service';
-
-type UserRole = 'Admin' | 'Technician';
 
 @Component({
   selector: 'app-usuarios',

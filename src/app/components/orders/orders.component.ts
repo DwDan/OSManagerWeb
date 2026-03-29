@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
+import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
+import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
+import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
+import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
+import { OrderResponse } from '@models/orders/responses/order.response';
+import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoButtonModule,
   PoFieldModule,
@@ -15,16 +22,9 @@ import {
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
+import { OrdersService } from '@services/orders/orders.service';
+import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
-import { AssignOrderTechnicianRequest } from '../../models/orders/requests/assign-order-technician.request';
-import { CloseOrderRequest } from '../../models/orders/requests/close-order.request';
-import { CreateOrderRequest } from '../../models/orders/requests/create-order.request';
-import { UpdateOrderRequest } from '../../models/orders/requests/update-order.request';
-import { OrderDetailsResponse } from '../../models/orders/responses/order-details.response';
-import { OrderResponse } from '../../models/orders/responses/order.response';
-import { UserResponse } from '../../models/users/responses/user.response';
-import { OrdersService } from '../../services/orders/orders.service';
-import { UsersService } from '../../services/users/users.service';
 
 interface OrdemServicoListItem {
   id: string;

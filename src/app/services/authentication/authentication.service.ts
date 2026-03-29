@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '@environments/environment';
+import { ChangePasswordRequest } from '@models/auth/requests/change-password.request';
+import { ForgotPasswordRequest } from '@models/auth/requests/forgot-password.request';
+import { ResetPasswordRequest } from '@models/auth/requests/reset-password.request';
+import { LoginRequest } from '@models/login/requests/login.request';
+import { LoginResponse } from '@models/login/responses/login.response';
 import { tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ChangePasswordRequest } from '../../models/auth/requests/change-password.request';
-import { ForgotPasswordRequest } from '../../models/auth/requests/forgot-password.request';
-import { ResetPasswordRequest } from '../../models/auth/requests/reset-password.request';
-import { LoginRequest } from '../../models/login/requests/login.request';
-import { LoginResponse } from '../../models/login/responses/login.response';
 
 @Injectable({
   providedIn: 'root',

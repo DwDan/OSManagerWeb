@@ -7,8 +7,8 @@ import {
   PoNotificationService,
   PoPageModule,
 } from '@po-ui/ng-components';
+import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
-import { AuthenticationService } from '../../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-reset-password',

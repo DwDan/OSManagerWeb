@@ -8,9 +8,9 @@ import {
   PoToolbarModule,
   PoToolbarProfile,
 } from '@po-ui/ng-components';
-import { AuthenticationService } from '../services/authentication/authentication.service';
-import { MenuService } from '../services/menu/menu.service';
-import { UsersService } from '../services/users/users.service';
+import { AuthenticationService } from '@services/authentication/authentication.service';
+import { MenuService } from '@services/menu/menu.service';
+import { UsersService } from '@services/users/users.service';
 
 @Component({
   selector: 'app-home',

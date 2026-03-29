@@ -14,5 +14,11 @@
   },
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "editor.semanticHighlighting.enabled": false,
+
+  "editor.semanticTokenColorCustomizations": {
+    "enabled": false
   }
 }

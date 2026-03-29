@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '@environments/environment';
+import { LoginRequest } from '@models/login/requests/login.request';
 import { PoNotificationService } from '@po-ui/ng-components';
 import { PoModalPasswordRecoveryType, PoPageLogin, PoPageLoginRecovery } from '@po-ui/ng-templates';
+import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { LoginRequest } from '../models/login/requests/login.request';
-import { AuthenticationService } from '../services/authentication/authentication.service';
 
 @Component({
   selector: 'app-login',

@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '@environments/environment';
+import { AddOrderEvidencesRequest } from '@models/orders/requests/add-order-evidences.request';
+import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
+import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
+import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
+import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
+import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
+import { OrderResponse } from '@models/orders/responses/order.response';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { AddOrderEvidencesRequest } from '../../models/orders/requests/add-order-evidences.request';
-import { AssignOrderTechnicianRequest } from '../../models/orders/requests/assign-order-technician.request';
-import { CloseOrderRequest } from '../../models/orders/requests/close-order.request';
-import { CreateOrderRequest } from '../../models/orders/requests/create-order.request';
-import { UpdateOrderRequest } from '../../models/orders/requests/update-order.request';
-import { OrderDetailsResponse } from '../../models/orders/responses/order-details.response';
-import { OrderResponse } from '../../models/orders/responses/order.response';
 
 @Injectable({
   providedIn: 'root',
