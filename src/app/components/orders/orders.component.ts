@@ -140,7 +140,7 @@ export class OrdersComponent implements OnInit {
 
   readonly columns: PoTableColumn[] = [
     { property: 'code', label: 'Código' },
-    { property: 'client', label: 'Cliente' },
+    { property: 'customerName', label: 'Cliente' },
     { property: 'technicianName', label: 'Técnico' },
     { property: 'status', label: 'Status' },
     { property: 'executionResult', label: 'Resultado' },
@@ -186,7 +186,7 @@ export class OrdersComponent implements OnInit {
         next: (order) => {
           this.selectedOrderId.set(id);
           this.editForm = {
-            client: order.client,
+            customerName: order.customerName,
             postalCode: order.address.postalCode,
             street: order.address.street,
             number: order.address.number,
@@ -447,7 +447,7 @@ export class OrdersComponent implements OnInit {
     return {
       id: order.id,
       code: order.code,
-      client: order.client,
+      customerName: order.customerName,
       technicianName: order.technician?.name ?? '-',
       status: order.status,
       executionResult: order.executionResult ?? '-',
@@ -458,7 +458,7 @@ export class OrdersComponent implements OnInit {
 
   private createEmptyOrderForm(): CreateOrderRequest {
     return {
-      client: '',
+      customerName: '',
       postalCode: '',
       street: '',
       number: '',

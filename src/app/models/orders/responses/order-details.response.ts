@@ -7,7 +7,7 @@ import { TechnicianResponse } from './technician.response';
 export interface OrderDetailsResponse {
   id: string;
   code: string;
-  client: string;
+  customerName: string;
   status: OrderStatus;
   executionResult?: string;
   executionNotes?: string;

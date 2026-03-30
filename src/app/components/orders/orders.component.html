@@ -22,7 +22,11 @@
 >
   <div class="po-row">
     <div class="po-md-12">
-      <po-input name="createClient" p-label="Cliente" [(ngModel)]="createForm.client"></po-input>
+      <po-input
+        name="createClient"
+        p-label="Cliente"
+        [(ngModel)]="createForm.customerName"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
@@ -79,7 +83,7 @@
 >
   <div class="po-row">
     <div class="po-md-12">
-      <po-input name="editClient" p-label="Cliente" [(ngModel)]="editForm.client"></po-input>
+      <po-input name="editClient" p-label="Cliente" [(ngModel)]="editForm.customerName"></po-input>
     </div>
 
     <div class="po-md-4">
@@ -202,7 +206,7 @@
     <div class="po-row">
       <div class="po-md-4"><strong>Código:</strong> {{ order.code }}</div>
 
-      <div class="po-md-8"><strong>Cliente:</strong> {{ order.client }}</div>
+      <div class="po-md-8"><strong>Cliente:</strong> {{ order.customerName }}</div>
 
       <div class="po-md-4"><strong>Status:</strong> {{ order.status }}</div>
 

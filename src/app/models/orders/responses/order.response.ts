@@ -5,7 +5,7 @@ import { TechnicianResponse } from './technician.response';
 export interface OrderResponse {
   id: string;
   code: string;
-  client: string;
+  customerName: string;
   status: OrderStatus;
   executionResult?: string;
   address: AddressResponse;
