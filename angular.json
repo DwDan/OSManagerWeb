@@ -26,7 +26,6 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "./node_modules/@po-ui/style/css/po-theme-default.min.css",
-              "./node_modules/@animaliads/animalia-icon/src/regular/style.css",
               "src/styles.scss"
             ],
             "scripts": []
