@@ -84,8 +84,8 @@ function notifyApiError(
   apiError: ApiErrorResponse | null,
   fallbackMessage: string,
 ): void {
-  const errors = apiError?.Errors ?? [];
-  const detail = apiError?.Detail ?? '';
+  const errors = apiError?.errors ?? [];
+  const detail = apiError?.detail ?? '';
 
   if (errors.length > 0) {
     for (const error of errors) {

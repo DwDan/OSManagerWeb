@@ -1,15 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { I18nStore } from 'src/app/i18n/shared/i18n.store';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = sessionStorage.getItem('token');
 
-  if (!token) {
-    return next(req);
-  }
+  const i18nStore = inject(I18nStore);
+  const language = i18nStore.currentLanguage();
 
   const authReq = req.clone({
     setHeaders: {
-      Authorization: `Bearer ${token}`,
+      ...(token && { Authorization: `Bearer ${token}` }),
+      'Accept-Language': language,
     },
   });
 

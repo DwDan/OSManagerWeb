@@ -82,7 +82,6 @@ export class UsersComponent {
   ]);
 
   readonly columns = computed<PoTableColumn[]>(() => [
-    { property: 'id', label: this.literals().columns.id },
     { property: 'firstName', label: this.literals().columns.firstName },
     { property: 'lastName', label: this.literals().columns.lastName },
     { property: 'email', label: this.literals().columns.email },

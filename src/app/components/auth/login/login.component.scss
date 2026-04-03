@@ -1,16 +1,82 @@
 .login-page {
-  position: relative;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-page__container {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.login-page__remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-page__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin-top: 8px;
+    color: var(--color-action-default);
+    font-weight: 600;
+  }
+}
+
+.login-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.login-page__actions po-button {
+  flex-shrink: 0;
 }
 
 .login-page__forgot-password {
-  position: absolute;
-  left: 50%;
-  top: calc(50% + 195px);
-  transform: translateX(-50%);
+  align-self: center;
   background: transparent;
   border: 0;
   cursor: pointer;
   text-decoration: underline;
   font: inherit;
+  color: var(--color-feedback-negative-base);
+  font-weight: 500;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 380px) {
+  .login-page__actions {
+    flex-direction: column;
+    align-items: stretch;
+
+    po-button {
+      width: 100%;
+    }
+  }
 }

@@ -6,14 +6,18 @@ import { authInterceptor } from '@core/authentication-interceptor';
 import { errorInterceptor } from '@core/error.interceptor';
 import { PoHttpRequestModule, PoI18nConfig, PoI18nModule } from '@po-ui/ng-components';
 import { routes } from './app.routes';
+import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY } from './i18n/shared/i18n.constants';
+
+const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) ?? DEFAULT_LANGUAGE;
 
 const i18nConfig: PoI18nConfig = {
   default: {
-    language: 'pt-BR',
+    language: savedLanguage,
   },
   contexts: {
     general: {
       'pt-BR': {},
+      'en-US': {},
     },
   },
 };

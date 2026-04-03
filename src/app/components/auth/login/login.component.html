@@ -1,15 +1,81 @@
-<po-page-login
-  (p-login-submit)="login($event)"
-  (p-language-change)="languageChange($event)"
-  [p-product-name]="literals().productName"
-  [p-loading]="loading()"
-  [p-languages]="languages"
-  [p-literals]="pageLiterals()"
->
-</po-page-login>
+<div class="login-page">
+  <div class="login-page__container">
+    <div class="login-page__brand">
+      <h1>{{ literals().productName }}</h1>
+      <p>{{ literals().welcome }}</p>
+    </div>
 
-<button class="login-page__forgot-password" type="button" (click)="openForgotPasswordModal()">
-  {{ literals().forgotPassword }}
-</button>
+    <form class="login-page__form" (ngSubmit)="login()">
+      <po-email
+        name="email"
+        [p-label]="literals().loginLabel"
+        [p-placeholder]="literals().loginPlaceholder"
+        p-required="true"
+        [p-disabled]="loadingStr()"
+        [p-error-pattern]="emailTouched() && emailInvalid() ? literals().invalidEmail : ''"
+        [ngModel]="email()"
+        (ngModelChange)="setEmail($event)"
+        (p-blur)="markEmailTouched()"
+      >
+      </po-email>
 
-<app-forgot-password #forgotPassword [supportEmail]="literals().supportEmail" />
+      <po-password
+        name="password"
+        [p-label]="literals().passwordLabel"
+        [p-placeholder]="literals().passwordPlaceholder"
+        p-required="true"
+        [p-disabled]="loadingStr()"
+        [p-error-pattern]="
+          passwordTouched() && passwordInvalid() ? literals().requiredPassword : ''
+        "
+        [ngModel]="password()"
+        (ngModelChange)="setPassword($event)"
+        (p-blur)="markPasswordTouched()"
+      >
+      </po-password>
+
+      <div class="login-page__actions">
+        <po-button
+          p-kind="primary"
+          [p-label]="loading() ? literals().submittingLabel : literals().submitLabel"
+          [p-disabled]="submitDisabled()"
+          [p-type]="submitType"
+        >
+        </po-button>
+
+        <div class="login-page__remember">
+          <span>{{ literals().rememberUser }}</span>
+
+          <po-switch
+            name="rememberUser"
+            [p-hide-label-status]="true"
+            [p-disabled]="loadingStr()"
+            [ngModel]="rememberUser()"
+            (ngModelChange)="setRememberUser($event)"
+          >
+          </po-switch>
+        </div>
+      </div>
+
+      <button
+        class="login-page__forgot-password"
+        type="button"
+        [disabled]="loading()"
+        (click)="openForgotPasswordModal()"
+      >
+        {{ literals().forgotPassword }}
+      </button>
+
+      <po-select
+        name="language"
+        [p-label]="literals().language"
+        [p-options]="languageOptions()"
+        [ngModel]="selectedLanguage()"
+        (ngModelChange)="changeLanguage($event)"
+      >
+      </po-select>
+    </form>
+  </div>
+
+  <app-forgot-password #forgotPassword [supportEmail]="literals().supportEmail" />
+</div>
