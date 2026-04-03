@@ -29,19 +29,18 @@ import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-orders',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    PoTableModule,
-    PoPageModule,
-    PoModalModule,
-    PoFieldModule,
-    PoButtonModule,
-  ],
-  templateUrl: './orders.component.html',
-  styleUrl: './orders.component.scss',
+    selector: 'app-orders',
+    imports: [
+        CommonModule,
+        FormsModule,
+        PoTableModule,
+        PoPageModule,
+        PoModalModule,
+        PoFieldModule,
+        PoButtonModule,
+    ],
+    templateUrl: './orders.component.html',
+    styleUrl: './orders.component.scss'
 })
 export class OrdersComponent implements OnInit {
   @ViewChild('createModal', { static: true }) createModal!: PoModalComponent;

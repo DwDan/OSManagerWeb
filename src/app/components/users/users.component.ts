@@ -27,20 +27,19 @@ import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-usuarios',
-  templateUrl: './users.component.html',
-  styleUrl: './users.component.scss',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    PoTableModule,
-    PoWidgetModule,
-    PoModalModule,
-    PoButtonModule,
-    PoFieldModule,
-    PoPageModule,
-  ],
+    selector: 'app-usuarios',
+    templateUrl: './users.component.html',
+    styleUrl: './users.component.scss',
+    imports: [
+        CommonModule,
+        FormsModule,
+        PoTableModule,
+        PoWidgetModule,
+        PoModalModule,
+        PoButtonModule,
+        PoFieldModule,
+        PoPageModule,
+    ]
 })
 export class UsersComponent {
   @ViewChild('createUserModal', { static: true }) createUserModal!: PoModalComponent;

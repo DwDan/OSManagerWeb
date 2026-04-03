@@ -10,11 +10,10 @@ import {
 } from '@po-ui/ng-components';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+    selector: 'app-dashboard',
+    imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
+    templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
   totalUsuarios = 124;
