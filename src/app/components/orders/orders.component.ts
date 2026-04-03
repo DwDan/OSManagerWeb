@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
 import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
@@ -27,6 +27,9 @@ import {
 import { OrdersService } from '@services/orders/orders.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { commonLiterals } from 'src/app/i18n/common/common.literals';
+import { ordersLiterals } from 'src/app/i18n/orders/orders.literals';
+import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
     selector: 'app-orders',
@@ -54,6 +57,9 @@ export class OrdersComponent implements OnInit {
   private readonly usersService = inject(UsersService);
   private readonly poNotification = inject(PoNotificationService);
 
+  readonly literals = injectI18n(ordersLiterals);
+  readonly common = injectI18n(commonLiterals);
+
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
@@ -64,10 +70,10 @@ export class OrdersComponent implements OnInit {
 
   readonly technicians = signal<PoSelectOption[]>([]);
 
-  readonly executionResultOptions: PoSelectOption[] = [
-    { label: 'Sucesso', value: 1 },
-    { label: 'Falha', value: 2 },
-  ];
+  readonly executionResultOptions = computed<PoSelectOption[]>(() => [
+    { label: this.literals().executionResult.success, value: 1 },
+    { label: this.literals().executionResult.failure, value: 2 },
+  ]);
 
   createForm: CreateOrderRequest = this.createEmptyOrderForm();
 
@@ -84,68 +90,68 @@ export class OrdersComponent implements OnInit {
 
   selectedEvidenceFiles: File[] = [];
 
-  readonly pageActions: PoPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => [
     {
-      label: 'Nova ordem',
+      label: this.literals().pageActions.newOrder,
       action: () => this.openCreateModal(),
     },
     {
-      label: 'Atualizar',
+      label: this.literals().pageActions.refresh,
       action: () => this.loadOrders(),
     },
-  ];
+  ]);
 
-  readonly tableActions: PoTableAction[] = [
+  readonly tableActions = computed<PoTableAction[]>(() => [
     {
-      label: 'Detalhes',
+      label: this.literals().tableActions.details,
       action: (row: OrderListItemResponse) => this.openDetails(row.id),
     },
     {
-      label: 'Editar',
+      label: this.literals().tableActions.edit,
       action: (row: OrderListItemResponse) => this.openEditModal(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
-      label: 'Atribuir técnico',
+      label: this.literals().tableActions.assignTechnician,
       action: (row: OrderListItemResponse) => this.openAssignTechnicianModal(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
-      label: 'Abrir',
+      label: this.literals().tableActions.open,
       action: (row: OrderListItemResponse) => this.openOrder(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.Pending,
     },
     {
-      label: 'Iniciar execução',
+      label: this.literals().tableActions.startExecution,
       action: (row: OrderListItemResponse) => this.startExecution(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.Open,
     },
     {
-      label: 'Fechar',
+      label: this.literals().tableActions.close,
       action: (row: OrderListItemResponse) => this.openCloseModal(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.InProgress,
     },
     {
-      label: 'Cancelar',
+      label: this.literals().tableActions.cancel,
       action: (row: OrderListItemResponse) => this.cancelOrder(row.id),
       visible: (row: OrderListItemResponse) => row.status !== OrderStatus.Closed,
     },
     {
-      label: 'Evidências',
+      label: this.literals().tableActions.evidences,
       action: (row: OrderListItemResponse) => this.openEvidencesModal(row.id),
       visible: (row: OrderListItemResponse) => row.status === OrderStatus.InProgress,
     },
-  ];
+  ]);
 
-  readonly columns: PoTableColumn[] = [
-    { property: 'code', label: 'Código' },
-    { property: 'customerName', label: 'Cliente' },
-    { property: 'technicianName', label: 'Técnico' },
-    { property: 'status', label: 'Status' },
-    { property: 'executionResult', label: 'Resultado' },
-    { property: 'city', label: 'Cidade' },
-    { property: 'state', label: 'Estado' },
-  ];
+  readonly columns = computed<PoTableColumn[]>(() => [
+    { property: 'code', label: this.literals().columns.code },
+    { property: 'customerName', label: this.literals().columns.customer },
+    { property: 'technicianName', label: this.literals().columns.technician },
+    { property: 'status', label: this.literals().columns.status },
+    { property: 'executionResult', label: this.literals().columns.result },
+    { property: 'city', label: this.literals().columns.city },
+    { property: 'state', label: this.literals().columns.state },
+  ]);
 
   ngOnInit(): void {
     this.loadOrders();
@@ -165,12 +171,9 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Ordem criada com sucesso.');
+          this.poNotification.success(this.literals().notifications.created);
           this.createModal.close();
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível criar a ordem.');
         },
       });
   }
@@ -197,9 +200,6 @@ export class OrdersComponent implements OnInit {
           };
           this.editModal.open();
         },
-        error: () => {
-          this.poNotification.error('Não foi possível carregar a ordem.');
-        },
       });
   }
 
@@ -217,12 +217,9 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Ordem atualizada com sucesso.');
+          this.poNotification.success(this.literals().notifications.updated);
           this.editModal.close();
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível atualizar a ordem.');
         },
       });
   }
@@ -237,9 +234,6 @@ export class OrdersComponent implements OnInit {
         next: (order) => {
           this.selectedOrder.set(order);
           this.detailsModal.open();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível carregar os detalhes.');
         },
       });
   }
@@ -266,12 +260,9 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Técnico atribuído com sucesso.');
+          this.poNotification.success(this.literals().notifications.assignedTechnician);
           this.assignTechnicianModal.close();
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível atribuir o técnico.');
         },
       });
   }
@@ -284,11 +275,8 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Ordem aberta com sucesso.');
+          this.poNotification.success(this.literals().notifications.opened);
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível abrir a ordem.');
         },
       });
   }
@@ -301,11 +289,8 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Execução iniciada com sucesso.');
+          this.poNotification.success(this.literals().notifications.startedExecution);
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível iniciar a execução.');
         },
       });
   }
@@ -333,12 +318,9 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Ordem fechada com sucesso.');
+          this.poNotification.success(this.literals().notifications.closed);
           this.closeModal.close();
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível fechar a ordem.');
         },
       });
   }
@@ -351,11 +333,8 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Ordem cancelada com sucesso.');
+          this.poNotification.success(this.literals().notifications.canceled);
           this.loadOrders();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível cancelar a ordem.');
         },
       });
   }
@@ -385,11 +364,8 @@ export class OrdersComponent implements OnInit {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
-          this.poNotification.success('Evidências enviadas com sucesso.');
+          this.poNotification.success(this.literals().notifications.evidencesSent);
           this.evidencesModal.close();
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível enviar as evidências.');
         },
       });
   }
@@ -404,9 +380,6 @@ export class OrdersComponent implements OnInit {
         link.click();
         window.URL.revokeObjectURL(blobUrl);
       },
-      error: () => {
-        this.poNotification.error('Não foi possível baixar a evidência.');
-      },
     });
   }
 
@@ -419,9 +392,6 @@ export class OrdersComponent implements OnInit {
       .subscribe({
         next: (orders) => {
           this.items.set(orders.map((order) => this.mapOrderToListItem(order)));
-        },
-        error: () => {
-          this.poNotification.error('Não foi possível carregar as ordens.');
         },
       });
   }
@@ -436,9 +406,6 @@ export class OrdersComponent implements OnInit {
           })),
         );
       },
-      error: () => {
-        this.poNotification.warning('Não foi possível carregar os técnicos.');
-      },
     });
   }
 
@@ -447,9 +414,9 @@ export class OrdersComponent implements OnInit {
       id: order.id,
       code: order.code,
       customerName: order.customerName,
-      technicianName: order.technician?.name ?? '-',
+      technicianName: order.technician?.name ?? this.common().notInformed,
       status: order.status,
-      executionResult: order.executionResult ?? '-',
+      executionResult: order.executionResult ?? this.common().notInformed,
       city: order.address.city,
       state: order.address.state,
     };

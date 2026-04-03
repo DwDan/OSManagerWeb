@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, inject, signal } from '@angular/core';
+import { Component, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
 import { CreateUserRequest } from '@models/users/requests/create-user.request';
@@ -25,6 +25,9 @@ import {
 } from '@po-ui/ng-components';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { commonLiterals } from 'src/app/i18n/common/common.literals';
+import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
+import { usersLiterals } from 'src/app/i18n/users/users.literals';
 
 @Component({
     selector: 'app-usuarios',
@@ -50,6 +53,9 @@ export class UsersComponent {
   private readonly notification = inject(PoNotificationService);
   private readonly dialog = inject(PoDialogService);
 
+  readonly literals = injectI18n(usersLiterals);
+  readonly common = injectI18n(commonLiterals);
+
   items = signal<UserResponse[]>([]);
   loading = signal(false);
   spacing = PoTableColumnSpacing;
@@ -70,115 +76,113 @@ export class UsersComponent {
 
   selectedRole: UserRole = 'Technician';
 
-  roleOptions: PoSelectOption[] = [
-    { label: 'Administrador', value: 1 },
-    { label: 'Técnico', value: 2 },
-  ];
+  readonly roleOptions = computed<PoSelectOption[]>(() => [
+    { label: this.literals().roles.administrator, value: 1 },
+    { label: this.literals().roles.technician, value: 2 },
+  ]);
 
-  columns: PoTableColumn[] = [
-    { property: 'id', label: 'Id' },
-    { property: 'firstName', label: 'Nome' },
-    { property: 'lastName', label: 'Sobrenome' },
-    { property: 'email', label: 'E-mail' },
+  readonly columns = computed<PoTableColumn[]>(() => [
+    { property: 'id', label: this.literals().columns.id },
+    { property: 'firstName', label: this.literals().columns.firstName },
+    { property: 'lastName', label: this.literals().columns.lastName },
+    { property: 'email', label: this.literals().columns.email },
     {
       property: 'role',
-      label: 'Perfil',
+      label: this.literals().columns.role,
       type: 'label',
       width: '8%',
       labels: [
-        { value: 1, color: 'rgb(201, 53, 125)', label: 'Administrador', icon: 'an an-user' },
-        { value: 2, color: 'rgb(6, 146, 211)', label: 'Técnico', icon: 'an an-user' },
+        {
+          value: 1,
+          color: 'rgb(201, 53, 125)',
+          label: this.literals().roles.administrator,
+          icon: 'an an-user',
+        },
+        {
+          value: 2,
+          color: 'rgb(6, 146, 211)',
+          label: this.literals().roles.technician,
+          icon: 'an an-user',
+        },
       ],
     },
-    { property: 'isActive', label: 'Ativo', type: 'boolean' },
-    { property: 'emailConfirmed', label: 'E-mail confirmado', type: 'boolean' },
-  ];
+    { property: 'isActive', label: this.literals().columns.isActive, type: 'boolean' },
+    { property: 'emailConfirmed', label: this.literals().columns.emailConfirmed, type: 'boolean' },
+  ]);
 
-  pageActions: PoPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => [
     {
-      label: 'Criar usuário',
+      label: this.literals().pageActions.createUser,
       action: () => this.openCreateModal(),
     },
-  ];
+  ]);
 
-  tableActions: PoTableAction[] = [
+  readonly tableActions = computed<PoTableAction[]>(() => [
     {
-      label: 'Editar',
+      label: this.literals().tableActions.edit,
       action: (user: UserResponse) => this.openEditModal(user),
     },
     {
-      label: 'Alterar perfil',
+      label: this.literals().tableActions.changeRole,
       action: (user: UserResponse) => this.openChangeRoleModal(user),
     },
     {
-      label: 'Ativar',
+      label: this.literals().tableActions.activate,
       action: (user: UserResponse) => this.activate(user),
       visible: (user: UserResponse) => !user.isActive,
     },
     {
-      label: 'Desativar',
+      label: this.literals().tableActions.deactivate,
       action: (user: UserResponse) => this.deactivate(user),
       visible: (user: UserResponse) => user.isActive,
     },
     {
-      label: 'Excluir',
+      label: this.literals().tableActions.delete,
       action: (user: UserResponse) => this.deleteUser(user),
       visible: (user: UserResponse) => !user.emailConfirmed,
     },
     {
-      label: 'Reenviar email confirmação',
+      label: this.literals().tableActions.resendEmailConfirmation,
       action: (user: UserResponse) => this.resendEmailConfirmation(user),
       visible: (user: UserResponse) => !user.emailConfirmed,
     },
-  ];
+  ]);
 
-  get saveCreateAction(): PoModalAction {
-    return {
-      label: 'Criar',
-      action: () => this.createUser(),
-      loading: this.loading(),
-    };
-  }
+  readonly saveCreateAction = computed<PoModalAction>(() => ({
+    label: this.literals().modals.create.confirm,
+    action: () => this.createUser(),
+    loading: this.loading(),
+  }));
 
-  get cancelCreateAction(): PoModalAction {
-    return {
-      label: 'Cancelar',
-      action: () => this.createUserModal.close(),
-      loading: this.loading(),
-    };
-  }
+  readonly cancelCreateAction = computed<PoModalAction>(() => ({
+    label: this.common().cancel,
+    action: () => this.createUserModal.close(),
+    loading: this.loading(),
+  }));
 
-  get saveEditAction(): PoModalAction {
-    return {
-      label: 'Salvar',
-      action: () => this.updateUser(),
-      loading: this.loading(),
-    };
-  }
+  readonly saveEditAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: () => this.updateUser(),
+    loading: this.loading(),
+  }));
 
-  get cancelEditAction(): PoModalAction {
-    return {
-      label: 'Cancelar',
-      action: () => this.editUserModal.close(),
-      loading: this.loading(),
-    };
-  }
+  readonly cancelEditAction = computed<PoModalAction>(() => ({
+    label: this.common().cancel,
+    action: () => this.editUserModal.close(),
+    loading: this.loading(),
+  }));
 
-  get saveRoleAction(): PoModalAction {
-    return {
-      label: 'Salvar',
-      action: () => this.changeRole(),
-      loading: this.loading(),
-    };
-  }
+  readonly saveRoleAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: () => this.changeRole(),
+    loading: this.loading(),
+  }));
 
-  get cancelRoleAction(): PoModalAction {
-    return {
-      label: 'Cancelar',
-      action: () => this.changeRoleModal.close(),
-      loading: this.loading(),
-    };
-  }
+  readonly cancelRoleAction = computed<PoModalAction>(() => ({
+    label: this.common().cancel,
+    action: () => this.changeRoleModal.close(),
+    loading: this.loading(),
+  }));
 
   ngOnInit(): void {
     this.loadUsers();
@@ -202,7 +206,7 @@ export class UsersComponent {
       !this.createForm.email?.trim() ||
       !this.createForm.password?.trim()
     ) {
-      this.notification.warning('Preencha todos os campos para criar o usuário.');
+      this.notification.warning(this.literals().validations.fillAllFieldsToCreate);
       return;
     }
 
@@ -213,12 +217,9 @@ export class UsersComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.notification.success('Usuário criado com sucesso.');
+          this.notification.success(this.literals().notifications.created);
           this.createUserModal.close();
           this.loadUsers();
-        },
-        error: () => {
-          this.notification.error('Não foi possível criar o usuário.');
         },
       });
   }
@@ -232,9 +233,6 @@ export class UsersComponent {
       .subscribe({
         next: (users) => {
           this.items.set(users);
-        },
-        error: () => {
-          this.notification.error('Não foi possível carregar os usuários.');
         },
       });
   }
@@ -263,12 +261,9 @@ export class UsersComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.notification.success('Usuário atualizado com sucesso.');
+          this.notification.success(this.literals().notifications.updated);
           this.editUserModal.close();
           this.loadUsers();
-        },
-        error: () => {
-          this.notification.error('Não foi possível atualizar o usuário.');
         },
       });
   }
@@ -298,20 +293,19 @@ export class UsersComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.notification.success('Perfil alterado com sucesso.');
+          this.notification.success(this.literals().notifications.roleChanged);
           this.changeRoleModal.close();
           this.loadUsers();
-        },
-        error: () => {
-          this.notification.error('Não foi possível alterar o perfil.');
         },
       });
   }
 
   activate(user: UserResponse): void {
     this.dialog.confirm({
-      title: 'Ativar usuário',
-      message: `Deseja ativar o usuário ${user.firstName} ${user.lastName}?`,
+      title: this.literals().dialogs.activate.title,
+      message: this.literals()
+        .dialogs.activate.message.replace('{firstName}', user.firstName)
+        .replace('{lastName}', user.lastName),
       confirm: () => {
         this.loading.set(true);
 
@@ -320,11 +314,8 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success('Usuário ativado com sucesso.');
+              this.notification.success(this.literals().notifications.activated);
               this.loadUsers();
-            },
-            error: () => {
-              this.notification.error('Não foi possível ativar o usuário.');
             },
           });
       },
@@ -333,8 +324,10 @@ export class UsersComponent {
 
   deactivate(user: UserResponse): void {
     this.dialog.confirm({
-      title: 'Desativar usuário',
-      message: `Deseja desativar o usuário ${user.firstName} ${user.lastName}?`,
+      title: this.literals().dialogs.deactivate.title,
+      message: this.literals()
+        .dialogs.deactivate.message.replace('{firstName}', user.firstName)
+        .replace('{lastName}', user.lastName),
       confirm: () => {
         this.loading.set(true);
 
@@ -343,21 +336,20 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success('Usuário desativado com sucesso.');
+              this.notification.success(this.literals().notifications.deactivated);
               this.loadUsers();
-            },
-            error: () => {
-              this.notification.error('Não foi possível desativar o usuário.');
             },
           });
       },
     });
   }
 
-  deleteUser(user: UserResponse) {
+  deleteUser(user: UserResponse): void {
     this.dialog.confirm({
-      title: 'Excluir usuário',
-      message: `Deseja excluir o usuário ${user.firstName} ${user.lastName}?`,
+      title: this.literals().dialogs.delete.title,
+      message: this.literals()
+        .dialogs.delete.message.replace('{firstName}', user.firstName)
+        .replace('{lastName}', user.lastName),
       confirm: () => {
         this.loading.set(true);
 
@@ -366,21 +358,20 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success('Usuário excluído com sucesso.');
+              this.notification.success(this.literals().notifications.deleted);
               this.loadUsers();
-            },
-            error: () => {
-              this.notification.error('Não foi possível excluir o usuário.');
             },
           });
       },
     });
   }
 
-  resendEmailConfirmation(user: UserResponse) {
+  resendEmailConfirmation(user: UserResponse): void {
     this.dialog.confirm({
-      title: 'Reenviar email de confirmação',
-      message: `Deseja reenviar o email de confirmação para o usuário ${user.firstName} ${user.lastName}?`,
+      title: this.literals().dialogs.resendEmailConfirmation.title,
+      message: this.literals()
+        .dialogs.resendEmailConfirmation.message.replace('{firstName}', user.firstName)
+        .replace('{lastName}', user.lastName),
       confirm: () => {
         this.loading.set(true);
 
@@ -389,11 +380,8 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success('Email de confirmação reenviado com sucesso.');
+              this.notification.success(this.literals().notifications.emailConfirmationResent);
               this.loadUsers();
-            },
-            error: () => {
-              this.notification.error('Não foi possível reenviar o email de confirmação.');
             },
           });
       },

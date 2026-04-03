@@ -4,6 +4,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { LoginModule } from '@components/auth/login/login.module';
 import { authInterceptor } from '@core/authentication-interceptor';
+import { errorInterceptor } from '@core/error.interceptor';
 import { PoHttpRequestModule, PoI18nConfig, PoI18nModule } from '@po-ui/ng-components';
 import { routes } from './app.routes';
 
@@ -21,7 +22,7 @@ const i18nConfig: PoI18nConfig = {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     importProvidersFrom(PoHttpRequestModule, PoI18nModule.config(i18nConfig), LoginModule),
     provideAnimations(),
   ],

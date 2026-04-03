@@ -1,25 +1,25 @@
-<po-page-default p-title="Dashboard">
+<po-page-default [p-title]="literals().title">
   <div class="po-row">
     <div class="po-md-3">
-      <po-widget p-title="Usuários">
+      <po-widget [p-title]="literals().widgets.users">
         <h2 class="kpi">{{ totalUsuarios }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget p-title="Ordens">
+      <po-widget [p-title]="literals().widgets.orders">
         <h2 class="kpi">{{ totalOrdens }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget p-title="Abertas">
+      <po-widget [p-title]="literals().widgets.open">
         <h2 class="kpi text-warning">{{ ordensAbertas }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget p-title="Finalizadas">
+      <po-widget [p-title]="literals().widgets.closed">
         <h2 class="kpi text-success">{{ ordensFinalizadas }}</h2>
       </po-widget>
     </div>
@@ -27,17 +27,21 @@
 
   <div class="po-row po-mt-1">
     <div class="po-md-6">
-      <po-widget p-title="Ordens na semana">
-        <po-chart [p-type]="chartType" [p-categories]="chartCategories" [p-series]="chartSeries">
+      <po-widget [p-title]="literals().widgets.ordersWeek">
+        <po-chart
+          [p-type]="chartType"
+          [p-categories]="chartCategories()"
+          [p-series]="chartSeries()"
+        >
         </po-chart>
       </po-widget>
     </div>
 
     <div class="po-md-6">
-      <po-widget p-title="Últimas ordens">
+      <po-widget [p-title]="literals().widgets.latestOrders">
         <po-table
-          [p-columns]="columns"
-          [p-items]="items"
+          [p-columns]="columns()"
+          [p-items]="items()"
           [p-hide-table-search]="true"
           [p-striped]="true"
         >

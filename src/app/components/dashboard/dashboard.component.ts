@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import {
   PoChartModule,
   PoChartSerie,
@@ -8,6 +8,8 @@ import {
   PoTableModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
+import { dashboardLiterals } from 'src/app/i18n/dashboard/dashboard.literals';
+import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
     selector: 'app-dashboard',
@@ -16,6 +18,8 @@ import {
     styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
+  readonly literals = injectI18n(dashboardLiterals);
+
   totalUsuarios = 124;
   totalOrdens = 58;
   ordensAbertas = 12;
@@ -23,24 +27,30 @@ export class DashboardComponent {
 
   chartType = PoChartType.Column;
 
-  chartCategories: string[] = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'];
+  chartCategories = computed<string[]>(() => [
+    this.literals().chartCategories.monday,
+    this.literals().chartCategories.tuesday,
+    this.literals().chartCategories.wednesday,
+    this.literals().chartCategories.thursday,
+    this.literals().chartCategories.friday,
+  ]);
 
-  chartSeries: PoChartSerie[] = [
+  chartSeries = computed<PoChartSerie[]>(() => [
     {
-      label: 'Ordens',
+      label: this.literals().chartSeries.orders,
       data: [5, 8, 6, 10, 7],
     },
-  ];
+  ]);
 
-  columns: PoTableColumn[] = [
-    { property: 'id', label: 'Código' },
-    { property: 'cliente', label: 'Cliente' },
-    { property: 'status', label: 'Status' },
-  ];
+  columns = computed<PoTableColumn[]>(() => [
+    { property: 'id', label: this.literals().table.code },
+    { property: 'cliente', label: this.literals().table.customer },
+    { property: 'status', label: this.literals().table.status },
+  ]);
 
-  items = [
-    { id: 1, cliente: 'João', status: 'Aberta' },
-    { id: 2, cliente: 'Maria', status: 'Finalizada' },
-    { id: 3, cliente: 'Pedro', status: 'Em andamento' },
-  ];
+  items = computed(() => [
+    { id: 1, cliente: 'João', status: this.literals().statuses.open },
+    { id: 2, cliente: 'Maria', status: this.literals().statuses.closed },
+    { id: 3, cliente: 'Pedro', status: this.literals().statuses.inProgress },
+  ]);
 }

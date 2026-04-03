@@ -1,0 +1,178 @@
+import { defineI18n } from '../shared/define-i18n';
+
+export const ordersLiterals = defineI18n({
+  ptBR: {
+    title: 'Ordens de Serviço',
+    pageActions: {
+      newOrder: 'Nova ordem',
+      refresh: 'Atualizar',
+    },
+    tableActions: {
+      details: 'Detalhes',
+      edit: 'Editar',
+      assignTechnician: 'Atribuir técnico',
+      open: 'Abrir',
+      startExecution: 'Iniciar execução',
+      close: 'Fechar',
+      cancel: 'Cancelar',
+      evidences: 'Evidências',
+    },
+    columns: {
+      code: 'Código',
+      customer: 'Cliente',
+      technician: 'Técnico',
+      status: 'Status',
+      result: 'Resultado',
+      city: 'Cidade',
+      state: 'Estado',
+    },
+    fields: {
+      customer: 'Cliente',
+      postalCode: 'CEP',
+      street: 'Rua',
+      number: 'Número',
+      city: 'Cidade',
+      state: 'Estado',
+      country: 'País',
+      complement: 'Complemento',
+      reference: 'Referência',
+      technician: 'Técnico',
+      executionResult: 'Resultado da execução',
+      executionNotes: 'Observações',
+    },
+    modals: {
+      create: {
+        title: 'Nova ordem de serviço',
+      },
+      edit: {
+        title: 'Editar ordem de serviço',
+      },
+      assignTechnician: {
+        title: 'Atribuir técnico',
+      },
+      close: {
+        title: 'Fechar ordem',
+      },
+      evidences: {
+        title: 'Adicionar evidências',
+      },
+      details: {
+        title: 'Detalhes da ordem',
+      },
+    },
+    details: {
+      code: 'Código',
+      customer: 'Cliente',
+      status: 'Status',
+      result: 'Resultado',
+      technician: 'Técnico',
+      address: 'Endereço',
+      complement: 'Complemento',
+      reference: 'Referência',
+      notes: 'Observações',
+      audit: 'Auditoria',
+      evidences: 'Evidências',
+    },
+    executionResult: {
+      success: 'Sucesso',
+      failure: 'Falha',
+    },
+    notifications: {
+      created: 'Ordem criada com sucesso.',
+      updated: 'Ordem atualizada com sucesso.',
+      assignedTechnician: 'Técnico atribuído com sucesso.',
+      opened: 'Ordem aberta com sucesso.',
+      startedExecution: 'Execução iniciada com sucesso.',
+      closed: 'Ordem fechada com sucesso.',
+      canceled: 'Ordem cancelada com sucesso.',
+      evidencesSent: 'Evidências enviadas com sucesso.',
+    },
+  },
+  enUS: {
+    title: 'Service Orders',
+    pageActions: {
+      newOrder: 'New order',
+      refresh: 'Refresh',
+    },
+    tableActions: {
+      details: 'Details',
+      edit: 'Edit',
+      assignTechnician: 'Assign technician',
+      open: 'Open',
+      startExecution: 'Start execution',
+      close: 'Close',
+      cancel: 'Cancel',
+      evidences: 'Evidences',
+    },
+    columns: {
+      code: 'Code',
+      customer: 'Customer',
+      technician: 'Technician',
+      status: 'Status',
+      result: 'Result',
+      city: 'City',
+      state: 'State',
+    },
+    fields: {
+      customer: 'Customer',
+      postalCode: 'Postal code',
+      street: 'Street',
+      number: 'Number',
+      city: 'City',
+      state: 'State',
+      country: 'Country',
+      complement: 'Complement',
+      reference: 'Reference',
+      technician: 'Technician',
+      executionResult: 'Execution result',
+      executionNotes: 'Notes',
+    },
+    modals: {
+      create: {
+        title: 'New service order',
+      },
+      edit: {
+        title: 'Edit service order',
+      },
+      assignTechnician: {
+        title: 'Assign technician',
+      },
+      close: {
+        title: 'Close order',
+      },
+      evidences: {
+        title: 'Add evidences',
+      },
+      details: {
+        title: 'Order details',
+      },
+    },
+    details: {
+      code: 'Code',
+      customer: 'Customer',
+      status: 'Status',
+      result: 'Result',
+      technician: 'Technician',
+      address: 'Address',
+      complement: 'Complement',
+      reference: 'Reference',
+      notes: 'Notes',
+      audit: 'Audit',
+      evidences: 'Evidences',
+    },
+    executionResult: {
+      success: 'Success',
+      failure: 'Failure',
+    },
+    notifications: {
+      created: 'Order created successfully.',
+      updated: 'Order updated successfully.',
+      assignedTechnician: 'Technician assigned successfully.',
+      opened: 'Order opened successfully.',
+      startedExecution: 'Execution started successfully.',
+      closed: 'Order closed successfully.',
+      canceled: 'Order canceled successfully.',
+      evidencesSent: 'Evidences sent successfully.',
+    },
+  },
+});

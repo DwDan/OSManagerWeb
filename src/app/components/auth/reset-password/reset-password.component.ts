@@ -9,6 +9,8 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
+import { resetPasswordLiterals } from 'src/app/i18n/auth/reset-password.literals';
+import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
     selector: 'app-reset-password',
@@ -22,6 +24,8 @@ export class ResetPasswordComponent {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly notification = inject(PoNotificationService);
 
+  readonly literals = injectI18n(resetPasswordLiterals);
+
   loading = signal(false);
 
   email = this.route.snapshot.queryParamMap.get('email') ?? '';
@@ -34,17 +38,17 @@ export class ResetPasswordComponent {
 
   save(): void {
     if (!this.email || !this.token) {
-      this.notification.error('Link de redefinição inválido.');
+      this.notification.error(this.literals().validations.invalidLink);
       return;
     }
 
     if (!this.form.newPassword.trim() || !this.form.confirmPassword.trim()) {
-      this.notification.warning('Preencha todos os campos.');
+      this.notification.warning(this.literals().validations.fillAllFields);
       return;
     }
 
     if (this.form.newPassword !== this.form.confirmPassword) {
-      this.notification.warning('A confirmação da senha não confere.');
+      this.notification.warning(this.literals().validations.confirmationDoesNotMatch);
       return;
     }
 
@@ -59,11 +63,8 @@ export class ResetPasswordComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.notification.success('Senha redefinida com sucesso.');
+          this.notification.success(this.literals().notifications.success);
           this.router.navigate(['/login']);
-        },
-        error: () => {
-          this.notification.error('Não foi possível redefinir a senha.');
         },
       });
   }

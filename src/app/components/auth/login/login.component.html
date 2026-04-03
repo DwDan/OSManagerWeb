@@ -1,7 +1,10 @@
 <po-page-login
   (p-login-submit)="login($event)"
-  p-product-name="DWS: OSManager"
+  (p-language-change)="languageChange($event)"
+  [p-product-name]="literals().productName"
   [p-loading]="loading()"
-  [p-recovery]="recovery"
+  [p-recovery]="recovery()"
+  [p-languages]="languages()"
+  [p-literals]="pageLiterals()"
 >
 </po-page-login>

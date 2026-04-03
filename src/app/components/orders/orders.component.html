@@ -1,8 +1,8 @@
-<po-page-default p-title="Ordens de Serviço" [p-actions]="pageActions">
+<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
   <po-table
     [p-auto-collapse]="true"
-    [p-actions]="tableActions"
-    [p-columns]="columns"
+    [p-actions]="tableActions()"
+    [p-columns]="columns()"
     [p-hide-columns-manager]="true"
     [p-hide-table-search]="false"
     [p-items]="items()"
@@ -16,15 +16,22 @@
 
 <po-modal
   #createModal
-  p-title="Nova ordem de serviço"
-  [p-primary-action]="{ label: 'Salvar', action: saveCreate.bind(this), disabled: saving() }"
-  [p-secondary-action]="{ label: 'Cancelar', action: createModal.close.bind(createModal) }"
+  [p-title]="literals().modals.create.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveCreate.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: createModal.close.bind(createModal),
+  }"
 >
   <div class="po-row">
     <div class="po-md-12">
       <po-input
         name="createClient"
-        p-label="Cliente"
+        [p-label]="literals().fields.customer"
         [(ngModel)]="createForm.customerName"
       ></po-input>
     </div>
@@ -32,35 +39,55 @@
     <div class="po-md-4">
       <po-input
         name="createPostalCode"
-        p-label="CEP"
+        [p-label]="literals().fields.postalCode"
         [(ngModel)]="createForm.postalCode"
       ></po-input>
     </div>
 
     <div class="po-md-6">
-      <po-input name="createStreet" p-label="Rua" [(ngModel)]="createForm.street"></po-input>
+      <po-input
+        name="createStreet"
+        [p-label]="literals().fields.street"
+        [(ngModel)]="createForm.street"
+      ></po-input>
     </div>
 
     <div class="po-md-2">
-      <po-input name="createNumber" p-label="Número" [(ngModel)]="createForm.number"></po-input>
+      <po-input
+        name="createNumber"
+        [p-label]="literals().fields.number"
+        [(ngModel)]="createForm.number"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="createCity" p-label="Cidade" [(ngModel)]="createForm.city"></po-input>
+      <po-input
+        name="createCity"
+        [p-label]="literals().fields.city"
+        [(ngModel)]="createForm.city"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="createState" p-label="Estado" [(ngModel)]="createForm.state"></po-input>
+      <po-input
+        name="createState"
+        [p-label]="literals().fields.state"
+        [(ngModel)]="createForm.state"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="createCountry" p-label="País" [(ngModel)]="createForm.country"></po-input>
+      <po-input
+        name="createCountry"
+        [p-label]="literals().fields.country"
+        [(ngModel)]="createForm.country"
+      ></po-input>
     </div>
 
     <div class="po-md-6">
       <po-input
         name="createComplement"
-        p-label="Complemento"
+        [p-label]="literals().fields.complement"
         [(ngModel)]="createForm.complement"
       ></po-input>
     </div>
@@ -68,7 +95,7 @@
     <div class="po-md-6">
       <po-input
         name="createReference"
-        p-label="Referência"
+        [p-label]="literals().fields.reference"
         [(ngModel)]="createForm.reference"
       ></po-input>
     </div>
@@ -77,43 +104,78 @@
 
 <po-modal
   #editModal
-  p-title="Editar ordem de serviço"
-  [p-primary-action]="{ label: 'Salvar', action: saveEdit.bind(this), disabled: saving() }"
-  [p-secondary-action]="{ label: 'Cancelar', action: editModal.close.bind(editModal) }"
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveEdit.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: editModal.close.bind(editModal),
+  }"
 >
   <div class="po-row">
     <div class="po-md-12">
-      <po-input name="editClient" p-label="Cliente" [(ngModel)]="editForm.customerName"></po-input>
+      <po-input
+        name="editClient"
+        [p-label]="literals().fields.customer"
+        [(ngModel)]="editForm.customerName"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="editPostalCode" p-label="CEP" [(ngModel)]="editForm.postalCode"></po-input>
+      <po-input
+        name="editPostalCode"
+        [p-label]="literals().fields.postalCode"
+        [(ngModel)]="editForm.postalCode"
+      ></po-input>
     </div>
 
     <div class="po-md-6">
-      <po-input name="editStreet" p-label="Rua" [(ngModel)]="editForm.street"></po-input>
+      <po-input
+        name="editStreet"
+        [p-label]="literals().fields.street"
+        [(ngModel)]="editForm.street"
+      ></po-input>
     </div>
 
     <div class="po-md-2">
-      <po-input name="editNumber" p-label="Número" [(ngModel)]="editForm.number"></po-input>
+      <po-input
+        name="editNumber"
+        [p-label]="literals().fields.number"
+        [(ngModel)]="editForm.number"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="editCity" p-label="Cidade" [(ngModel)]="editForm.city"></po-input>
+      <po-input
+        name="editCity"
+        [p-label]="literals().fields.city"
+        [(ngModel)]="editForm.city"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="editState" p-label="Estado" [(ngModel)]="editForm.state"></po-input>
+      <po-input
+        name="editState"
+        [p-label]="literals().fields.state"
+        [(ngModel)]="editForm.state"
+      ></po-input>
     </div>
 
     <div class="po-md-4">
-      <po-input name="editCountry" p-label="País" [(ngModel)]="editForm.country"></po-input>
+      <po-input
+        name="editCountry"
+        [p-label]="literals().fields.country"
+        [(ngModel)]="editForm.country"
+      ></po-input>
     </div>
 
     <div class="po-md-6">
       <po-input
         name="editComplement"
-        p-label="Complemento"
+        [p-label]="literals().fields.complement"
         [(ngModel)]="editForm.complement"
       ></po-input>
     </div>
@@ -121,7 +183,7 @@
     <div class="po-md-6">
       <po-input
         name="editReference"
-        p-label="Referência"
+        [p-label]="literals().fields.reference"
         [(ngModel)]="editForm.reference"
       ></po-input>
     </div>
@@ -130,14 +192,14 @@
 
 <po-modal
   #assignTechnicianModal
-  p-title="Atribuir técnico"
+  [p-title]="literals().modals.assignTechnician.title"
   [p-primary-action]="{
-    label: 'Salvar',
+    label: common().save,
     action: saveAssignTechnician.bind(this),
     disabled: saving(),
   }"
   [p-secondary-action]="{
-    label: 'Cancelar',
+    label: common().cancel,
     action: assignTechnicianModal.close.bind(assignTechnicianModal),
   }"
 >
@@ -145,7 +207,7 @@
     <div class="po-md-12">
       <po-select
         name="technicianId"
-        p-label="Técnico"
+        [p-label]="literals().fields.technician"
         [p-options]="technicians()"
         [ngModel]="assignTechnicianForm.technicianId"
         (ngModelChange)="assignTechnicianForm.technicianId = $event"
@@ -157,16 +219,23 @@
 
 <po-modal
   #closeModal
-  p-title="Fechar ordem"
-  [p-primary-action]="{ label: 'Salvar', action: saveClose.bind(this), disabled: saving() }"
-  [p-secondary-action]="{ label: 'Cancelar', action: closeModal.close.bind(closeModal) }"
+  [p-title]="literals().modals.close.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveClose.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: closeModal.close.bind(closeModal),
+  }"
 >
   <div class="po-row">
     <div class="po-md-12">
       <po-select
         name="executionResult"
-        p-label="Resultado da execução"
-        [p-options]="executionResultOptions"
+        [p-label]="literals().fields.executionResult"
+        [p-options]="executionResultOptions()"
         [ngModel]="closeForm.executionResult"
         (ngModelChange)="closeForm.executionResult = $event"
       >
@@ -176,7 +245,7 @@
     <div class="po-md-12">
       <po-textarea
         name="executionNotes"
-        p-label="Observações"
+        [p-label]="literals().fields.executionNotes"
         [(ngModel)]="closeForm.executionNotes"
       >
       </po-textarea>
@@ -186,9 +255,16 @@
 
 <po-modal
   #evidencesModal
-  p-title="Adicionar evidências"
-  [p-primary-action]="{ label: 'Enviar', action: saveEvidences.bind(this), disabled: saving() }"
-  [p-secondary-action]="{ label: 'Cancelar', action: evidencesModal.close.bind(evidencesModal) }"
+  [p-title]="literals().modals.evidences.title"
+  [p-primary-action]="{
+    label: common().send,
+    action: saveEvidences.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: evidencesModal.close.bind(evidencesModal),
+  }"
 >
   <div class="po-row">
     <div class="po-md-12">
@@ -199,23 +275,38 @@
 
 <po-modal
   #detailsModal
-  p-title="Detalhes da ordem"
-  [p-primary-action]="{ label: 'Fechar', action: detailsModal.close.bind(detailsModal) }"
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="{
+    label: common().close,
+    action: detailsModal.close.bind(detailsModal),
+  }"
 >
   @if (selectedOrder(); as order) {
     <div class="po-row">
-      <div class="po-md-4"><strong>Código:</strong> {{ order.code }}</div>
+      <div class="po-md-4">
+        <strong>{{ literals().details.code }}:</strong> {{ order.code }}
+      </div>
 
-      <div class="po-md-8"><strong>Cliente:</strong> {{ order.customerName }}</div>
+      <div class="po-md-8">
+        <strong>{{ literals().details.customer }}:</strong> {{ order.customerName }}
+      </div>
 
-      <div class="po-md-4"><strong>Status:</strong> {{ order.status }}</div>
+      <div class="po-md-4">
+        <strong>{{ literals().details.status }}:</strong> {{ order.status }}
+      </div>
 
-      <div class="po-md-4"><strong>Resultado:</strong> {{ order.executionResult || '-' }}</div>
+      <div class="po-md-4">
+        <strong>{{ literals().details.result }}:</strong>
+        {{ order.executionResult || common().notInformed }}
+      </div>
 
-      <div class="po-md-4"><strong>Técnico:</strong> {{ order.technician?.name || '-' }}</div>
+      <div class="po-md-4">
+        <strong>{{ literals().details.technician }}:</strong>
+        {{ order.technician?.name || common().notInformed }}
+      </div>
 
       <div class="po-md-12">
-        <strong>Endereço:</strong>
+        <strong>{{ literals().details.address }}:</strong>
         {{ order.address.street }}, {{ order.address.number }} - {{ order.address.city }}/{{
           order.address.state
         }}
@@ -224,15 +315,22 @@
       </div>
 
       <div class="po-md-12">
-        <strong>Complemento:</strong> {{ order.address.complement || '-' }}
+        <strong>{{ literals().details.complement }}:</strong>
+        {{ order.address.complement || common().notInformed }}
       </div>
 
-      <div class="po-md-12"><strong>Referência:</strong> {{ order.address.reference || '-' }}</div>
+      <div class="po-md-12">
+        <strong>{{ literals().details.reference }}:</strong>
+        {{ order.address.reference || common().notInformed }}
+      </div>
 
-      <div class="po-md-12"><strong>Observações:</strong> {{ order.executionNotes || '-' }}</div>
+      <div class="po-md-12">
+        <strong>{{ literals().details.notes }}:</strong>
+        {{ order.executionNotes || common().notInformed }}
+      </div>
 
       <div class="po-md-12 po-mt-2">
-        <strong>Auditoria</strong>
+        <strong>{{ literals().details.audit }}</strong>
       </div>
 
       <div class="po-md-12">
@@ -246,7 +344,7 @@
       </div>
 
       <div class="po-md-12 po-mt-2">
-        <strong>Evidências</strong>
+        <strong>{{ literals().details.evidences }}</strong>
       </div>
 
       <div class="po-md-12">
@@ -260,7 +358,7 @@
                 class="po-button po-button-default"
                 (click)="downloadEvidence(order.id, evidence.id, evidence.fileName)"
               >
-                Baixar
+                {{ common().download }}
               </button>
             </div>
           </div>

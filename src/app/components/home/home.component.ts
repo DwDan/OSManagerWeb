@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import {
   PoMenuItem,
@@ -11,6 +11,8 @@ import {
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { MenuService } from '@services/menu/menu.service';
 import { UsersService } from '@services/users/users.service';
+import { homeLiterals } from 'src/app/i18n/home/home.literals';
+import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
   selector: 'app-home',
@@ -24,50 +26,50 @@ export class HomeComponent implements OnInit {
   private readonly authenticationService = inject(AuthenticationService);
 
   public readonly menuFilterService = inject(MenuService);
+  readonly literals = injectI18n(homeLiterals);
 
-  nomeSistema = 'DWS: OSManager';
-  nomeUsuario = 'Carregando...';
+  nomeUsuario: string = this.literals().loading;
 
   profile: PoToolbarProfile = {
-    title: 'Carregando...',
+    title: this.literals().loading,
   };
 
-  profileActions: PoToolbarAction[] = [
+  readonly profileActions = computed<PoToolbarAction[]>(() => [
     {
-      label: 'Alterar Senha',
+      label: this.literals().actions.changePassword,
       icon: 'po-icon-lock',
       action: () => this.changePassword(),
     },
     {
-      label: 'Sair',
+      label: this.literals().actions.logout,
       icon: 'po-icon-exit',
       action: () => this.logout(),
     },
-  ];
+  ]);
 
-  menus: PoMenuItem[] = [
+  readonly menus = computed<PoMenuItem[]>(() => [
     {
-      label: 'Dashboard',
+      label: this.literals().menu.dashboard,
       icon: 'an an-house',
-      shortLabel: 'Dashboard',
+      shortLabel: this.literals().menu.dashboardShort,
       link: '/dashboard',
     },
     {
-      label: 'Gerenciar Usuários',
+      label: this.literals().menu.manageUsers,
       icon: 'an an-user',
-      shortLabel: 'Usuários',
+      shortLabel: this.literals().menu.usersShort,
       link: '/users',
     },
     {
-      label: 'Ordens de Serviço',
+      label: this.literals().menu.orders,
       icon: 'an an-clock',
-      shortLabel: 'Ordens',
+      shortLabel: this.literals().menu.ordersShort,
       link: '/orders',
     },
-  ];
+  ]);
 
   ngOnInit(): void {
-    this.menuFilterService.setMenus(this.menus);
+    this.menuFilterService.setMenus(this.menus());
     this.carregarUsuarioLogado();
   }
 
@@ -75,10 +77,10 @@ export class HomeComponent implements OnInit {
     const userId = sessionStorage.getItem('userId');
 
     if (!userId) {
-      this.nomeUsuario = 'Usuário';
+      this.nomeUsuario = this.literals().defaultUser;
 
       this.profile = {
-        title: 'Usuário',
+        title: this.literals().defaultUser,
       };
 
       return;
@@ -94,10 +96,10 @@ export class HomeComponent implements OnInit {
         };
       },
       error: () => {
-        this.nomeUsuario = 'Usuário';
+        this.nomeUsuario = this.literals().defaultUser;
 
         this.profile = {
-          title: 'Usuário',
+          title: this.literals().defaultUser,
         };
       },
     });

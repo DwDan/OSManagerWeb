@@ -1,8 +1,8 @@
-<po-page-default p-title="Gerenciar Usuários" [p-actions]="pageActions">
+<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
   <po-table
     [p-auto-collapse]="true"
-    [p-actions]="tableActions"
-    [p-columns]="columns"
+    [p-actions]="tableActions()"
+    [p-columns]="columns()"
     [p-hide-columns-manager]="true"
     [p-hide-table-search]="false"
     [p-items]="items()"
@@ -16,31 +16,48 @@
 
 <po-modal
   #createUserModal
-  p-title="Criar usuário"
-  [p-primary-action]="saveCreateAction"
-  [p-secondary-action]="cancelCreateAction"
+  [p-title]="literals().modals.create.title"
+  [p-primary-action]="saveCreateAction()"
+  [p-secondary-action]="cancelCreateAction()"
 >
   <div class="po-row">
     <div class="po-md-6">
-      <po-input name="createFirstName" p-label="Nome" [(ngModel)]="createForm.firstName">
+      <po-input
+        name="createFirstName"
+        [p-label]="literals().fields.firstName"
+        [(ngModel)]="createForm.firstName"
+      >
       </po-input>
     </div>
 
     <div class="po-md-6">
-      <po-input name="createLastName" p-label="Sobrenome" [(ngModel)]="createForm.lastName">
+      <po-input
+        name="createLastName"
+        [p-label]="literals().fields.lastName"
+        [(ngModel)]="createForm.lastName"
+      >
       </po-input>
     </div>
   </div>
 
   <div class="po-row">
     <div class="po-md-12">
-      <po-input name="createEmail" p-label="E-mail" [(ngModel)]="createForm.email"> </po-input>
+      <po-input
+        name="createEmail"
+        [p-label]="literals().fields.email"
+        [(ngModel)]="createForm.email"
+      >
+      </po-input>
     </div>
   </div>
 
   <div class="po-row">
     <div class="po-md-12">
-      <po-password name="createPassword" p-label="Senha" [(ngModel)]="createForm.password">
+      <po-password
+        name="createPassword"
+        [p-label]="literals().fields.password"
+        [(ngModel)]="createForm.password"
+      >
       </po-password>
     </div>
   </div>
@@ -48,33 +65,43 @@
 
 <po-modal
   #editUserModal
-  p-title="Editar usuário"
-  [p-primary-action]="saveEditAction"
-  [p-secondary-action]="cancelEditAction"
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="saveEditAction()"
+  [p-secondary-action]="cancelEditAction()"
 >
   <div class="po-row">
     <div class="po-md-6">
-      <po-input name="firstName" p-label="Nome" [(ngModel)]="editForm.firstName"> </po-input>
+      <po-input
+        name="firstName"
+        [p-label]="literals().fields.firstName"
+        [(ngModel)]="editForm.firstName"
+      >
+      </po-input>
     </div>
 
     <div class="po-md-6">
-      <po-input name="lastName" p-label="Sobrenome" [(ngModel)]="editForm.lastName"> </po-input>
+      <po-input
+        name="lastName"
+        [p-label]="literals().fields.lastName"
+        [(ngModel)]="editForm.lastName"
+      >
+      </po-input>
     </div>
   </div>
 </po-modal>
 
 <po-modal
   #changeRoleModal
-  p-title="Alterar perfil"
-  [p-primary-action]="saveRoleAction"
-  [p-secondary-action]="cancelRoleAction"
+  [p-title]="literals().modals.changeRole.title"
+  [p-primary-action]="saveRoleAction()"
+  [p-secondary-action]="cancelRoleAction()"
 >
   <div class="po-row">
     <div class="po-md-12">
       <po-select
         name="role"
-        p-label="Perfil"
-        [p-options]="roleOptions"
+        [p-label]="literals().fields.role"
+        [p-options]="roleOptions()"
         [ngModel]="selectedRole"
         (ngModelChange)="selectedRole = $event"
       >
