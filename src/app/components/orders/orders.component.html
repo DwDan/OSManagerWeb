@@ -29,11 +29,13 @@
 >
   <div class="po-row">
     <div class="po-md-12">
-      <po-input
+      <po-select
         name="createClient"
         [p-label]="literals().fields.customer"
-        [(ngModel)]="createForm.customerName"
-      ></po-input>
+        [p-options]="customers()"
+        [ngModel]="createForm.customerId"
+        (ngModelChange)="createForm.customerId = $event"
+      ></po-select>
     </div>
 
     <div class="po-md-4">
@@ -117,11 +119,13 @@
 >
   <div class="po-row">
     <div class="po-md-12">
-      <po-input
-        name="editClient"
+      <po-select
+        name="createClient"
         [p-label]="literals().fields.customer"
-        [(ngModel)]="editForm.customerName"
-      ></po-input>
+        [p-options]="customers()"
+        [ngModel]="editForm.customerId"
+        (ngModelChange)="editForm.customerId = $event"
+      ></po-select>
     </div>
 
     <div class="po-md-4">
@@ -288,7 +292,7 @@
       </div>
 
       <div class="po-md-8">
-        <strong>{{ literals().details.customer }}:</strong> {{ order.customerName }}
+        <strong>{{ literals().details.customer }}:</strong> {{ order.customer.name }}
       </div>
 
       <div class="po-md-4">

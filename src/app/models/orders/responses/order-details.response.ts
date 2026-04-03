@@ -1,3 +1,4 @@
+import { CustomerResponse } from '@models/customers/responses/customer.response';
 import { OrderStatus } from '../types/order-status.enum';
 import { AddressResponse } from './address.response';
 import { OrderAuditResponse } from './order-audit.response';
@@ -7,7 +8,7 @@ import { TechnicianResponse } from './technician.response';
 export interface OrderDetailsResponse {
   id: string;
   code: string;
-  customerName: string;
+  customer: CustomerResponse;
   status: OrderStatus;
   executionResult?: string;
   executionNotes?: string;

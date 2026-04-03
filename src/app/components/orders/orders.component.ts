@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
+import { CustomerResponse } from '@models/customers/responses/customer.response';
 import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
 import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
@@ -27,6 +28,7 @@ import {
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
+import { CustomersService } from '@services/customers/customers.service';
 import { OrdersService } from '@services/orders/orders.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
@@ -56,6 +58,7 @@ export class OrdersComponent implements OnInit {
   private readonly ordersService = inject(OrdersService);
   private readonly usersService = inject(UsersService);
   private readonly poNotification = inject(PoNotificationService);
+  private readonly customersService = inject(CustomersService);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -69,6 +72,7 @@ export class OrdersComponent implements OnInit {
   readonly selectedOrderId = signal<string | null>(null);
 
   readonly technicians = signal<PoSelectOption[]>([]);
+  readonly customers = signal<PoSelectOption[]>([]);
 
   readonly executionResultOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().executionResult.success, value: 1 },
@@ -156,6 +160,7 @@ export class OrdersComponent implements OnInit {
   ngOnInit(): void {
     this.loadOrders();
     this.loadTechnicians();
+    this.loadCustomers();
   }
 
   openCreateModal(): void {
@@ -188,7 +193,7 @@ export class OrdersComponent implements OnInit {
         next: (order) => {
           this.selectedOrderId.set(id);
           this.editForm = {
-            customerName: order.customerName,
+            customerId: order.customer.id,
             postalCode: order.address.postalCode,
             street: order.address.street,
             number: order.address.number,
@@ -409,11 +414,24 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  private loadCustomers(): void {
+    this.customersService.getCustomers().subscribe({
+      next: (customers: CustomerResponse[]) => {
+        this.customers.set(
+          customers.map((customer) => ({
+            label: customer.name,
+            value: customer.id,
+          })),
+        );
+      },
+    });
+  }
+
   private mapOrderToListItem(order: OrderResponse): OrderListItemResponse {
     return {
       id: order.id,
       code: order.code,
-      customerName: order.customerName,
+      customerName: order.customer.name,
       technicianName: order.technician?.name ?? this.common().notInformed,
       status: order.status,
       executionResult: order.executionResult ?? this.common().notInformed,
@@ -424,7 +442,7 @@ export class OrdersComponent implements OnInit {
 
   private createEmptyOrderForm(): CreateOrderRequest {
     return {
-      customerName: '',
+      customerId: '',
       postalCode: '',
       street: '',
       number: '',

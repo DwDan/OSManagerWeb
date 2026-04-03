@@ -87,7 +87,7 @@ export class CustomersComponent implements OnInit {
   readonly columns = computed<PoTableColumn[]>(() => [
     { property: 'name', label: this.literals().columns.customer },
     { property: 'phone', label: this.literals().columns.phone },
-    { property: 'email', label: this.literals().columns.phone },
+    { property: 'email', label: this.literals().columns.email },
     { property: 'city', label: this.literals().columns.city },
     { property: 'state', label: this.literals().columns.state },
   ]);

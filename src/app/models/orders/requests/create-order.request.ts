@@ -1,5 +1,5 @@
 export interface CreateOrderRequest {
-  customerName: string;
+  customerId: string;
   postalCode: string;
   street: string;
   number: string;
