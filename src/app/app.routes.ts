@@ -4,7 +4,8 @@ import { authGuard } from '@core/authentication-guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./components/auth/login/login.module').then((m) => m.LoginModule),
+    loadComponent: () =>
+      import('./components/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'reset-password',

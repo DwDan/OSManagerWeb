@@ -3,8 +3,13 @@
   (p-language-change)="languageChange($event)"
   [p-product-name]="literals().productName"
   [p-loading]="loading()"
-  [p-recovery]="recovery()"
-  [p-languages]="languages()"
+  [p-languages]="languages"
   [p-literals]="pageLiterals()"
 >
 </po-page-login>
+
+<button class="login-page__forgot-password" type="button" (click)="openForgotPasswordModal()">
+  {{ literals().forgotPassword }}
+</button>
+
+<app-forgot-password #forgotPassword [supportEmail]="literals().supportEmail" />

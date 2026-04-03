@@ -1,0 +1,16 @@
+.login-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+.login-page__forgot-password {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 195px);
+  transform: translateX(-50%);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
