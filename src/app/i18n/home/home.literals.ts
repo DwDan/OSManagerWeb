@@ -17,6 +17,8 @@ export const homeLiterals = defineI18n({
       usersShort: 'Usuários',
       orders: 'Ordens de serviço',
       ordersShort: 'Ordens',
+      customers: 'Gerenciar clientes',
+      customersShort: 'Clientes',
     },
   },
   enUS: {
@@ -35,6 +37,8 @@ export const homeLiterals = defineI18n({
       usersShort: 'Users',
       orders: 'Service orders',
       ordersShort: 'Orders',
+      customers: 'Manage Customers',
+      customersShort: 'Customers',
     },
   },
 });

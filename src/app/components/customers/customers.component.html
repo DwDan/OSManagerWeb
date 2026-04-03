@@ -1,0 +1,270 @@
+<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="tableActions()"
+    [p-columns]="columns()"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  >
+  </po-table>
+</po-page-default>
+
+<po-modal
+  #createModal
+  [p-title]="literals().modals.create.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveCreate.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: createModal.close.bind(createModal),
+  }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-input
+        name="createClient"
+        [p-label]="literals().fields.customer"
+        [(ngModel)]="createForm.name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createEmail"
+        [p-label]="literals().fields.email"
+        [(ngModel)]="createForm.email"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createPhone"
+        [p-label]="literals().fields.phone"
+        p-mask="(99) 99999-9999"
+        [(ngModel)]="createForm.phone"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="createPostalCode"
+        [p-label]="literals().fields.postalCode"
+        [(ngModel)]="createForm.postalCode"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createStreet"
+        [p-label]="literals().fields.street"
+        [(ngModel)]="createForm.street"
+      ></po-input>
+    </div>
+
+    <div class="po-md-2">
+      <po-input
+        name="createNumber"
+        [p-label]="literals().fields.number"
+        [(ngModel)]="createForm.number"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="createCity"
+        [p-label]="literals().fields.city"
+        [(ngModel)]="createForm.city"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="createState"
+        [p-label]="literals().fields.state"
+        [(ngModel)]="createForm.state"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="createCountry"
+        [p-label]="literals().fields.country"
+        [(ngModel)]="createForm.country"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createComplement"
+        [p-label]="literals().fields.complement"
+        [(ngModel)]="createForm.complement"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createReference"
+        [p-label]="literals().fields.reference"
+        [(ngModel)]="createForm.reference"
+      ></po-input>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #editModal
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveEdit.bind(this),
+    disabled: saving(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: editModal.close.bind(editModal),
+  }"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-input
+        name="editClient"
+        [p-label]="literals().fields.customer"
+        [(ngModel)]="editForm.name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editEmail"
+        [p-label]="literals().fields.email"
+        [(ngModel)]="editForm.email"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editPhone"
+        [p-label]="literals().fields.phone"
+        p-mask="(99) 99999-9999"
+        [(ngModel)]="editForm.phone"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editPostalCode"
+        [p-label]="literals().fields.postalCode"
+        [(ngModel)]="editForm.postalCode"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editStreet"
+        [p-label]="literals().fields.street"
+        [(ngModel)]="editForm.street"
+      ></po-input>
+    </div>
+
+    <div class="po-md-2">
+      <po-input
+        name="editNumber"
+        [p-label]="literals().fields.number"
+        [(ngModel)]="editForm.number"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editCity"
+        [p-label]="literals().fields.city"
+        [(ngModel)]="editForm.city"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editState"
+        [p-label]="literals().fields.state"
+        [(ngModel)]="editForm.state"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editCountry"
+        [p-label]="literals().fields.country"
+        [(ngModel)]="editForm.country"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editComplement"
+        [p-label]="literals().fields.complement"
+        [(ngModel)]="editForm.complement"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editReference"
+        [p-label]="literals().fields.reference"
+        [(ngModel)]="editForm.reference"
+      ></po-input>
+    </div>
+  </div>
+</po-modal>
+
+<po-modal
+  #detailsModal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="{
+    label: common().close,
+    action: detailsModal.close.bind(detailsModal),
+  }"
+>
+  @if (selectedCustomer(); as customer) {
+    <div class="po-row">
+      <div class="po-md-12">
+        <strong>{{ literals().details.customer }}:</strong> {{ customer.name }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.email }}:</strong>
+        {{ customer.email || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.phone }}:</strong>
+        {{ customer.phone || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.address }}:</strong>
+        {{ customer.address.street }}, {{ customer.address.number }} -
+        {{ customer.address.city }}/{{ customer.address.state }}
+        -
+        {{ customer.address.country }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.complement }}:</strong>
+        {{ customer.address.complement || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.reference }}:</strong>
+        {{ customer.address.reference || common().notInformed }}
+      </div>
+    </div>
+  }
+</po-modal>
