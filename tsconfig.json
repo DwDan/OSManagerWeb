@@ -27,7 +27,8 @@
       "@services/*": ["src/app/services/*"],
       "@models/*": ["src/app/models/*"],
       "@components/*": ["src/app/components/*"],
-      "@core/*": ["src/app/core/*"]
+      "@core/*": ["src/app/core/*"],
+      "@i18n/*": ["src/app/i18n/*"]
     }
   },
   "angularCompilerOptions": {

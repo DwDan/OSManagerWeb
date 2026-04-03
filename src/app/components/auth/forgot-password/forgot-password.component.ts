@@ -10,6 +10,8 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { forgotPasswordLiterals } from '@i18n/auth/forgot-password.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
   PoFieldModule,
   PoModalAction,
@@ -19,8 +21,6 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
-import { forgotPasswordLiterals } from 'src/app/i18n/auth/forgot-password.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
   selector: 'app-forgot-password',

@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { commonLiterals } from '@i18n/common/common.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
+import { usersLiterals } from '@i18n/users/users.literals';
 import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
 import { CreateUserRequest } from '@models/users/requests/create-user.request';
 import { UpdateUserRequest } from '@models/users/requests/update-user.request';
@@ -25,24 +28,21 @@ import {
 } from '@po-ui/ng-components';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
-import { commonLiterals } from 'src/app/i18n/common/common.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
-import { usersLiterals } from 'src/app/i18n/users/users.literals';
 
 @Component({
-    selector: 'app-usuarios',
-    templateUrl: './users.component.html',
-    styleUrl: './users.component.scss',
-    imports: [
-        CommonModule,
-        FormsModule,
-        PoTableModule,
-        PoWidgetModule,
-        PoModalModule,
-        PoButtonModule,
-        PoFieldModule,
-        PoPageModule,
-    ]
+  selector: 'app-usuarios',
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
+  imports: [
+    CommonModule,
+    FormsModule,
+    PoTableModule,
+    PoWidgetModule,
+    PoModalModule,
+    PoButtonModule,
+    PoFieldModule,
+    PoPageModule,
+  ],
 })
 export class UsersComponent {
   @ViewChild('createUserModal', { static: true }) createUserModal!: PoModalComponent;

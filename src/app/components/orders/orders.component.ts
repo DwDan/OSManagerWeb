@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { commonLiterals } from '@i18n/common/common.literals';
+import { ordersLiterals } from '@i18n/orders/orders.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
 import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
@@ -27,23 +30,20 @@ import {
 import { OrdersService } from '@services/orders/orders.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
-import { commonLiterals } from 'src/app/i18n/common/common.literals';
-import { ordersLiterals } from 'src/app/i18n/orders/orders.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
-    selector: 'app-orders',
-    imports: [
-        CommonModule,
-        FormsModule,
-        PoTableModule,
-        PoPageModule,
-        PoModalModule,
-        PoFieldModule,
-        PoButtonModule,
-    ],
-    templateUrl: './orders.component.html',
-    styleUrl: './orders.component.scss'
+  selector: 'app-orders',
+  imports: [
+    CommonModule,
+    FormsModule,
+    PoTableModule,
+    PoPageModule,
+    PoModalModule,
+    PoFieldModule,
+    PoButtonModule,
+  ],
+  templateUrl: './orders.component.html',
+  styleUrl: './orders.component.scss',
 })
 export class OrdersComponent implements OnInit {
   @ViewChild('createModal', { static: true }) createModal!: PoModalComponent;

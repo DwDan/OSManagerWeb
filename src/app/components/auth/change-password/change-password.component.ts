@@ -1,5 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { changePasswordLiterals } from '@i18n/auth/change-password.literals';
+import { commonLiterals } from '@i18n/common/common.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
   PoButtonModule,
   PoFieldModule,
@@ -8,15 +11,12 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
-import { changePasswordLiterals } from 'src/app/i18n/auth/change-password.literals';
-import { commonLiterals } from 'src/app/i18n/common/common.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
-    selector: 'app-change-password',
-    imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
-    templateUrl: './change-password.component.html',
-    styleUrl: './change-password.component.scss'
+  selector: 'app-change-password',
+  imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
+  templateUrl: './change-password.component.html',
+  styleUrl: './change-password.component.scss',
 })
 export class ChangePasswordComponent {
   private authenticationService = inject(AuthenticationService);

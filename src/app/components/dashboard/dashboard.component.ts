@@ -1,4 +1,6 @@
 import { Component, computed } from '@angular/core';
+import { dashboardLiterals } from '@i18n/dashboard/dashboard.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
   PoChartModule,
   PoChartSerie,
@@ -8,14 +10,12 @@ import {
   PoTableModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
-import { dashboardLiterals } from 'src/app/i18n/dashboard/dashboard.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
-    selector: 'app-dashboard',
-    imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
-    templateUrl: './dashboard.component.html',
-    styleUrl: './dashboard.component.scss'
+  selector: 'app-dashboard',
+  imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
   readonly literals = injectI18n(dashboardLiterals);

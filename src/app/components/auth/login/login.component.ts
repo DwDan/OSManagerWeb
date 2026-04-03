@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { loginLiterals } from '@i18n/auth/login.literals';
+import { I18nStore } from '@i18n/shared/i18n.store';
+import { AppLanguage } from '@i18n/shared/i18n.types';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import { LoginRequest } from '@models/login/requests/login.request';
 import {
   PoButtonModule,
@@ -13,10 +17,6 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
-import { loginLiterals } from 'src/app/i18n/auth/login.literals';
-import { I18nStore } from 'src/app/i18n/shared/i18n.store';
-import { AppLanguage } from 'src/app/i18n/shared/i18n.types';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({

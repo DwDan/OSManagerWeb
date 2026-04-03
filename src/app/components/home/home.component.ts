@@ -1,5 +1,7 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { homeLiterals } from '@i18n/home/home.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
   PoMenuItem,
   PoMenuModule,
@@ -11,8 +13,6 @@ import {
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { MenuService } from '@services/menu/menu.service';
 import { UsersService } from '@services/users/users.service';
-import { homeLiterals } from 'src/app/i18n/home/home.literals';
-import { injectI18n } from 'src/app/i18n/shared/inject-i18n';
 
 @Component({
   selector: 'app-home',
@@ -112,21 +112,5 @@ export class HomeComponent implements OnInit {
   private logout(): void {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
-  }
-
-  private normalizarUrl(url: string): string {
-    if (!url) {
-      return '/dashboard';
-    }
-
-    const urlSemQuery = url.split('?')[0].split('#')[0];
-
-    if (urlSemQuery === '/' || urlSemQuery === '') {
-      return '/dashboard';
-    }
-
-    return urlSemQuery.endsWith('/') && urlSemQuery !== '/'
-      ? urlSemQuery.slice(0, -1)
-      : urlSemQuery;
   }
 }
