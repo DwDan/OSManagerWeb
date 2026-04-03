@@ -152,9 +152,6 @@ export class LoginComponent {
 
           this.router.navigate(['']);
         },
-        error: () => {
-          this.notificationService.error(this.literals().loginError);
-        },
       });
   }
 }
