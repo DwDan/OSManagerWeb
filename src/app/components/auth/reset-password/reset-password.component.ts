@@ -11,11 +11,10 @@ import { AuthenticationService } from '@services/authentication/authentication.s
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-reset-password',
-  standalone: true,
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.scss',
+    selector: 'app-reset-password',
+    imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
+    templateUrl: './reset-password.component.html',
+    styleUrl: './reset-password.component.scss'
 })
 export class ResetPasswordComponent {
   private readonly route = inject(ActivatedRoute);

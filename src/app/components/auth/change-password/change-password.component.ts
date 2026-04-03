@@ -10,11 +10,10 @@ import { AuthenticationService } from '@services/authentication/authentication.s
 import { finalize } from 'rxjs';
 
 @Component({
-  selector: 'app-change-password',
-  standalone: true,
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
-  templateUrl: './change-password.component.html',
-  styleUrl: './change-password.component.scss',
+    selector: 'app-change-password',
+    imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
+    templateUrl: './change-password.component.html',
+    styleUrl: './change-password.component.scss'
 })
 export class ChangePasswordComponent {
   private authenticationService = inject(AuthenticationService);

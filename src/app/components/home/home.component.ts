@@ -14,7 +14,6 @@ import { UsersService } from '@services/users/users.service';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [PoToolbarModule, PoPageModule, PoMenuModule, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
