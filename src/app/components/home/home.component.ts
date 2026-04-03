@@ -13,10 +13,10 @@ import { MenuService } from '@services/menu/menu.service';
 import { UsersService } from '@services/users/users.service';
 
 @Component({
-    selector: 'app-home',
-    imports: [PoToolbarModule, PoPageModule, PoMenuModule, RouterOutlet],
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.scss'
+  selector: 'app-home',
+  imports: [PoToolbarModule, PoPageModule, PoMenuModule, RouterOutlet],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   private readonly router = inject(Router);

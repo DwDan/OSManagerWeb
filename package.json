@@ -19,8 +19,8 @@
     "@angular/platform-browser-dynamic": "^19.2.20",
     "@angular/router": "^19.2.20",
     "@animaliads/animalia-icon": "^1.0.5",
-    "@po-ui/ng-components": "^18.24.0",
-    "@po-ui/ng-templates": "^18.24.0",
+    "@po-ui/ng-components": "19.39.7",
+    "@po-ui/ng-templates": "19.39.7",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.1"
