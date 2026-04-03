@@ -20,5 +20,6 @@
 
   "editor.semanticTokenColorCustomizations": {
     "enabled": false
-  }
+  },
+  "js/ts.tsdk.path": "node_modules\\typescript\\lib"
 }
