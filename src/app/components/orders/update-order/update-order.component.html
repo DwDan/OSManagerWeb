@@ -1,0 +1,97 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveEdit.bind(this),
+    disabled: loading(),
+  }"
+  [p-secondary-action]="closeAction"
+  (p-close)="closeAction.action()"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="editClient"
+        [p-label]="literals().fields.customer"
+        [p-options]="customers()"
+        [ngModel]="editForm.customerId"
+        (ngModelChange)="editForm.customerId = $event"
+      ></po-select>
+    </div>
+
+    <div class="po-md-12">
+      <po-multiselect
+        name="editServices"
+        [p-label]="literals().fields.services"
+        [p-placeholder]="literals().fields.phServices"
+        [p-options]="services()"
+        [(ngModel)]="editForm.services"
+      ></po-multiselect>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editPostalCode"
+        [p-label]="literals().fields.postalCode"
+        [(ngModel)]="editForm.postalCode"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editStreet"
+        [p-label]="literals().fields.street"
+        [(ngModel)]="editForm.street"
+      ></po-input>
+    </div>
+
+    <div class="po-md-2">
+      <po-input
+        name="editNumber"
+        [p-label]="literals().fields.number"
+        [(ngModel)]="editForm.number"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editCity"
+        [p-label]="literals().fields.city"
+        [(ngModel)]="editForm.city"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editState"
+        [p-label]="literals().fields.state"
+        [(ngModel)]="editForm.state"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-input
+        name="editCountry"
+        [p-label]="literals().fields.country"
+        [(ngModel)]="editForm.country"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editComplement"
+        [p-label]="literals().fields.complement"
+        [(ngModel)]="editForm.complement"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editReference"
+        [p-label]="literals().fields.reference"
+        [(ngModel)]="editForm.reference"
+      ></po-input>
+    </div>
+  </div>
+</po-modal>

@@ -1,40 +1,33 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
-import { CustomerResponse } from '@models/customers/responses/customer.response';
-import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
-import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
-import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
-import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
-import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
 import { OrderResponse } from '@models/orders/responses/order.response';
 import { OrderStatus } from '@models/orders/types/order-status.enum';
-import { ServiceResponse } from '@models/services/responses/service.response';
-import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoButtonModule,
   PoFieldModule,
-  PoModalComponent,
   PoModalModule,
-  PoMultiselectOption,
   PoNotificationService,
   PoPageAction,
   PoPageModule,
-  PoSelectOption,
   PoTableAction,
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
-import { CustomersService } from '@services/customers/customers.service';
+import { ModalService } from '@services/modal/modal.service';
 import { OrdersService } from '@services/orders/orders.service';
-import { ServicesService } from '@services/services/services.service';
-import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { AddEvidenceComponent } from './add-evidence/add-evidence.component';
+import { AssignTechnicianComponent } from './assign-technician/assign-technician.component';
+import { CloseOrderComponent } from './close-order/close-order.component';
+import { CreaterOrderComponent } from './creater-order/creater-order.component';
+import { DetailOrderComponent } from './detail-order/detail-order.component';
+import { UpdateOrderComponent } from './update-order/update-order.component';
 
 @Component({
   selector: 'app-orders',
@@ -51,18 +44,9 @@ import { finalize } from 'rxjs';
   styleUrl: './orders.component.scss',
 })
 export class OrdersComponent implements OnInit {
-  @ViewChild('createModal', { static: true }) createModal!: PoModalComponent;
-  @ViewChild('editModal', { static: true }) editModal!: PoModalComponent;
-  @ViewChild('detailsModal', { static: true }) detailsModal!: PoModalComponent;
-  @ViewChild('assignTechnicianModal', { static: true }) assignTechnicianModal!: PoModalComponent;
-  @ViewChild('closeModal', { static: true }) closeModal!: PoModalComponent;
-  @ViewChild('evidencesModal', { static: true }) evidencesModal!: PoModalComponent;
-
   private readonly ordersService = inject(OrdersService);
-  private readonly usersService = inject(UsersService);
   private readonly poNotification = inject(PoNotificationService);
-  private readonly customersService = inject(CustomersService);
-  private readonly servicesService = inject(ServicesService);
+  private readonly modalService = inject(ModalService);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -70,34 +54,7 @@ export class OrdersComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
-  readonly saving = signal(false);
   readonly items = signal<OrderListItemResponse[]>([]);
-  readonly selectedOrder = signal<OrderDetailsResponse | null>(null);
-  readonly selectedOrderId = signal<string | null>(null);
-
-  readonly technicians = signal<PoSelectOption[]>([]);
-  readonly customers = signal<PoSelectOption[]>([]);
-  readonly services = signal<PoMultiselectOption[]>([]);
-
-  readonly executionResultOptions = computed<PoSelectOption[]>(() => [
-    { label: this.literals().executionResult.success, value: 1 },
-    { label: this.literals().executionResult.failure, value: 2 },
-  ]);
-
-  createForm: CreateOrderRequest = this.createEmptyOrderForm();
-
-  editForm: UpdateOrderRequest = this.createEmptyOrderForm();
-
-  assignTechnicianForm: AssignOrderTechnicianRequest = {
-    technicianId: '',
-  };
-
-  closeForm: CloseOrderRequest = {
-    executionResult: 1,
-    executionNotes: '',
-  };
-
-  selectedEvidenceFiles: File[] = [];
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -164,127 +121,48 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrders();
-    this.loadTechnicians();
-    this.loadCustomers();
-    this.loadServices();
   }
 
   openCreateModal(): void {
-    this.createForm = this.createEmptyOrderForm();
-    this.createModal.open();
-  }
+    this.modalService.open(CreaterOrderComponent, {}).subscribe((result) => {
+      if (!result?.confirmed) {
+        return;
+      }
 
-  saveCreate(): void {
-    this.saving.set(true);
-
-    this.ordersService
-      .create(this.createForm)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.created);
-          this.createModal.close();
-          this.loadOrders();
-        },
-      });
+      this.loadOrders();
+    });
   }
 
   openEditModal(id: string): void {
-    this.saving.set(true);
+    this.modalService.open(UpdateOrderComponent, { orderId: id }).subscribe((result) => {
+      if (!result?.confirmed) {
+        return;
+      }
 
-    this.ordersService
-      .getById(id)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: (order) => {
-          this.selectedOrderId.set(id);
-          this.editForm = {
-            customerId: order.customer.id,
-            services: order.services?.map((x) => x.id) ?? [],
-            postalCode: order.address.postalCode,
-            street: order.address.street,
-            number: order.address.number,
-            city: order.address.city,
-            state: order.address.state,
-            country: order.address.country,
-            complement: order.address.complement ?? '',
-            reference: order.address.reference ?? '',
-          };
-          this.editModal.open();
-        },
-      });
-  }
-
-  saveEdit(): void {
-    const id = this.selectedOrderId();
-
-    if (!id) {
-      return;
-    }
-
-    this.saving.set(true);
-
-    this.ordersService
-      .update(id, this.editForm)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.updated);
-          this.editModal.close();
-          this.loadOrders();
-        },
-      });
+      this.loadOrders();
+    });
   }
 
   openDetails(id: string): void {
-    this.saving.set(true);
-
-    this.ordersService
-      .getById(id)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: (order) => {
-          this.selectedOrder.set(order);
-          this.detailsModal.open();
-        },
-      });
+    this.modalService.open(DetailOrderComponent, { orderId: id });
   }
 
   openAssignTechnicianModal(id: string): void {
-    this.selectedOrderId.set(id);
-    this.assignTechnicianForm = {
-      technicianId: '',
-    };
-    this.assignTechnicianModal.open();
-  }
+    this.modalService.open(AssignTechnicianComponent, { orderId: id }).subscribe((result) => {
+      if (!result?.confirmed) {
+        return;
+      }
 
-  saveAssignTechnician(): void {
-    const id = this.selectedOrderId();
-
-    if (!id || !this.assignTechnicianForm.technicianId) {
-      return;
-    }
-
-    this.saving.set(true);
-
-    this.ordersService
-      .assignTechnician(id, this.assignTechnicianForm)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.assignedTechnician);
-          this.assignTechnicianModal.close();
-          this.loadOrders();
-        },
-      });
+      this.loadOrders();
+    });
   }
 
   openOrder(id: string): void {
-    this.saving.set(true);
+    this.loading.set(true);
 
     this.ordersService
       .open(id)
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.opened);
@@ -294,11 +172,11 @@ export class OrdersComponent implements OnInit {
   }
 
   startExecution(id: string): void {
-    this.saving.set(true);
+    this.loading.set(true);
 
     this.ordersService
       .startExecution(id)
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.startedExecution);
@@ -308,41 +186,21 @@ export class OrdersComponent implements OnInit {
   }
 
   openCloseModal(id: string): void {
-    this.selectedOrderId.set(id);
-    this.closeForm = {
-      executionResult: 1,
-      executionNotes: '',
-    };
-    this.closeModal.open();
-  }
+    this.modalService.open(CloseOrderComponent, { orderId: id }).subscribe((result) => {
+      if (!result?.confirmed) {
+        return;
+      }
 
-  saveClose(): void {
-    const id = this.selectedOrderId();
-
-    if (!id) {
-      return;
-    }
-
-    this.saving.set(true);
-
-    this.ordersService
-      .close(id, this.closeForm)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.closed);
-          this.closeModal.close();
-          this.loadOrders();
-        },
-      });
+      this.loadOrders();
+    });
   }
 
   cancelOrder(id: string): void {
-    this.saving.set(true);
+    this.loading.set(true);
 
     this.ordersService
       .cancel(id)
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.canceled);
@@ -352,47 +210,7 @@ export class OrdersComponent implements OnInit {
   }
 
   openEvidencesModal(id: string): void {
-    this.selectedOrderId.set(id);
-    this.selectedEvidenceFiles = [];
-    this.evidencesModal.open();
-  }
-
-  onEvidenceFilesChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.selectedEvidenceFiles = input.files ? Array.from(input.files) : [];
-  }
-
-  saveEvidences(): void {
-    const id = this.selectedOrderId();
-
-    if (!id || this.selectedEvidenceFiles.length === 0) {
-      return;
-    }
-
-    this.saving.set(true);
-
-    this.ordersService
-      .addEvidences(id, { files: this.selectedEvidenceFiles })
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.evidencesSent);
-          this.evidencesModal.close();
-        },
-      });
-  }
-
-  downloadEvidence(orderId: string, evidenceId: string, fileName: string): void {
-    this.ordersService.downloadEvidence(orderId, evidenceId).subscribe({
-      next: (file) => {
-        const blobUrl = window.URL.createObjectURL(file);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = fileName;
-        link.click();
-        window.URL.revokeObjectURL(blobUrl);
-      },
-    });
+    this.modalService.open(AddEvidenceComponent, { orderId: id });
   }
 
   private loadOrders(): void {
@@ -408,45 +226,6 @@ export class OrdersComponent implements OnInit {
       });
   }
 
-  private loadTechnicians(): void {
-    this.usersService.getUsers().subscribe({
-      next: (users: UserResponse[]) => {
-        this.technicians.set(
-          users.map((user) => ({
-            label: `${user.firstName} ${user.lastName}`,
-            value: user.id,
-          })),
-        );
-      },
-    });
-  }
-
-  private loadCustomers(): void {
-    this.customersService.getCustomers().subscribe({
-      next: (customers: CustomerResponse[]) => {
-        this.customers.set(
-          customers.map((customer) => ({
-            label: customer.name,
-            value: customer.id,
-          })),
-        );
-      },
-    });
-  }
-
-  private loadServices(): void {
-    this.servicesService.getServices().subscribe({
-      next: (services: ServiceResponse[]) => {
-        this.services.set(
-          services.map((service) => ({
-            label: service.name,
-            value: service.id,
-          })),
-        );
-      },
-    });
-  }
-
   private mapOrderToListItem(order: OrderResponse): OrderListItemResponse {
     return {
       id: order.id,
@@ -458,28 +237,5 @@ export class OrdersComponent implements OnInit {
       city: order.address.city,
       state: order.address.state,
     };
-  }
-
-  private createEmptyOrderForm(): CreateOrderRequest {
-    return {
-      customerId: '',
-      services: [],
-      postalCode: '',
-      street: '',
-      number: '',
-      city: '',
-      state: '',
-      country: 'Brasil',
-      complement: '',
-      reference: '',
-    };
-  }
-
-  getServiceNames(services?: ServiceResponse[] | null): string {
-    if (!services?.length) {
-      return '';
-    }
-
-    return services.map((service) => service.name).join(', ');
   }
 }

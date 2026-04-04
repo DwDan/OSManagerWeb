@@ -1,0 +1,33 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.close.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveClose.bind(this),
+    disabled: loading(),
+  }"
+  [p-secondary-action]="closeAction"
+  (p-close)="closeAction.action()"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="executionResult"
+        [p-label]="literals().fields.executionResult"
+        [p-options]="executionResultOptions()"
+        [ngModel]="closeForm.executionResult"
+        (ngModelChange)="closeForm.executionResult = $event"
+      >
+      </po-select>
+    </div>
+
+    <div class="po-md-12">
+      <po-textarea
+        name="executionNotes"
+        [p-label]="literals().fields.executionNotes"
+        [(ngModel)]="closeForm.executionNotes"
+      >
+      </po-textarea>
+    </div>
+  </div>
+</po-modal>

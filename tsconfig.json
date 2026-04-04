@@ -28,7 +28,8 @@
       "@models/*": ["src/app/models/*"],
       "@components/*": ["src/app/components/*"],
       "@core/*": ["src/app/core/*"],
-      "@i18n/*": ["src/app/i18n/*"]
+      "@i18n/*": ["src/app/i18n/*"],
+      "@directives/*": ["src/app/shared/directives/*"]
     }
   },
   "angularCompilerOptions": {

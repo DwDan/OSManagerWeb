@@ -1,0 +1,24 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.assignTechnician.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: saveAssignTechnician.bind(this),
+    disabled: loading(),
+  }"
+  [p-secondary-action]="closeAction"
+  (p-close)="closeAction.action()"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="technicianId"
+        [p-label]="literals().fields.technician"
+        [p-options]="technicians()"
+        [ngModel]="assignTechnicianForm.technicianId"
+        (ngModelChange)="assignTechnicianForm.technicianId = $event"
+      >
+      </po-select>
+    </div>
+  </div>
+</po-modal>

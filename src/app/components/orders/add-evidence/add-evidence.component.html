@@ -1,0 +1,17 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.evidences.title"
+  [p-primary-action]="{
+    label: common().send,
+    action: saveEvidences.bind(this),
+    disabled: loading(),
+  }"
+  [p-secondary-action]="closeAction"
+  (p-close)="closeAction.action()"
+>
+  <div class="po-row">
+    <div class="po-md-12">
+      <input type="file" multiple (change)="onEvidenceFilesChange($event)" />
+    </div>
+  </div>
+</po-modal>
