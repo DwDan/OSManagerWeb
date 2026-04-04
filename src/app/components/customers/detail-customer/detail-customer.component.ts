@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomerDetailsResponse } from '@models/customers/responses/customer-details.response';
-import { PoModalModule } from '@po-ui/ng-components';
+import { PoModalAction, PoModalModule } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { finalize } from 'rxjs';
 
@@ -28,12 +28,13 @@ export class DetailCustomerComponent
   readonly loading = signal(false);
   readonly customer = signal<CustomerDetailsResponse | null>(null);
 
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().close,
+    action: this.close.bind(this),
+  }));
+
   ngOnInit(): void {
     this.loadCustomer();
-  }
-
-  closeModal(): void {
-    this.close();
   }
 
   private loadCustomer(): void {

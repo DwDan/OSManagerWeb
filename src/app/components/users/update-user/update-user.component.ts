@@ -40,16 +40,16 @@ export class UpdateUserComponent extends BaseModalComponent<
     lastName: [this.data?.user.lastName ?? '', [Validators.required]],
   });
 
-  readonly saveUpdateAction = computed<PoModalAction>(() => ({
+  readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: () => this.updateUser(),
-    loading: this.loading(),
+    loading: this.loading() || this.form.invalid,
   }));
 
-  readonly cancelUpdateAction = computed<PoModalAction>(() => ({
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
     loading: this.loading(),
+    action: this.close.bind(this),
   }));
 
   private updateUser(): void {

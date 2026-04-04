@@ -1,8 +1,9 @@
 <po-modal
   #modal
   [p-title]="literals().modals.changeRole.title"
-  [p-primary-action]="saveRoleAction()"
-  [p-secondary-action]="cancelRoleAction()"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
 >
   <form [formGroup]="form">
     <div class="po-row">

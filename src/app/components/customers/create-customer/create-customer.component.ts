@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
 import { PostalCodeComponent } from '@components/shared/postal-code/postal-code.component';
@@ -10,7 +10,12 @@ import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CreateCustomerRequest } from '@models/customers/requests/create-customer.request';
 import { PostalCodeAddress } from '@models/locations/response/postal-code-address.response';
-import { PoFieldModule, PoModalModule, PoNotificationService } from '@po-ui/ng-components';
+import {
+  PoFieldModule,
+  PoModalAction,
+  PoModalModule,
+  PoNotificationService,
+} from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { finalize } from 'rxjs';
 
@@ -37,7 +42,18 @@ export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed:
   readonly literals = injectI18n(customersLiterals);
   readonly common = injectI18n(commonLiterals);
 
-  readonly saving = signal(false);
+  readonly loading = signal(false);
+
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: this.save.bind(this),
+    disabled: this.loading() || this.form.invalid,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
+    label: this.common().cancel,
+    action: this.close.bind(this),
+  }));
 
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
@@ -76,20 +92,16 @@ export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed:
 
     const request = this.form.getRawValue() as CreateCustomerRequest;
 
-    this.saving.set(true);
+    this.loading.set(true);
 
     this.customersService
       .create(request)
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.created);
           this.submit({ confirmed: true });
         },
       });
-  }
-
-  cancel(): void {
-    this.close();
   }
 }

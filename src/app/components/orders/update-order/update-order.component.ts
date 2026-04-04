@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
 import { PostalCodeComponent } from '@components/shared/postal-code/postal-code.component';
@@ -16,6 +16,7 @@ import { ServiceResponse } from '@models/services/responses/service.response';
 import {
   PoButtonModule,
   PoFieldModule,
+  PoModalAction,
   PoModalModule,
   PoMultiselectOption,
   PoNotificationService,
@@ -57,10 +58,16 @@ export class UpdateOrderComponent extends BaseModalComponent<
   readonly customers = signal<PoSelectOption[]>([]);
   readonly services = signal<PoMultiselectOption[]>([]);
 
-  readonly closeAction = {
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: this.save.bind(this),
+    disabled: this.loading() || this.form.invalid,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
-  };
+    action: this.close.bind(this),
+  }));
 
   readonly form = this.formBuilder.nonNullable.group({
     customerId: ['', [Validators.required]],
@@ -105,7 +112,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
       });
   }
 
-  saveEdit(): void {
+  save(): void {
     this.form.markAllAsTouched();
 
     if (this.form.invalid) {

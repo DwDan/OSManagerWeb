@@ -1,8 +1,9 @@
 <po-modal
   #modal
   [p-title]="literals().modals.edit.title"
-  [p-primary-action]="saveUpdateAction()"
-  [p-secondary-action]="cancelUpdateAction()"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
 >
   <form [formGroup]="form">
     <div class="po-row">

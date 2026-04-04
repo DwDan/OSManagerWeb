@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { ServiceDetailsResponse } from '@models/services/responses/service-details.response';
-import { PoModalModule } from '@po-ui/ng-components';
+import { PoModalAction, PoModalModule } from '@po-ui/ng-components';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
 
@@ -28,12 +28,13 @@ export class DetailServiceComponent
   readonly loading = signal(false);
   readonly service = signal<ServiceDetailsResponse | null>(null);
 
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().close,
+    action: this.close.bind(this),
+  }));
+
   ngOnInit(): void {
     this.loadService();
-  }
-
-  closeModal(): void {
-    this.close();
   }
 
   private loadService(): void {

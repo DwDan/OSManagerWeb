@@ -1,10 +1,8 @@
 <po-modal
   #modal
   [p-title]="literals().modals.details.title"
-  [p-primary-action]="{
-    label: common().close,
-    action: closeModal.bind(this),
-  }"
+  [p-primary-action]="primaryAction()"
+  (p-close)="close()"
 >
   @if (service(); as serviceData) {
     <div class="po-row">

@@ -1,15 +1,9 @@
 <po-modal
   #modal
   [p-title]="literals().modals.create.title"
-  [p-primary-action]="{
-    label: common().save,
-    action: save.bind(this),
-    disabled: saving(),
-  }"
-  [p-secondary-action]="{
-    label: common().cancel,
-    action: cancel.bind(this),
-  }"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
 >
   <form [formGroup]="form" class="po-row">
     <div class="po-md-12">

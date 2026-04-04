@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
@@ -10,6 +10,7 @@ import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoButtonModule,
   PoFieldModule,
+  PoModalAction,
   PoModalModule,
   PoNotificationService,
   PoPageModule,
@@ -48,10 +49,16 @@ export class AssignTechnicianComponent extends BaseModalComponent<
   readonly loading = signal(false);
   readonly technicians = signal<PoSelectOption[]>([]);
 
-  readonly closeAction = {
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: this.save.bind(this),
+    disabled: this.loading() || this.form.invalid,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
-  };
+    action: this.close.bind(this),
+  }));
 
   readonly form = this.formBuilder.nonNullable.group({
     technicianId: ['', [Validators.required]],
@@ -64,7 +71,7 @@ export class AssignTechnicianComponent extends BaseModalComponent<
     this.loadTechnicians();
   }
 
-  saveAssignTechnician(): void {
+  save(): void {
     this.form.markAllAsTouched();
 
     if (this.form.invalid) {

@@ -9,6 +9,7 @@ import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import {
   PoButtonModule,
   PoFieldModule,
+  PoModalAction,
   PoModalModule,
   PoNotificationService,
   PoPageModule,
@@ -44,10 +45,16 @@ export class CloseOrderComponent extends BaseModalComponent<
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
 
-  readonly closeAction = {
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: this.save.bind(this),
+    disabled: this.loading() || this.form.invalid,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
-  };
+    action: this.close.bind(this),
+  }));
 
   readonly form = this.formBuilder.nonNullable.group({
     executionResult: [1],
@@ -66,7 +73,7 @@ export class CloseOrderComponent extends BaseModalComponent<
     });
   }
 
-  saveClose(): void {
+  save(): void {
     const request: CloseOrderRequest = {
       executionResult: this.form.controls.executionResult.getRawValue(),
       executionNotes: this.form.controls.executionNotes.getRawValue(),

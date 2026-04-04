@@ -1,12 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CreateServiceRequest } from '@models/services/requests/create-service.request';
-import { PoFieldModule, PoModalModule, PoNotificationService } from '@po-ui/ng-components';
+import {
+  PoFieldModule,
+  PoModalAction,
+  PoModalModule,
+  PoNotificationService,
+} from '@po-ui/ng-components';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
 
@@ -25,7 +30,18 @@ export class CreateServiceComponent extends BaseModalComponent<void, { confirmed
   readonly literals = injectI18n(servicesLiterals);
   readonly common = injectI18n(commonLiterals);
 
-  readonly saving = signal(false);
+  readonly loading = signal(false);
+
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().save,
+    action: this.save.bind(this),
+    disabled: this.loading() || this.form.invalid,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
+    label: this.common().cancel,
+    action: this.close.bind(this),
+  }));
 
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
@@ -41,11 +57,11 @@ export class CreateServiceComponent extends BaseModalComponent<void, { confirmed
 
     const request = this.form.getRawValue() as CreateServiceRequest;
 
-    this.saving.set(true);
+    this.loading.set(true);
 
     this.servicesService
       .create(request)
-      .pipe(finalize(() => this.saving.set(false)))
+      .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.created);

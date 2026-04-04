@@ -38,16 +38,16 @@ export class CreateUserComponent extends BaseModalComponent<void, { confirmed: b
     password: ['', [Validators.required]],
   });
 
-  readonly saveCreateAction = computed<PoModalAction>(() => ({
+  readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.literals().modals.create.confirm,
     action: () => this.createUser(),
-    loading: this.loading(),
+    loading: this.loading() || this.form.invalid,
   }));
 
-  readonly cancelCreateAction = computed<PoModalAction>(() => ({
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
     loading: this.loading(),
+    action: this.close.bind(this),
   }));
 
   private createUser(): void {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
@@ -10,6 +10,7 @@ import { ServiceResponse } from '@models/services/responses/service.response';
 import {
   PoButtonModule,
   PoFieldModule,
+  PoModalAction,
   PoModalModule,
   PoPageModule,
   PoTableModule,
@@ -39,10 +40,10 @@ export class DetailOrderComponent extends BaseModalComponent<{ orderId: string }
   readonly loading = signal(false);
   readonly selectedOrder = signal<OrderDetailsResponse | null>(null);
 
-  readonly closeAction = {
+  readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().close,
-    action: () => this.close(),
-  };
+    action: this.close.bind(this),
+  }));
 
   ngOnInit(): void {
     this.openDetails(this.data!.orderId);

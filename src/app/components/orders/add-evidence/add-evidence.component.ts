@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
@@ -9,6 +9,7 @@ import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-ord
 import {
   PoButtonModule,
   PoFieldModule,
+  PoModalAction,
   PoModalModule,
   PoNotificationService,
   PoPageModule,
@@ -42,10 +43,16 @@ export class AddEvidenceComponent extends BaseModalComponent<
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
 
-  readonly closeAction = {
+  readonly primaryAction = computed<PoModalAction>(() => ({
+    label: this.common().send,
+    action: this.save.bind(this),
+    disabled: this.loading() || !this.selectedEvidenceFiles.length,
+  }));
+
+  readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
-    action: () => this.close(),
-  };
+    action: this.close.bind(this),
+  }));
 
   selectedEvidenceFiles: File[] = [];
 
@@ -58,7 +65,7 @@ export class AddEvidenceComponent extends BaseModalComponent<
     this.selectedEvidenceFiles = input.files ? Array.from(input.files) : [];
   }
 
-  saveEvidences(): void {
+  save(): void {
     if (this.selectedEvidenceFiles.length === 0) {
       return;
     }

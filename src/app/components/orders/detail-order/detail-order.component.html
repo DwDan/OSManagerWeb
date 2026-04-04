@@ -1,8 +1,8 @@
 <po-modal
   #modal
   [p-title]="literals().modals.details.title"
-  [p-primary-action]="closeAction"
-  (p-close)="closeAction.action()"
+  [p-primary-action]="primaryAction()"
+  (p-close)="close()"
 >
   @if (selectedOrder(); as order) {
     <div class="po-row">
