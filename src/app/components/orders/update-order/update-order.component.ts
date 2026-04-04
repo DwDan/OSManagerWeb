@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
+import { PostalCodeComponent } from '@components/shared/postal-code/postal-code.component';
 import { StateSelectComponent } from '@components/shared/state-select/state-select.component';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomerResponse } from '@models/customers/responses/customer.response';
+import { PostalCodeAddress } from '@models/locations/response/postal-code-address.response';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
 import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
 import { ServiceResponse } from '@models/services/responses/service.response';
@@ -36,6 +38,7 @@ import { finalize } from 'rxjs';
     PoButtonModule,
     StateSelectComponent,
     CitySelectComponent,
+    PostalCodeComponent,
   ],
 })
 export class UpdateOrderComponent extends BaseModalComponent<
@@ -133,6 +136,21 @@ export class UpdateOrderComponent extends BaseModalComponent<
           this.submit({ confirmed: true });
         },
       });
+  }
+
+  onAddressFound(address: PostalCodeAddress): void {
+    this.form.patchValue({
+      postalCode: address.postalCode,
+      street: address.street,
+      state: address.state,
+      city: address.city,
+      country: address.country,
+      complement: this.form.controls.complement.value || address.complement,
+    });
+  }
+
+  onAddressNotFound(): void {
+    this.poNotification.warning(this.literals().validations.invalidPostalCode);
   }
 
   private loadCustomers(): void {

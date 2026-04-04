@@ -32,7 +32,7 @@ export class CitySelectComponent implements ControlValueAccessor, OnChanges {
   private readonly locationsService = inject(LocationsService);
 
   @Input() state = '';
-  @Input() label = 'Cidade';
+  @Input() label = '';
 
   readonly loading = signal(false);
   readonly cities = signal<CityResponse[]>([]);

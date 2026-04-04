@@ -54,6 +54,9 @@ export const customersLiterals = defineI18n({
       created: 'Cliente criado com sucesso.',
       updated: 'Cliente atualizado com sucesso.',
     },
+    validations: {
+      invalidPostalCode: 'CEP inválido',
+    },
   },
   enUS: {
     title: 'Customers',
@@ -107,6 +110,9 @@ export const customersLiterals = defineI18n({
     notifications: {
       created: 'Customer created successfully.',
       updated: 'Customer updated successfully.',
+    },
+    validations: {
+      invalidPostalCode: 'Invalid postal code',
     },
   },
 });

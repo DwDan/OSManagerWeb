@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, forwardRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, forwardRef, inject, Input, OnInit, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { StateResponse } from '@models/locations/response/state.response';
 import { PoFieldModule, PoSelectOption } from '@po-ui/ng-components';
@@ -21,6 +21,8 @@ import { finalize } from 'rxjs';
 })
 export class StateSelectComponent implements ControlValueAccessor, OnInit {
   private readonly locationsService = inject(LocationsService);
+
+  @Input() label = '';
 
   readonly loading = signal(false);
   readonly states = signal<StateResponse[]>([]);

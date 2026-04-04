@@ -1,0 +1,10 @@
+<po-input
+  name="postalcode"
+  [p-label]="label"
+  [p-mask]="'99999-999'"
+  [p-disabled]="disabledStr"
+  [ngModel]="value"
+  (ngModelChange)="handleChange($event)"
+  (p-blur)="handleBlur()"
+>
+</po-input>

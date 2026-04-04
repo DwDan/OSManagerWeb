@@ -90,6 +90,9 @@ export const ordersLiterals = defineI18n({
       canceled: 'Ordem cancelada com sucesso.',
       evidencesSent: 'Evidências enviadas com sucesso.',
     },
+    validations: {
+      invalidPostalCode: 'CEP inválido',
+    },
   },
   enUS: {
     title: 'Service Orders',
@@ -179,6 +182,9 @@ export const ordersLiterals = defineI18n({
       closed: 'Order closed successfully.',
       canceled: 'Order canceled successfully.',
       evidencesSent: 'Evidences sent successfully.',
+    },
+    validations: {
+      invalidPostalCode: 'Invalid postal code',
     },
   },
 });

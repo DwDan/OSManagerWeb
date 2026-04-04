@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
+import { PostalCodeComponent } from '@components/shared/postal-code/postal-code.component';
 import { StateSelectComponent } from '@components/shared/state-select/state-select.component';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { UpdateCustomerRequest } from '@models/customers/requests/update-customer.request';
+import { PostalCodeAddress } from '@models/locations/response/postal-code-address.response';
 import { PoFieldModule, PoModalModule, PoNotificationService } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { finalize } from 'rxjs';
@@ -24,6 +26,7 @@ import { finalize } from 'rxjs';
     PoModalModule,
     StateSelectComponent,
     CitySelectComponent,
+    PostalCodeComponent,
   ],
 })
 export class UpdateCustomerComponent
@@ -81,6 +84,21 @@ export class UpdateCustomerComponent
 
   cancel(): void {
     this.close();
+  }
+
+  onAddressFound(address: PostalCodeAddress): void {
+    this.form.patchValue({
+      postalCode: address.postalCode,
+      street: address.street,
+      state: address.state,
+      city: address.city,
+      country: address.country,
+      complement: this.form.controls.complement.value || address.complement,
+    });
+  }
+
+  onAddressNotFound(): void {
+    this.poNotification.warning(this.literals().validations.invalidPostalCode);
   }
 
   private loadCustomer(): void {
