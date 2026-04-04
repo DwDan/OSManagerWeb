@@ -40,6 +40,11 @@ export const routes: Routes = [
           import('./components/customers/customers.component').then((m) => m.CustomersComponent),
       },
       {
+        path: 'services',
+        loadComponent: () =>
+          import('./components/services/services.component').then((m) => m.ServicesComponent),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./components/auth/change-password/change-password.component').then(

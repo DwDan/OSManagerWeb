@@ -72,6 +72,12 @@ export class HomeComponent implements OnInit {
       shortLabel: this.literals().menu.customersShort,
       link: '/customers',
     },
+    {
+      label: this.literals().menu.services,
+      icon: 'an an-wrench',
+      shortLabel: this.literals().menu.servicesShort,
+      link: '/services',
+    },
   ]);
 
   ngOnInit(): void {
