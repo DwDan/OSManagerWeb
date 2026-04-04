@@ -1,3 +1,4 @@
+import { ExecutionResult } from '../types/execution-result.enum';
 import { OrderStatus } from '../types/order-status.enum';
 
 export interface OrderListItemResponse {
@@ -6,7 +7,7 @@ export interface OrderListItemResponse {
   customerName: string;
   technicianName: string;
   status: OrderStatus;
-  executionResult: string;
+  executionResult?: ExecutionResult;
   city: string;
   state: string;
 }

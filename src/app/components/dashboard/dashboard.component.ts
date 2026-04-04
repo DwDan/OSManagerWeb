@@ -49,8 +49,8 @@ export class DashboardComponent {
   ]);
 
   items = computed(() => [
-    { id: 1, cliente: 'João', status: this.literals().statuses.open },
-    { id: 2, cliente: 'Maria', status: this.literals().statuses.closed },
-    { id: 3, cliente: 'Pedro', status: this.literals().statuses.inProgress },
+    { id: 1, cliente: 'João', status: this.literals().status.open },
+    { id: 2, cliente: 'Maria', status: this.literals().status.closed },
+    { id: 3, cliente: 'Pedro', status: this.literals().status.inProgress },
   ]);
 }

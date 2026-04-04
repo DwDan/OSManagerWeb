@@ -26,7 +26,7 @@ export const dashboardLiterals = defineI18n({
       customer: 'Cliente',
       status: 'Status',
     },
-    statuses: {
+    status: {
       open: 'Aberta',
       closed: 'Finalizada',
       inProgress: 'Em andamento',
@@ -57,7 +57,7 @@ export const dashboardLiterals = defineI18n({
       customer: 'Customer',
       status: 'Status',
     },
-    statuses: {
+    status: {
       open: 'Open',
       closed: 'Closed',
       inProgress: 'In progress',

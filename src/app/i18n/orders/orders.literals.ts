@@ -93,6 +93,13 @@ export const ordersLiterals = defineI18n({
     validations: {
       invalidPostalCode: 'CEP inválido',
     },
+    status: {
+      Pending: 'Pendente',
+      Open: 'Aberta',
+      InProgress: 'Em execução',
+      Closed: 'Finalizada',
+      Canceled: 'Cancelada',
+    },
   },
   enUS: {
     title: 'Service Orders',
@@ -185,6 +192,13 @@ export const ordersLiterals = defineI18n({
     },
     validations: {
       invalidPostalCode: 'Invalid postal code',
+    },
+    status: {
+      Pending: 'Pending',
+      Open: 'Open',
+      InProgress: 'In progress',
+      Closed: 'Closed',
+      Canceled: 'Canceled',
     },
   },
 });

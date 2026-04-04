@@ -113,8 +113,62 @@ export class OrdersComponent implements OnInit {
     { property: 'code', label: this.literals().columns.code },
     { property: 'customerName', label: this.literals().columns.customer },
     { property: 'technicianName', label: this.literals().columns.technician },
-    { property: 'status', label: this.literals().columns.status },
-    { property: 'executionResult', label: this.literals().columns.result },
+    {
+      property: 'status',
+      label: this.literals().columns.status,
+      type: 'label',
+      labels: [
+        {
+          value: 'Pending',
+          color: 'color-07',
+          label: this.literals().status.Pending,
+          icon: 'an an-clock',
+        },
+        {
+          value: 'Open',
+          color: 'color-10',
+          label: this.literals().status.Open,
+          icon: 'an an-folder-open',
+        },
+        {
+          value: 'InProgress',
+          color: 'color-08',
+          label: this.literals().status.InProgress,
+          icon: 'an an-gear',
+        },
+        {
+          value: 'Closed',
+          color: 'color-12',
+          label: this.literals().status.Closed,
+          icon: 'an an-check',
+        },
+        {
+          value: 'Canceled',
+          color: 'color-01',
+          label: this.literals().status.Canceled,
+          icon: 'an an-x',
+        },
+      ],
+    },
+    {
+      property: 'executionResult',
+      label: this.literals().columns.result,
+      type: 'label',
+      labels: [
+        {
+          value: 'Successful',
+          color: 'color-12',
+          label: this.literals().executionResult.success,
+          icon: 'an an-check',
+        },
+        {
+          value: 'Unsuccessful',
+          color: 'color-01',
+          label: this.literals().executionResult.failure,
+          icon: 'an an-x',
+        },
+      ],
+    },
     { property: 'city', label: this.literals().columns.city },
     { property: 'state', label: this.literals().columns.state },
   ]);
@@ -233,7 +287,7 @@ export class OrdersComponent implements OnInit {
       customerName: order.customer.name,
       technicianName: order.technician?.name ?? this.common().notInformed,
       status: order.status,
-      executionResult: order.executionResult ?? this.common().notInformed,
+      executionResult: order.executionResult,
       city: order.address.city,
       state: order.address.state,
     };
