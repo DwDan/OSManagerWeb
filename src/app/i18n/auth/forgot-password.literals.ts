@@ -13,6 +13,7 @@ export const forgotPasswordLiterals = defineI18n({
     successMessage:
       'Se o e-mail informado estiver cadastrado, você receberá as instruções para redefinir sua senha.',
     invalidEmail: 'Informe um e-mail válido.',
+    supportEmail: 'support@osmanager.com.br',
   },
   enUS: {
     title: 'Forgot my password',
@@ -26,5 +27,6 @@ export const forgotPasswordLiterals = defineI18n({
     successMessage:
       'If the provided email is registered, you will receive instructions to reset your password.',
     invalidEmail: 'Enter a valid email address.',
+    supportEmail: 'support@osmanager.com.br',
   },
 });

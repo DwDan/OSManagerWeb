@@ -1,0 +1,42 @@
+<po-modal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="{
+    label: common().close,
+    action: closeModal.bind(this),
+  }"
+>
+  @if (customer(); as customerData) {
+    <div class="po-row">
+      <div class="po-md-12">
+        <strong>{{ literals().details.customer }}:</strong> {{ customerData.name }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.email }}:</strong>
+        {{ customerData.email || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.phone }}:</strong>
+        {{ customerData.phone || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.address }}:</strong>
+        {{ customerData.address.street }}, {{ customerData.address.number }} -
+        {{ customerData.address.city }}/{{ customerData.address.state }} -
+        {{ customerData.address.country }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.complement }}:</strong>
+        {{ customerData.address.complement || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.reference }}:</strong>
+        {{ customerData.address.reference || common().notInformed }}
+      </div>
+    </div>
+  }
+</po-modal>

@@ -1,21 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, inject, signal } from '@angular/core';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { usersLiterals } from '@i18n/users/users.literals';
-import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
-import { CreateUserRequest } from '@models/users/requests/create-user.request';
-import { UpdateUserRequest } from '@models/users/requests/update-user.request';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
-  PoButtonModule,
   PoDialogService,
-  PoFieldModule,
-  PoModalAction,
-  PoModalComponent,
-  PoModalModule,
-  PoNotificationService,
   PoPageAction,
   PoPageModule,
   PoSelectOption,
@@ -25,33 +15,23 @@ import {
   PoTableModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
+import { ModalService } from '@services/modal/modal.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { ChangeUserRoleComponent } from './change-user-role/change-user-role.component';
+import { CreateUserComponent } from './create-user/create-user.component';
+import { UpdateUserComponent } from './update-user/update-user.component';
 
 @Component({
   selector: 'app-usuarios',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    PoTableModule,
-    PoWidgetModule,
-    PoModalModule,
-    PoButtonModule,
-    PoFieldModule,
-    PoPageModule,
-  ],
+  imports: [CommonModule, PoTableModule, PoWidgetModule, PoPageModule],
 })
 export class UsersComponent {
-  @ViewChild('createUserModal', { static: true }) createUserModal!: PoModalComponent;
-  @ViewChild('editUserModal', { static: true }) editUserModal!: PoModalComponent;
-  @ViewChild('changeRoleModal', { static: true }) changeRoleModal!: PoModalComponent;
-
   private readonly service = inject(UsersService);
-  private readonly notification = inject(PoNotificationService);
   private readonly dialog = inject(PoDialogService);
-  private readonly formBuilder = inject(FormBuilder);
+  private readonly modalService = inject(ModalService);
 
   readonly literals = injectI18n(usersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -59,24 +39,6 @@ export class UsersComponent {
   readonly items = signal<UserResponse[]>([]);
   readonly loading = signal(false);
   readonly spacing = PoTableColumnSpacing;
-
-  readonly selectedUser = signal<UserResponse | null>(null);
-
-  readonly createForm = this.formBuilder.nonNullable.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required]],
-  });
-
-  readonly editForm = this.formBuilder.nonNullable.group({
-    firstName: ['', [Validators.required]],
-    lastName: ['', [Validators.required]],
-  });
-
-  readonly changeRoleForm = this.formBuilder.nonNullable.group({
-    role: [2],
-  });
 
   readonly roleOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().roles.administrator, value: 1 },
@@ -121,7 +83,7 @@ export class UsersComponent {
   readonly tableActions = computed<PoTableAction[]>(() => [
     {
       label: this.literals().tableActions.edit,
-      action: (user: UserResponse) => this.openEditModal(user),
+      action: (user: UserResponse) => this.openUpdateModal(user),
     },
     {
       label: this.literals().tableActions.changeRole,
@@ -149,84 +111,32 @@ export class UsersComponent {
     },
   ]);
 
-  readonly saveCreateAction = computed<PoModalAction>(() => ({
-    label: this.literals().modals.create.confirm,
-    action: () => this.createUser(),
-    loading: this.loading(),
-  }));
-
-  readonly cancelCreateAction = computed<PoModalAction>(() => ({
-    label: this.common().cancel,
-    action: () => this.createUserModal.close(),
-    loading: this.loading(),
-  }));
-
-  readonly saveEditAction = computed<PoModalAction>(() => ({
-    label: this.common().save,
-    action: () => this.updateUser(),
-    loading: this.loading(),
-  }));
-
-  readonly cancelEditAction = computed<PoModalAction>(() => ({
-    label: this.common().cancel,
-    action: () => this.editUserModal.close(),
-    loading: this.loading(),
-  }));
-
-  readonly saveRoleAction = computed<PoModalAction>(() => ({
-    label: this.common().save,
-    action: () => this.changeRole(),
-    loading: this.loading(),
-  }));
-
-  readonly cancelRoleAction = computed<PoModalAction>(() => ({
-    label: this.common().cancel,
-    action: () => this.changeRoleModal.close(),
-    loading: this.loading(),
-  }));
-
   ngOnInit(): void {
     this.loadUsers();
   }
 
   openCreateModal(): void {
-    this.createForm.reset({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
+    this.modalService.open(CreateUserComponent).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadUsers();
+      }
     });
-
-    this.createUserModal.open();
   }
 
-  private createUser(): void {
-    this.createForm.markAllAsTouched();
+  openUpdateModal(user: UserResponse): void {
+    this.modalService.open(UpdateUserComponent, { user }).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadUsers();
+      }
+    });
+  }
 
-    if (this.createForm.invalid) {
-      this.notification.warning(this.literals().validations.fillAllFieldsToCreate);
-      return;
-    }
-
-    const request: CreateUserRequest = {
-      firstName: this.createForm.controls.firstName.getRawValue(),
-      lastName: this.createForm.controls.lastName.getRawValue(),
-      email: this.createForm.controls.email.getRawValue(),
-      password: this.createForm.controls.password.getRawValue(),
-    };
-
-    this.loading.set(true);
-
-    this.service
-      .create(request)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: () => {
-          this.notification.success(this.literals().notifications.created);
-          this.createUserModal.close();
-          this.loadUsers();
-        },
-      });
+  openChangeRoleModal(user: UserResponse): void {
+    this.modalService.open(ChangeUserRoleComponent, { user }).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadUsers();
+      }
+    });
   }
 
   private loadUsers(): void {
@@ -238,86 +148,6 @@ export class UsersComponent {
       .subscribe({
         next: (users) => {
           this.items.set(users);
-        },
-      });
-  }
-
-  openEditModal(user: UserResponse): void {
-    this.selectedUser.set(user);
-
-    this.editForm.reset({
-      firstName: user.firstName,
-      lastName: user.lastName,
-    });
-
-    this.editUserModal.open();
-  }
-
-  private updateUser(): void {
-    const user = this.selectedUser();
-
-    if (!user) {
-      return;
-    }
-
-    this.editForm.markAllAsTouched();
-
-    if (this.editForm.invalid) {
-      return;
-    }
-
-    const request: UpdateUserRequest = {
-      firstName: this.editForm.controls.firstName.getRawValue(),
-      lastName: this.editForm.controls.lastName.getRawValue(),
-    };
-
-    this.loading.set(true);
-
-    this.service
-      .update(user.id, request)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: () => {
-          this.notification.success(this.literals().notifications.updated);
-          this.editUserModal.close();
-          this.loadUsers();
-        },
-      });
-  }
-
-  openChangeRoleModal(user: UserResponse): void {
-    this.selectedUser.set(user);
-
-    this.changeRoleForm.reset({
-      role: Number(user.role) || 2,
-    });
-
-    this.changeRoleModal.open();
-  }
-
-  private changeRole(): void {
-    const user = this.selectedUser();
-
-    if (!user) {
-      return;
-    }
-
-    const roleValue = this.changeRoleForm.controls.role.getRawValue();
-
-    const request: ChangeUserRoleRequest = {
-      role: roleValue === 1 ? 'Admin' : 'Technician',
-    };
-
-    this.loading.set(true);
-
-    this.service
-      .changeRole(user.id, request)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: () => {
-          this.notification.success(this.literals().notifications.roleChanged);
-          this.changeRoleModal.close();
-          this.loadUsers();
         },
       });
   }
@@ -336,7 +166,6 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success(this.literals().notifications.activated);
               this.loadUsers();
             },
           });
@@ -358,7 +187,6 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success(this.literals().notifications.deactivated);
               this.loadUsers();
             },
           });
@@ -380,7 +208,6 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success(this.literals().notifications.deleted);
               this.loadUsers();
             },
           });
@@ -402,7 +229,6 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.notification.success(this.literals().notifications.emailConfirmationResent);
               this.loadUsers();
             },
           });

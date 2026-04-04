@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -16,6 +16,7 @@ import {
   PoSelectOption,
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
+import { ModalService } from '@services/modal/modal.service';
 import { finalize, map, startWith } from 'rxjs';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
@@ -24,23 +25,14 @@ import { ForgotPasswordComponent } from '../forgot-password/forgot-password.comp
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    PoFieldModule,
-    PoButtonModule,
-    PoCheckboxModule,
-    ForgotPasswordComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, PoFieldModule, PoButtonModule, PoCheckboxModule],
 })
 export class LoginComponent {
-  @ViewChild('forgotPassword')
-  forgotPassword!: ForgotPasswordComponent;
-
   private readonly authenticationService = inject(AuthenticationService);
   private readonly i18nStore = inject(I18nStore);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly modalService = inject(ModalService);
 
   readonly literals = injectI18n(loginLiterals);
   readonly submitType = PoButtonType.Submit;
@@ -99,7 +91,7 @@ export class LoginComponent {
   }
 
   openForgotPasswordModal(): void {
-    this.forgotPassword.open();
+    this.modalService.open(ForgotPasswordComponent, {});
   }
 
   login(): void {

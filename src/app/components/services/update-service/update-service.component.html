@@ -1,0 +1,42 @@
+<po-modal
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: save.bind(this),
+    disabled: saving() || loading(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: cancel.bind(this),
+  }"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-12">
+      <po-input
+        name="editClient"
+        [p-label]="literals().fields.service"
+        formControlName="name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-decimal
+        name="editAmountToReceive"
+        [p-label]="literals().fields.amountToReceive"
+        [p-thousand-maxlength]="10"
+        [p-decimals-length]="2"
+        formControlName="amountToReceive"
+      ></po-decimal>
+    </div>
+
+    <div class="po-md-6">
+      <po-decimal
+        name="editAmountToPay"
+        [p-label]="literals().fields.amountToPay"
+        [p-thousand-maxlength]="10"
+        [p-decimals-length]="2"
+        formControlName="amountToPay"
+      ></po-decimal>
+    </div>
+  </form>
+</po-modal>

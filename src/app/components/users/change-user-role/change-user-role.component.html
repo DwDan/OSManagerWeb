@@ -1,0 +1,19 @@
+<po-modal
+  [p-title]="literals().modals.changeRole.title"
+  [p-primary-action]="saveRoleAction()"
+  [p-secondary-action]="cancelRoleAction()"
+>
+  <form [formGroup]="form">
+    <div class="po-row">
+      <div class="po-md-12">
+        <po-select
+          name="role"
+          [p-label]="literals().fields.role"
+          [p-options]="roleOptions()"
+          formControlName="role"
+        >
+        </po-select>
+      </div>
+    </div>
+  </form>
+</po-modal>

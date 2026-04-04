@@ -1,20 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
-import { CreateCustomerRequest } from '@models/customers/requests/create-customer.request';
-import { UpdateCustomerRequest } from '@models/customers/requests/update-customer.request';
-import { CustomerDetailsResponse } from '@models/customers/responses/customer-details.response';
 import { CustomerListItemResponse } from '@models/customers/responses/customer-list-item.response';
 import { CustomerResponse } from '@models/customers/responses/customer.response';
 import {
-  PoButtonModule,
-  PoFieldModule,
-  PoModalComponent,
-  PoModalModule,
-  PoNotificationService,
   PoPageAction,
   PoPageModule,
   PoTableAction,
@@ -23,30 +14,21 @@ import {
   PoTableModule,
 } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
+import { ModalService } from '@services/modal/modal.service';
 import { finalize } from 'rxjs';
+import { CreateCustomerComponent } from './create-customer/create-customer.component';
+import { DetailCustomerComponent } from './detail-customer/detail-customer.component';
+import { UpdateCustomerComponent } from './update-customer/update-customer.component';
 
 @Component({
   selector: 'app-customers',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    PoTableModule,
-    PoPageModule,
-    PoModalModule,
-    PoFieldModule,
-    PoButtonModule,
-  ],
+  imports: [CommonModule, PoTableModule, PoPageModule],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
 })
 export class CustomersComponent implements OnInit {
-  @ViewChild('createModal', { static: true }) createModal!: PoModalComponent;
-  @ViewChild('editModal', { static: true }) editModal!: PoModalComponent;
-  @ViewChild('detailsModal', { static: true }) detailsModal!: PoModalComponent;
-
   private readonly customersService = inject(CustomersService);
-  private readonly poNotification = inject(PoNotificationService);
-  private readonly formBuilder = inject(FormBuilder);
+  private readonly modalService = inject(ModalService);
 
   readonly literals = injectI18n(customersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -54,13 +36,7 @@ export class CustomersComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
-  readonly saving = signal(false);
   readonly items = signal<CustomerListItemResponse[]>([]);
-  readonly selectedCustomer = signal<CustomerDetailsResponse | null>(null);
-  readonly selectedCustomerId = signal<string | null>(null);
-
-  readonly createForm = this.buildCustomerForm();
-  readonly editForm = this.buildCustomerForm();
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -97,99 +73,23 @@ export class CustomersComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.createForm.reset(this.createEmptyCustomerForm());
-    this.createModal.open();
-  }
-
-  saveCreate(): void {
-    if (this.createForm.invalid) {
-      this.createForm.markAllAsTouched();
-      return;
-    }
-
-    const request = this.createForm.getRawValue() as CreateCustomerRequest;
-
-    this.saving.set(true);
-
-    this.customersService
-      .create(request)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.created);
-          this.createModal.close();
-          this.loadCustomers();
-        },
-      });
+    this.modalService.open(CreateCustomerComponent).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadCustomers();
+      }
+    });
   }
 
   openEditModal(id: string): void {
-    this.saving.set(true);
-
-    this.customersService
-      .getById(id)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: (customer) => {
-          this.selectedCustomerId.set(id);
-          this.editForm.reset({
-            name: customer.name,
-            phone: customer.phone,
-            email: customer.email,
-            postalCode: customer.address.postalCode,
-            street: customer.address.street,
-            number: customer.address.number,
-            city: customer.address.city,
-            state: customer.address.state,
-            country: customer.address.country,
-            complement: customer.address.complement ?? '',
-            reference: customer.address.reference ?? '',
-          });
-          this.editModal.open();
-        },
-      });
-  }
-
-  saveEdit(): void {
-    const id = this.selectedCustomerId();
-
-    if (!id) {
-      return;
-    }
-
-    if (this.editForm.invalid) {
-      this.editForm.markAllAsTouched();
-      return;
-    }
-
-    const request = this.editForm.getRawValue() as UpdateCustomerRequest;
-
-    this.saving.set(true);
-
-    this.customersService
-      .update(id, request)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: () => {
-          this.poNotification.success(this.literals().notifications.updated);
-          this.editModal.close();
-          this.loadCustomers();
-        },
-      });
+    this.modalService.open(UpdateCustomerComponent, { customerId: id }).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadCustomers();
+      }
+    });
   }
 
   openDetails(id: string): void {
-    this.saving.set(true);
-
-    this.customersService
-      .getById(id)
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: (customer) => {
-          this.selectedCustomer.set(customer);
-          this.detailsModal.open();
-        },
-      });
+    this.modalService.open(DetailCustomerComponent, { customerId: id });
   }
 
   private loadCustomers(): void {
@@ -213,38 +113,6 @@ export class CustomersComponent implements OnInit {
       phone: customer.phone,
       city: customer.address.city,
       state: customer.address.state,
-    };
-  }
-
-  private buildCustomerForm() {
-    return this.formBuilder.nonNullable.group({
-      name: ['', [Validators.required]],
-      phone: [''],
-      email: [''],
-      postalCode: [''],
-      street: ['', [Validators.required]],
-      number: [''],
-      city: ['', [Validators.required]],
-      state: ['', [Validators.required]],
-      country: ['Brasil', [Validators.required]],
-      complement: [''],
-      reference: [''],
-    });
-  }
-
-  private createEmptyCustomerForm(): CreateCustomerRequest {
-    return {
-      name: '',
-      phone: '',
-      email: '',
-      postalCode: '',
-      street: '',
-      number: '',
-      city: '',
-      state: '',
-      country: 'Brasil',
-      complement: '',
-      reference: '',
     };
   }
 }

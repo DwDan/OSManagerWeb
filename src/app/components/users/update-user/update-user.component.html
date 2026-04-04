@@ -1,0 +1,23 @@
+<po-modal
+  [p-title]="literals().modals.edit.title"
+  [p-primary-action]="saveUpdateAction()"
+  [p-secondary-action]="cancelUpdateAction()"
+>
+  <form [formGroup]="form">
+    <div class="po-row">
+      <div class="po-md-6">
+        <po-input
+          name="firstName"
+          [p-label]="literals().fields.firstName"
+          formControlName="firstName"
+        >
+        </po-input>
+      </div>
+
+      <div class="po-md-6">
+        <po-input name="lastName" [p-label]="literals().fields.lastName" formControlName="lastName">
+        </po-input>
+      </div>
+    </div>
+  </form>
+</po-modal>

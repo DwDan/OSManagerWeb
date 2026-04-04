@@ -1,0 +1,33 @@
+<po-modal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="{
+    label: common().close,
+    action: closeModal.bind(this),
+  }"
+>
+  @if (service(); as serviceData) {
+    <div class="po-row">
+      <div class="po-md-12">
+        <strong>{{ literals().details.service }}:</strong> {{ serviceData.name }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.amountToReceive }}:</strong>
+        {{
+          serviceData.amountToReceive != null
+            ? (serviceData.amountToReceive | currency: 'BRL' : 'symbol' : '1.2-2')
+            : common().notInformed
+        }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.amountToPay }}:</strong>
+        {{
+          serviceData.amountToPay != null
+            ? (serviceData.amountToPay | currency: 'BRL' : 'symbol' : '1.2-2')
+            : common().notInformed
+        }}
+      </div>
+    </div>
+  }
+</po-modal>
