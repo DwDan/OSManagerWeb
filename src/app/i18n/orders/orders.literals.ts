@@ -28,6 +28,8 @@ export const ordersLiterals = defineI18n({
     },
     fields: {
       customer: 'Cliente',
+      services: 'Serviços',
+      phServices: 'Selecione os serviços',
       postalCode: 'CEP',
       street: 'Rua',
       number: 'Número',
@@ -63,6 +65,7 @@ export const ordersLiterals = defineI18n({
     details: {
       code: 'Código',
       customer: 'Cliente',
+      services: 'Serviços',
       status: 'Status',
       result: 'Resultado',
       technician: 'Técnico',
@@ -115,6 +118,8 @@ export const ordersLiterals = defineI18n({
     },
     fields: {
       customer: 'Customer',
+      services: 'Serviços',
+      phServices: 'Select services',
       postalCode: 'Postal code',
       street: 'Street',
       number: 'Number',
@@ -150,6 +155,7 @@ export const ordersLiterals = defineI18n({
     details: {
       code: 'Code',
       customer: 'Customer',
+      services: 'Services',
       status: 'Status',
       result: 'Result',
       technician: 'Technician',

@@ -13,12 +13,14 @@ import { OrderDetailsResponse } from '@models/orders/responses/order-details.res
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
 import { OrderResponse } from '@models/orders/responses/order.response';
 import { OrderStatus } from '@models/orders/types/order-status.enum';
+import { ServiceResponse } from '@models/services/responses/service.response';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoButtonModule,
   PoFieldModule,
   PoModalComponent,
   PoModalModule,
+  PoMultiselectOption,
   PoNotificationService,
   PoPageAction,
   PoPageModule,
@@ -30,6 +32,7 @@ import {
 } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { OrdersService } from '@services/orders/orders.service';
+import { ServicesService } from '@services/services/services.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
 
@@ -59,6 +62,7 @@ export class OrdersComponent implements OnInit {
   private readonly usersService = inject(UsersService);
   private readonly poNotification = inject(PoNotificationService);
   private readonly customersService = inject(CustomersService);
+  private readonly servicesService = inject(ServicesService);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -73,6 +77,7 @@ export class OrdersComponent implements OnInit {
 
   readonly technicians = signal<PoSelectOption[]>([]);
   readonly customers = signal<PoSelectOption[]>([]);
+  readonly services = signal<PoMultiselectOption[]>([]);
 
   readonly executionResultOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().executionResult.success, value: 1 },
@@ -161,6 +166,7 @@ export class OrdersComponent implements OnInit {
     this.loadOrders();
     this.loadTechnicians();
     this.loadCustomers();
+    this.loadServices();
   }
 
   openCreateModal(): void {
@@ -194,6 +200,7 @@ export class OrdersComponent implements OnInit {
           this.selectedOrderId.set(id);
           this.editForm = {
             customerId: order.customer.id,
+            services: order.services?.map((x) => x.id) ?? [],
             postalCode: order.address.postalCode,
             street: order.address.street,
             number: order.address.number,
@@ -427,6 +434,19 @@ export class OrdersComponent implements OnInit {
     });
   }
 
+  private loadServices(): void {
+    this.servicesService.getServices().subscribe({
+      next: (services: ServiceResponse[]) => {
+        this.services.set(
+          services.map((service) => ({
+            label: service.name,
+            value: service.id,
+          })),
+        );
+      },
+    });
+  }
+
   private mapOrderToListItem(order: OrderResponse): OrderListItemResponse {
     return {
       id: order.id,
@@ -443,6 +463,7 @@ export class OrdersComponent implements OnInit {
   private createEmptyOrderForm(): CreateOrderRequest {
     return {
       customerId: '',
+      services: [],
       postalCode: '',
       street: '',
       number: '',
@@ -452,5 +473,13 @@ export class OrdersComponent implements OnInit {
       complement: '',
       reference: '',
     };
+  }
+
+  getServiceNames(services?: ServiceResponse[] | null): string {
+    if (!services?.length) {
+      return '';
+    }
+
+    return services.map((service) => service.name).join(', ');
   }
 }

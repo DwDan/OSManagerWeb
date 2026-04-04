@@ -1,5 +1,6 @@
 export interface CreateOrderRequest {
   customerId: string;
+  services: string[];
   postalCode: string;
   street: string;
   number: string;

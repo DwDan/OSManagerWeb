@@ -38,6 +38,16 @@
       ></po-select>
     </div>
 
+    <div class="po-md-12">
+      <po-multiselect
+        name="createServices"
+        [p-label]="literals().fields.services"
+        [p-placeholder]="literals().fields.phServices"
+        [p-options]="services()"
+        [(ngModel)]="createForm.services"
+      ></po-multiselect>
+    </div>
+
     <div class="po-md-4">
       <po-input
         name="createPostalCode"
@@ -120,12 +130,22 @@
   <div class="po-row">
     <div class="po-md-12">
       <po-select
-        name="createClient"
+        name="editClient"
         [p-label]="literals().fields.customer"
         [p-options]="customers()"
         [ngModel]="editForm.customerId"
         (ngModelChange)="editForm.customerId = $event"
       ></po-select>
+    </div>
+
+    <div class="po-md-12">
+      <po-multiselect
+        name="editServices"
+        [p-label]="literals().fields.services"
+        [p-placeholder]="literals().fields.phServices"
+        [p-options]="services()"
+        [(ngModel)]="editForm.services"
+      ></po-multiselect>
     </div>
 
     <div class="po-md-4">
@@ -293,6 +313,11 @@
 
       <div class="po-md-8">
         <strong>{{ literals().details.customer }}:</strong> {{ order.customer.name }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.services }}:</strong>
+        {{ getServiceNames(order?.services) }}
       </div>
 
       <div class="po-md-4">
