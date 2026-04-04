@@ -54,19 +54,11 @@
     </div>
 
     <div class="po-md-4">
-      <po-input
-        name="editCity"
-        [p-label]="literals().fields.city"
-        formControlName="city"
-      ></po-input>
+      <app-state-select formControlName="state"></app-state-select>
     </div>
 
     <div class="po-md-4">
-      <po-input
-        name="editState"
-        [p-label]="literals().fields.state"
-        formControlName="state"
-      ></po-input>
+      <app-city-select [state]="form.controls.state.value" formControlName="city"></app-city-select>
     </div>
 
     <div class="po-md-4">

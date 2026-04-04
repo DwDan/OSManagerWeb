@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
+import { StateSelectComponent } from '@components/shared/state-select/state-select.component';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -26,7 +28,15 @@ import { finalize } from 'rxjs';
   selector: 'app-update-order',
   templateUrl: './update-order.component.html',
   styleUrl: './update-order.component.scss',
-  imports: [CommonModule, ReactiveFormsModule, PoModalModule, PoFieldModule, PoButtonModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PoModalModule,
+    PoFieldModule,
+    PoButtonModule,
+    StateSelectComponent,
+    CitySelectComponent,
+  ],
 })
 export class UpdateOrderComponent extends BaseModalComponent<
   { orderId: string },

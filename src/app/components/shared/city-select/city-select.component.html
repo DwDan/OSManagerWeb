@@ -1,0 +1,9 @@
+<po-select
+  name="city"
+  [p-label]="label"
+  [p-options]="options()"
+  [ngModel]="value"
+  [p-disabled]="disabled || !state"
+  (ngModelChange)="handleChange($event)"
+>
+</po-select>

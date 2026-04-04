@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
+import { StateSelectComponent } from '@components/shared/state-select/state-select.component';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
@@ -15,7 +17,14 @@ import { finalize } from 'rxjs';
   templateUrl: './create-customer.component.html',
   styleUrls: ['./create-customer.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PoFieldModule, PoModalModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    PoFieldModule,
+    PoModalModule,
+    StateSelectComponent,
+    CitySelectComponent,
+  ],
 })
 export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed: boolean }> {
   private readonly customersService = inject(CustomersService);
