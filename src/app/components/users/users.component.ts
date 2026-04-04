@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { usersLiterals } from '@i18n/users/users.literals';
@@ -8,7 +8,6 @@ import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.r
 import { CreateUserRequest } from '@models/users/requests/create-user.request';
 import { UpdateUserRequest } from '@models/users/requests/update-user.request';
 import { UserResponse } from '@models/users/responses/user.response';
-import { UserRole } from '@models/users/types/user-role.type';
 import {
   PoButtonModule,
   PoDialogService,
@@ -35,7 +34,7 @@ import { finalize } from 'rxjs';
   styleUrl: './users.component.scss',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoTableModule,
     PoWidgetModule,
     PoModalModule,
@@ -52,29 +51,32 @@ export class UsersComponent {
   private readonly service = inject(UsersService);
   private readonly notification = inject(PoNotificationService);
   private readonly dialog = inject(PoDialogService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(usersLiterals);
   readonly common = injectI18n(commonLiterals);
 
-  items = signal<UserResponse[]>([]);
-  loading = signal(false);
-  spacing = PoTableColumnSpacing;
+  readonly items = signal<UserResponse[]>([]);
+  readonly loading = signal(false);
+  readonly spacing = PoTableColumnSpacing;
 
-  selectedUser = signal<UserResponse | null>(null);
+  readonly selectedUser = signal<UserResponse | null>(null);
 
-  createForm: CreateUserRequest = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-  };
+  readonly createForm = this.formBuilder.nonNullable.group({
+    firstName: ['', [Validators.required]],
+    lastName: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+  });
 
-  editForm: UpdateUserRequest = {
-    firstName: '',
-    lastName: '',
-  };
+  readonly editForm = this.formBuilder.nonNullable.group({
+    firstName: ['', [Validators.required]],
+    lastName: ['', [Validators.required]],
+  });
 
-  selectedRole: UserRole = 'Technician';
+  readonly changeRoleForm = this.formBuilder.nonNullable.group({
+    role: [2],
+  });
 
   readonly roleOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().roles.administrator, value: 1 },
@@ -188,31 +190,35 @@ export class UsersComponent {
   }
 
   openCreateModal(): void {
-    this.createForm = {
+    this.createForm.reset({
       firstName: '',
       lastName: '',
       email: '',
       password: '',
-    };
+    });
 
     this.createUserModal.open();
   }
 
   private createUser(): void {
-    if (
-      !this.createForm.firstName?.trim() ||
-      !this.createForm.lastName?.trim() ||
-      !this.createForm.email?.trim() ||
-      !this.createForm.password?.trim()
-    ) {
+    this.createForm.markAllAsTouched();
+
+    if (this.createForm.invalid) {
       this.notification.warning(this.literals().validations.fillAllFieldsToCreate);
       return;
     }
 
+    const request: CreateUserRequest = {
+      firstName: this.createForm.controls.firstName.getRawValue(),
+      lastName: this.createForm.controls.lastName.getRawValue(),
+      email: this.createForm.controls.email.getRawValue(),
+      password: this.createForm.controls.password.getRawValue(),
+    };
+
     this.loading.set(true);
 
     this.service
-      .create(this.createForm)
+      .create(request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -238,10 +244,11 @@ export class UsersComponent {
 
   openEditModal(user: UserResponse): void {
     this.selectedUser.set(user);
-    this.editForm = {
+
+    this.editForm.reset({
       firstName: user.firstName,
       lastName: user.lastName,
-    };
+    });
 
     this.editUserModal.open();
   }
@@ -253,10 +260,21 @@ export class UsersComponent {
       return;
     }
 
+    this.editForm.markAllAsTouched();
+
+    if (this.editForm.invalid) {
+      return;
+    }
+
+    const request: UpdateUserRequest = {
+      firstName: this.editForm.controls.firstName.getRawValue(),
+      lastName: this.editForm.controls.lastName.getRawValue(),
+    };
+
     this.loading.set(true);
 
     this.service
-      .update(user.id, this.editForm)
+      .update(user.id, request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -269,7 +287,10 @@ export class UsersComponent {
 
   openChangeRoleModal(user: UserResponse): void {
     this.selectedUser.set(user);
-    this.selectedRole = (user.role as UserRole) ?? 'Technician';
+
+    this.changeRoleForm.reset({
+      role: Number(user.role) || 2,
+    });
 
     this.changeRoleModal.open();
   }
@@ -281,8 +302,10 @@ export class UsersComponent {
       return;
     }
 
+    const roleValue = this.changeRoleForm.controls.role.getRawValue();
+
     const request: ChangeUserRoleRequest = {
-      role: this.selectedRole,
+      role: roleValue === 1 ? 'Admin' : 'Technician',
     };
 
     this.loading.set(true);

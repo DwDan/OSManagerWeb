@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -25,13 +25,14 @@ import { finalize } from 'rxjs';
   selector: 'app-creater-order',
   templateUrl: './creater-order.component.html',
   styleUrl: './creater-order.component.scss',
-  imports: [CommonModule, FormsModule, PoModalModule, PoFieldModule, PoButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, PoModalModule, PoFieldModule, PoButtonModule],
 })
 export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: boolean }> {
   private readonly ordersService = inject(OrdersService);
   private readonly poNotification = inject(PoNotificationService);
   private readonly customersService = inject(CustomersService);
   private readonly servicesService = inject(ServicesService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -39,23 +40,66 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   readonly customers = signal<PoSelectOption[]>([]);
   readonly services = signal<PoMultiselectOption[]>([]);
 
-  createForm: CreateOrderRequest = this.createEmptyOrderForm();
-
   readonly closeAction = {
     label: this.common().cancel,
     action: () => this.close(),
   };
 
+  readonly form = this.formBuilder.nonNullable.group({
+    customerId: ['', [Validators.required]],
+    services: [[] as string[]],
+    postalCode: [''],
+    street: ['', [Validators.required]],
+    number: [''],
+    city: ['', [Validators.required]],
+    state: ['', [Validators.required]],
+    country: ['Brasil', [Validators.required]],
+    complement: [''],
+    reference: [''],
+  });
+
   ngOnInit(): void {
+    this.form.reset({
+      customerId: '',
+      services: [],
+      postalCode: '',
+      street: '',
+      number: '',
+      city: '',
+      state: '',
+      country: 'Brasil',
+      complement: '',
+      reference: '',
+    });
+
     this.loadCustomers();
     this.loadServices();
   }
 
   saveCreate(): void {
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    const request: CreateOrderRequest = {
+      customerId: this.form.controls.customerId.getRawValue(),
+      services: this.form.controls.services.getRawValue(),
+      postalCode: this.form.controls.postalCode.getRawValue(),
+      street: this.form.controls.street.getRawValue(),
+      number: this.form.controls.number.getRawValue(),
+      city: this.form.controls.city.getRawValue(),
+      state: this.form.controls.state.getRawValue(),
+      country: this.form.controls.country.getRawValue(),
+      complement: this.form.controls.complement.getRawValue(),
+      reference: this.form.controls.reference.getRawValue(),
+    };
+
     this.loading.set(true);
 
     this.ordersService
-      .create(this.createForm)
+      .create(request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -89,20 +133,5 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
         );
       },
     });
-  }
-
-  private createEmptyOrderForm(): CreateOrderRequest {
-    return {
-      customerId: '',
-      services: [],
-      postalCode: '',
-      street: '',
-      number: '',
-      city: '',
-      state: '',
-      country: 'Brasil',
-      complement: '',
-      reference: '',
-    };
   }
 }

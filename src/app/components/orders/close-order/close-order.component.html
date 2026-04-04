@@ -9,14 +9,13 @@
   [p-secondary-action]="closeAction"
   (p-close)="closeAction.action()"
 >
-  <div class="po-row">
+  <form [formGroup]="form" class="po-row">
     <div class="po-md-12">
       <po-select
         name="executionResult"
         [p-label]="literals().fields.executionResult"
         [p-options]="executionResultOptions()"
-        [ngModel]="closeForm.executionResult"
-        (ngModelChange)="closeForm.executionResult = $event"
+        formControlName="executionResult"
       >
       </po-select>
     </div>
@@ -25,9 +24,9 @@
       <po-textarea
         name="executionNotes"
         [p-label]="literals().fields.executionNotes"
-        [(ngModel)]="closeForm.executionNotes"
+        formControlName="executionNotes"
       >
       </po-textarea>
     </div>
-  </div>
+  </form>
 </po-modal>

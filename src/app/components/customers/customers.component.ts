@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -29,7 +29,7 @@ import { finalize } from 'rxjs';
   selector: 'app-customers',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoTableModule,
     PoPageModule,
     PoModalModule,
@@ -46,6 +46,7 @@ export class CustomersComponent implements OnInit {
 
   private readonly customersService = inject(CustomersService);
   private readonly poNotification = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(customersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -58,9 +59,8 @@ export class CustomersComponent implements OnInit {
   readonly selectedCustomer = signal<CustomerDetailsResponse | null>(null);
   readonly selectedCustomerId = signal<string | null>(null);
 
-  createForm: CreateCustomerRequest = this.createEmptyCustomerForm();
-
-  editForm: UpdateCustomerRequest = this.createEmptyCustomerForm();
+  readonly createForm = this.buildCustomerForm();
+  readonly editForm = this.buildCustomerForm();
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -97,15 +97,22 @@ export class CustomersComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.createForm = this.createEmptyCustomerForm();
+    this.createForm.reset(this.createEmptyCustomerForm());
     this.createModal.open();
   }
 
   saveCreate(): void {
+    if (this.createForm.invalid) {
+      this.createForm.markAllAsTouched();
+      return;
+    }
+
+    const request = this.createForm.getRawValue() as CreateCustomerRequest;
+
     this.saving.set(true);
 
     this.customersService
-      .create(this.createForm)
+      .create(request)
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
@@ -125,7 +132,7 @@ export class CustomersComponent implements OnInit {
       .subscribe({
         next: (customer) => {
           this.selectedCustomerId.set(id);
-          this.editForm = {
+          this.editForm.reset({
             name: customer.name,
             phone: customer.phone,
             email: customer.email,
@@ -137,7 +144,7 @@ export class CustomersComponent implements OnInit {
             country: customer.address.country,
             complement: customer.address.complement ?? '',
             reference: customer.address.reference ?? '',
-          };
+          });
           this.editModal.open();
         },
       });
@@ -150,10 +157,17 @@ export class CustomersComponent implements OnInit {
       return;
     }
 
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const request = this.editForm.getRawValue() as UpdateCustomerRequest;
+
     this.saving.set(true);
 
     this.customersService
-      .update(id, this.editForm)
+      .update(id, request)
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
@@ -200,6 +214,22 @@ export class CustomersComponent implements OnInit {
       city: customer.address.city,
       state: customer.address.state,
     };
+  }
+
+  private buildCustomerForm() {
+    return this.formBuilder.nonNullable.group({
+      name: ['', [Validators.required]],
+      phone: [''],
+      email: [''],
+      postalCode: [''],
+      street: ['', [Validators.required]],
+      number: [''],
+      city: ['', [Validators.required]],
+      state: ['', [Validators.required]],
+      country: ['Brasil', [Validators.required]],
+      complement: [''],
+      reference: [''],
+    });
   }
 
   private createEmptyCustomerForm(): CreateCustomerRequest {

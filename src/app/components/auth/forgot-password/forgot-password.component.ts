@@ -9,7 +9,8 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forgotPasswordLiterals } from '@i18n/auth/forgot-password.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
@@ -20,14 +21,14 @@ import {
   PoNotificationService,
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
-import { finalize } from 'rxjs';
+import { finalize, map, startWith } from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
   standalone: true,
-  imports: [CommonModule, FormsModule, PoModalModule, PoFieldModule],
+  imports: [CommonModule, ReactiveFormsModule, PoModalModule, PoFieldModule],
 })
 export class ForgotPasswordComponent {
   @ViewChild('modal', { static: true })
@@ -38,34 +39,36 @@ export class ForgotPasswordComponent {
 
   private readonly authenticationService = inject(AuthenticationService);
   private readonly notificationService = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(forgotPasswordLiterals);
   readonly supportEmail = input.required<string>();
 
   readonly loading = signal(false);
-  readonly email = signal('');
-  readonly emailTouched = signal(false);
+
+  readonly form = this.formBuilder.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+  });
 
   readonly emailDisabled = computed(() => {
     return String(this.loading());
   });
 
-  readonly emailInvalid = computed(() => {
-    const value = this.email().trim();
+  get emailInvalid(): boolean {
+    const control = this.form.controls.email;
+    return control.touched && control.invalid;
+  }
 
-    if (!this.emailTouched()) {
-      return false;
-    }
-
-    if (!value) {
-      return true;
-    }
-
-    return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  });
+  readonly formInvalid = toSignal(
+    this.form.statusChanges.pipe(
+      startWith(this.form.status),
+      map(() => this.form.invalid),
+    ),
+    { initialValue: this.form.invalid },
+  );
 
   readonly submitDisabled = computed(() => {
-    return this.loading() || this.emailInvalid() || !this.email().trim();
+    return this.loading() || this.formInvalid();
   });
 
   readonly primaryAction = computed<PoModalAction>(() => ({
@@ -91,21 +94,21 @@ export class ForgotPasswordComponent {
   }
 
   submit(): void {
-    this.emailTouched.set(true);
+    this.form.markAllAsTouched();
 
-    if (this.emailInvalid() || !this.email().trim() || this.loading()) {
+    if (this.form.invalid || this.loading()) {
       return;
     }
+
+    const email = this.form.controls.email.getRawValue().trim();
 
     this.loading.set(true);
 
     this.authenticationService
-      .forgotPassword({ email: this.email().trim() })
+      .forgotPassword({ email: email })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          const email = this.email().trim();
-
           this.modal.close();
           this.notificationService.success(this.literals().successMessage);
           this.submitted.emit(email);
@@ -114,17 +117,10 @@ export class ForgotPasswordComponent {
       });
   }
 
-  setEmail(value: string): void {
-    this.email.set(value);
-  }
-
-  markTouched(): void {
-    this.emailTouched.set(true);
-  }
-
   private resetState(): void {
-    this.email.set('');
-    this.emailTouched.set(false);
+    this.form.reset({
+      email: '',
+    });
     this.loading.set(false);
   }
 }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -28,7 +28,7 @@ import { finalize } from 'rxjs';
   selector: 'app-services',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoTableModule,
     PoPageModule,
     PoModalModule,
@@ -45,6 +45,7 @@ export class ServicesComponent implements OnInit {
 
   private readonly servicesService = inject(ServicesService);
   private readonly poNotification = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(servicesLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -57,9 +58,8 @@ export class ServicesComponent implements OnInit {
   readonly selectedService = signal<ServiceDetailsResponse | null>(null);
   readonly selectedServiceId = signal<string | null>(null);
 
-  createForm: CreateServiceRequest = this.createEmptyServiceForm();
-
-  editForm: UpdateServiceRequest = this.createEmptyServiceForm();
+  readonly createForm = this.buildServiceForm();
+  readonly editForm = this.buildServiceForm();
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -102,15 +102,22 @@ export class ServicesComponent implements OnInit {
   }
 
   openCreateModal(): void {
-    this.createForm = this.createEmptyServiceForm();
+    this.createForm.reset(this.createEmptyServiceForm());
     this.createModal.open();
   }
 
   saveCreate(): void {
+    if (this.createForm.invalid) {
+      this.createForm.markAllAsTouched();
+      return;
+    }
+
+    const request = this.createForm.getRawValue() as CreateServiceRequest;
+
     this.saving.set(true);
 
     this.servicesService
-      .create(this.createForm)
+      .create(request)
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
@@ -130,11 +137,11 @@ export class ServicesComponent implements OnInit {
       .subscribe({
         next: (service) => {
           this.selectedServiceId.set(id);
-          this.editForm = {
+          this.editForm.reset({
             name: service.name,
             amountToReceive: service.amountToReceive,
             amountToPay: service.amountToPay,
-          };
+          });
           this.editModal.open();
         },
       });
@@ -147,10 +154,17 @@ export class ServicesComponent implements OnInit {
       return;
     }
 
+    if (this.editForm.invalid) {
+      this.editForm.markAllAsTouched();
+      return;
+    }
+
+    const request = this.editForm.getRawValue() as UpdateServiceRequest;
+
     this.saving.set(true);
 
     this.servicesService
-      .update(id, this.editForm)
+      .update(id, request)
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: () => {
@@ -186,6 +200,14 @@ export class ServicesComponent implements OnInit {
           this.items.set(services);
         },
       });
+  }
+
+  private buildServiceForm() {
+    return this.formBuilder.nonNullable.group({
+      name: ['', [Validators.required]],
+      amountToReceive: [0],
+      amountToPay: [0],
+    });
   }
 
   private createEmptyServiceForm(): CreateServiceRequest {

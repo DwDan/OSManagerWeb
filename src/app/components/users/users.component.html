@@ -20,47 +20,45 @@
   [p-primary-action]="saveCreateAction()"
   [p-secondary-action]="cancelCreateAction()"
 >
-  <div class="po-row">
-    <div class="po-md-6">
-      <po-input
-        name="createFirstName"
-        [p-label]="literals().fields.firstName"
-        [(ngModel)]="createForm.firstName"
-      >
-      </po-input>
+  <form [formGroup]="createForm">
+    <div class="po-row">
+      <div class="po-md-6">
+        <po-input
+          name="createFirstName"
+          [p-label]="literals().fields.firstName"
+          formControlName="firstName"
+        >
+        </po-input>
+      </div>
+
+      <div class="po-md-6">
+        <po-input
+          name="createLastName"
+          [p-label]="literals().fields.lastName"
+          formControlName="lastName"
+        >
+        </po-input>
+      </div>
     </div>
 
-    <div class="po-md-6">
-      <po-input
-        name="createLastName"
-        [p-label]="literals().fields.lastName"
-        [(ngModel)]="createForm.lastName"
-      >
-      </po-input>
+    <div class="po-row">
+      <div class="po-md-12">
+        <po-input name="createEmail" [p-label]="literals().fields.email" formControlName="email">
+        </po-input>
+      </div>
     </div>
-  </div>
 
-  <div class="po-row">
-    <div class="po-md-12">
-      <po-input
-        name="createEmail"
-        [p-label]="literals().fields.email"
-        [(ngModel)]="createForm.email"
-      >
-      </po-input>
+    <div class="po-row">
+      <div class="po-md-12">
+        <po-password
+          name="createPassword"
+          [p-label]="literals().fields.password"
+          formControlName="password"
+        >
+        </po-password>
+      </div>
     </div>
-  </div>
-
-  <div class="po-row">
-    <div class="po-md-12">
-      <po-password
-        name="createPassword"
-        [p-label]="literals().fields.password"
-        [(ngModel)]="createForm.password"
-      >
-      </po-password>
-    </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal
@@ -69,25 +67,23 @@
   [p-primary-action]="saveEditAction()"
   [p-secondary-action]="cancelEditAction()"
 >
-  <div class="po-row">
-    <div class="po-md-6">
-      <po-input
-        name="firstName"
-        [p-label]="literals().fields.firstName"
-        [(ngModel)]="editForm.firstName"
-      >
-      </po-input>
-    </div>
+  <form [formGroup]="editForm">
+    <div class="po-row">
+      <div class="po-md-6">
+        <po-input
+          name="firstName"
+          [p-label]="literals().fields.firstName"
+          formControlName="firstName"
+        >
+        </po-input>
+      </div>
 
-    <div class="po-md-6">
-      <po-input
-        name="lastName"
-        [p-label]="literals().fields.lastName"
-        [(ngModel)]="editForm.lastName"
-      >
-      </po-input>
+      <div class="po-md-6">
+        <po-input name="lastName" [p-label]="literals().fields.lastName" formControlName="lastName">
+        </po-input>
+      </div>
     </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal
@@ -96,16 +92,17 @@
   [p-primary-action]="saveRoleAction()"
   [p-secondary-action]="cancelRoleAction()"
 >
-  <div class="po-row">
-    <div class="po-md-12">
-      <po-select
-        name="role"
-        [p-label]="literals().fields.role"
-        [p-options]="roleOptions()"
-        [ngModel]="selectedRole"
-        (ngModelChange)="selectedRole = $event"
-      >
-      </po-select>
+  <form [formGroup]="changeRoleForm">
+    <div class="po-row">
+      <div class="po-md-12">
+        <po-select
+          name="role"
+          [p-label]="literals().fields.role"
+          [p-options]="roleOptions()"
+          formControlName="role"
+        >
+        </po-select>
+      </div>
     </div>
-  </div>
+  </form>
 </po-modal>

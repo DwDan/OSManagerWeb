@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { changePasswordLiterals } from '@i18n/auth/change-password.literals';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -14,41 +14,56 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-change-password',
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
+  imports: [PoPageModule, PoFieldModule, PoButtonModule, ReactiveFormsModule],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
 })
 export class ChangePasswordComponent {
-  private authenticationService = inject(AuthenticationService);
-  private notificationService = inject(PoNotificationService);
+  private readonly authenticationService = inject(AuthenticationService);
+  private readonly notificationService = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(changePasswordLiterals);
   readonly common = injectI18n(commonLiterals);
 
-  loading = signal(false);
+  readonly loading = signal(false);
 
-  form = {
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  };
+  readonly form = this.formBuilder.nonNullable.group({
+    currentPassword: ['', [Validators.required]],
+    newPassword: ['', [Validators.required]],
+    confirmPassword: ['', [Validators.required]],
+  });
+
+  get currentPasswordControl() {
+    return this.form.controls.currentPassword;
+  }
+
+  get newPasswordControl() {
+    return this.form.controls.newPassword;
+  }
+
+  get confirmPasswordControl() {
+    return this.form.controls.confirmPassword;
+  }
 
   save(): void {
-    if (
-      !this.form.currentPassword.trim() ||
-      !this.form.newPassword.trim() ||
-      !this.form.confirmPassword.trim()
-    ) {
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
       this.notificationService.warning(this.literals().validations.fillAllFields);
       return;
     }
 
-    if (this.form.newPassword !== this.form.confirmPassword) {
+    const currentPassword = this.form.controls.currentPassword.getRawValue();
+    const newPassword = this.form.controls.newPassword.getRawValue();
+    const confirmPassword = this.form.controls.confirmPassword.getRawValue();
+
+    if (newPassword !== confirmPassword) {
       this.notificationService.warning(this.literals().validations.confirmationDoesNotMatch);
       return;
     }
 
-    if (this.form.currentPassword === this.form.newPassword) {
+    if (currentPassword === newPassword) {
       this.notificationService.warning(this.literals().validations.newMustBeDifferent);
       return;
     }
@@ -57,19 +72,18 @@ export class ChangePasswordComponent {
 
     this.authenticationService
       .changePassword({
-        currentPassword: this.form.currentPassword,
-        newPassword: this.form.newPassword,
+        currentPassword: currentPassword,
+        newPassword: newPassword,
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.notificationService.success(this.literals().notifications.success);
-
-          this.form = {
+          this.form.reset({
             currentPassword: '',
             newPassword: '',
             confirmPassword: '',
-          };
+          });
         },
       });
   }

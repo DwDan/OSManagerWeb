@@ -5,17 +5,16 @@
       <p>{{ literals().welcome }}</p>
     </div>
 
-    <form class="login-page__form" (ngSubmit)="login()">
+    <form class="login-page__form" [formGroup]="form" (ngSubmit)="login()">
       <po-email
         name="email"
         [p-label]="literals().loginLabel"
         [p-placeholder]="literals().loginPlaceholder"
-        p-required="true"
         [p-disabled]="loadingStr()"
-        [p-error-pattern]="emailTouched() && emailInvalid() ? literals().invalidEmail : ''"
-        [ngModel]="email()"
-        (ngModelChange)="setEmail($event)"
-        (p-blur)="markEmailTouched()"
+        [p-error-pattern]="
+          emailControl.touched && emailControl.hasError('email') ? literals().invalidEmail : ''
+        "
+        formControlName="email"
       >
       </po-email>
 
@@ -23,14 +22,8 @@
         name="password"
         [p-label]="literals().passwordLabel"
         [p-placeholder]="literals().passwordPlaceholder"
-        p-required="true"
         [p-disabled]="loadingStr()"
-        [p-error-pattern]="
-          passwordTouched() && passwordInvalid() ? literals().requiredPassword : ''
-        "
-        [ngModel]="password()"
-        (ngModelChange)="setPassword($event)"
-        (p-blur)="markPasswordTouched()"
+        formControlName="password"
       >
       </po-password>
 
@@ -50,8 +43,7 @@
             name="rememberUser"
             [p-hide-label-status]="true"
             [p-disabled]="loadingStr()"
-            [ngModel]="rememberUser()"
-            (ngModelChange)="setRememberUser($event)"
+            formControlName="rememberUser"
           >
           </po-switch>
         </div>
@@ -70,8 +62,7 @@
         name="language"
         [p-label]="literals().language"
         [p-options]="languageOptions()"
-        [ngModel]="selectedLanguage()"
-        (ngModelChange)="changeLanguage($event)"
+        formControlName="language"
       >
       </po-select>
     </form>

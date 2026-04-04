@@ -33,12 +33,12 @@
     action: createModal.close.bind(createModal),
   }"
 >
-  <div class="po-row">
+  <form [formGroup]="createForm" class="po-row">
     <div class="po-md-12">
       <po-input
         name="createClient"
         [p-label]="literals().fields.service"
-        [(ngModel)]="createForm.name"
+        formControlName="name"
       ></po-input>
     </div>
 
@@ -48,7 +48,7 @@
         [p-label]="literals().fields.amountToReceive"
         [p-thousand-maxlength]="10"
         [p-decimals-length]="2"
-        [(ngModel)]="createForm.amountToReceive"
+        formControlName="amountToReceive"
       ></po-decimal>
     </div>
 
@@ -58,10 +58,10 @@
         [p-label]="literals().fields.amountToPay"
         [p-thousand-maxlength]="10"
         [p-decimals-length]="2"
-        [(ngModel)]="createForm.amountToPay"
+        formControlName="amountToPay"
       ></po-decimal>
     </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal
@@ -77,12 +77,12 @@
     action: editModal.close.bind(editModal),
   }"
 >
-  <div class="po-row">
+  <form [formGroup]="editForm" class="po-row">
     <div class="po-md-12">
       <po-input
         name="editClient"
         [p-label]="literals().fields.service"
-        [(ngModel)]="editForm.name"
+        formControlName="name"
       ></po-input>
     </div>
 
@@ -92,7 +92,7 @@
         [p-label]="literals().fields.amountToReceive"
         [p-thousand-maxlength]="10"
         [p-decimals-length]="2"
-        [(ngModel)]="editForm.amountToReceive"
+        formControlName="amountToReceive"
       ></po-decimal>
     </div>
 
@@ -102,10 +102,10 @@
         [p-label]="literals().fields.amountToPay"
         [p-thousand-maxlength]="10"
         [p-decimals-length]="2"
-        [(ngModel)]="editForm.amountToPay"
+        formControlName="amountToPay"
       ></po-decimal>
     </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal

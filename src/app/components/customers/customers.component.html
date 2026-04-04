@@ -27,12 +27,12 @@
     action: createModal.close.bind(createModal),
   }"
 >
-  <div class="po-row">
+  <form [formGroup]="createForm" class="po-row">
     <div class="po-md-12">
       <po-input
         name="createClient"
         [p-label]="literals().fields.customer"
-        [(ngModel)]="createForm.name"
+        formControlName="name"
       ></po-input>
     </div>
 
@@ -40,7 +40,7 @@
       <po-input
         name="createEmail"
         [p-label]="literals().fields.email"
-        [(ngModel)]="createForm.email"
+        formControlName="email"
       ></po-input>
     </div>
 
@@ -49,7 +49,7 @@
         name="createPhone"
         [p-label]="literals().fields.phone"
         p-mask="(99) 99999-9999"
-        [(ngModel)]="createForm.phone"
+        formControlName="phone"
       ></po-input>
     </div>
 
@@ -57,7 +57,7 @@
       <po-input
         name="createPostalCode"
         [p-label]="literals().fields.postalCode"
-        [(ngModel)]="createForm.postalCode"
+        formControlName="postalCode"
       ></po-input>
     </div>
 
@@ -65,7 +65,7 @@
       <po-input
         name="createStreet"
         [p-label]="literals().fields.street"
-        [(ngModel)]="createForm.street"
+        formControlName="street"
       ></po-input>
     </div>
 
@@ -73,7 +73,7 @@
       <po-input
         name="createNumber"
         [p-label]="literals().fields.number"
-        [(ngModel)]="createForm.number"
+        formControlName="number"
       ></po-input>
     </div>
 
@@ -81,7 +81,7 @@
       <po-input
         name="createCity"
         [p-label]="literals().fields.city"
-        [(ngModel)]="createForm.city"
+        formControlName="city"
       ></po-input>
     </div>
 
@@ -89,7 +89,7 @@
       <po-input
         name="createState"
         [p-label]="literals().fields.state"
-        [(ngModel)]="createForm.state"
+        formControlName="state"
       ></po-input>
     </div>
 
@@ -97,7 +97,7 @@
       <po-input
         name="createCountry"
         [p-label]="literals().fields.country"
-        [(ngModel)]="createForm.country"
+        formControlName="country"
       ></po-input>
     </div>
 
@@ -105,7 +105,7 @@
       <po-input
         name="createComplement"
         [p-label]="literals().fields.complement"
-        [(ngModel)]="createForm.complement"
+        formControlName="complement"
       ></po-input>
     </div>
 
@@ -113,10 +113,10 @@
       <po-input
         name="createReference"
         [p-label]="literals().fields.reference"
-        [(ngModel)]="createForm.reference"
+        formControlName="reference"
       ></po-input>
     </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal
@@ -132,12 +132,12 @@
     action: editModal.close.bind(editModal),
   }"
 >
-  <div class="po-row">
+  <form [formGroup]="editForm" class="po-row">
     <div class="po-md-12">
       <po-input
         name="editClient"
         [p-label]="literals().fields.customer"
-        [(ngModel)]="editForm.name"
+        formControlName="name"
       ></po-input>
     </div>
 
@@ -145,7 +145,7 @@
       <po-input
         name="editEmail"
         [p-label]="literals().fields.email"
-        [(ngModel)]="editForm.email"
+        formControlName="email"
       ></po-input>
     </div>
 
@@ -154,7 +154,7 @@
         name="editPhone"
         [p-label]="literals().fields.phone"
         p-mask="(99) 99999-9999"
-        [(ngModel)]="editForm.phone"
+        formControlName="phone"
       ></po-input>
     </div>
 
@@ -162,7 +162,7 @@
       <po-input
         name="editPostalCode"
         [p-label]="literals().fields.postalCode"
-        [(ngModel)]="editForm.postalCode"
+        formControlName="postalCode"
       ></po-input>
     </div>
 
@@ -170,7 +170,7 @@
       <po-input
         name="editStreet"
         [p-label]="literals().fields.street"
-        [(ngModel)]="editForm.street"
+        formControlName="street"
       ></po-input>
     </div>
 
@@ -178,7 +178,7 @@
       <po-input
         name="editNumber"
         [p-label]="literals().fields.number"
-        [(ngModel)]="editForm.number"
+        formControlName="number"
       ></po-input>
     </div>
 
@@ -186,7 +186,7 @@
       <po-input
         name="editCity"
         [p-label]="literals().fields.city"
-        [(ngModel)]="editForm.city"
+        formControlName="city"
       ></po-input>
     </div>
 
@@ -194,7 +194,7 @@
       <po-input
         name="editState"
         [p-label]="literals().fields.state"
-        [(ngModel)]="editForm.state"
+        formControlName="state"
       ></po-input>
     </div>
 
@@ -202,7 +202,7 @@
       <po-input
         name="editCountry"
         [p-label]="literals().fields.country"
-        [(ngModel)]="editForm.country"
+        formControlName="country"
       ></po-input>
     </div>
 
@@ -210,7 +210,7 @@
       <po-input
         name="editComplement"
         [p-label]="literals().fields.complement"
-        [(ngModel)]="editForm.complement"
+        formControlName="complement"
       ></po-input>
     </div>
 
@@ -218,10 +218,10 @@
       <po-input
         name="editReference"
         [p-label]="literals().fields.reference"
-        [(ngModel)]="editForm.reference"
+        formControlName="reference"
       ></po-input>
     </div>
-  </div>
+  </form>
 </po-modal>
 
 <po-modal

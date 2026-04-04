@@ -9,14 +9,13 @@
   [p-secondary-action]="closeAction"
   (p-close)="closeAction.action()"
 >
-  <div class="po-row">
+  <form [formGroup]="form" class="po-row">
     <div class="po-md-12">
       <po-select
         name="editClient"
         [p-label]="literals().fields.customer"
         [p-options]="customers()"
-        [ngModel]="editForm.customerId"
-        (ngModelChange)="editForm.customerId = $event"
+        formControlName="customerId"
       ></po-select>
     </div>
 
@@ -26,7 +25,7 @@
         [p-label]="literals().fields.services"
         [p-placeholder]="literals().fields.phServices"
         [p-options]="services()"
-        [(ngModel)]="editForm.services"
+        formControlName="services"
       ></po-multiselect>
     </div>
 
@@ -34,7 +33,7 @@
       <po-input
         name="editPostalCode"
         [p-label]="literals().fields.postalCode"
-        [(ngModel)]="editForm.postalCode"
+        formControlName="postalCode"
       ></po-input>
     </div>
 
@@ -42,7 +41,7 @@
       <po-input
         name="editStreet"
         [p-label]="literals().fields.street"
-        [(ngModel)]="editForm.street"
+        formControlName="street"
       ></po-input>
     </div>
 
@@ -50,7 +49,7 @@
       <po-input
         name="editNumber"
         [p-label]="literals().fields.number"
-        [(ngModel)]="editForm.number"
+        formControlName="number"
       ></po-input>
     </div>
 
@@ -58,7 +57,7 @@
       <po-input
         name="editCity"
         [p-label]="literals().fields.city"
-        [(ngModel)]="editForm.city"
+        formControlName="city"
       ></po-input>
     </div>
 
@@ -66,7 +65,7 @@
       <po-input
         name="editState"
         [p-label]="literals().fields.state"
-        [(ngModel)]="editForm.state"
+        formControlName="state"
       ></po-input>
     </div>
 
@@ -74,7 +73,7 @@
       <po-input
         name="editCountry"
         [p-label]="literals().fields.country"
-        [(ngModel)]="editForm.country"
+        formControlName="country"
       ></po-input>
     </div>
 
@@ -82,7 +81,7 @@
       <po-input
         name="editComplement"
         [p-label]="literals().fields.complement"
-        [(ngModel)]="editForm.complement"
+        formControlName="complement"
       ></po-input>
     </div>
 
@@ -90,8 +89,8 @@
       <po-input
         name="editReference"
         [p-label]="literals().fields.reference"
-        [(ngModel)]="editForm.reference"
+        formControlName="reference"
       ></po-input>
     </div>
-  </div>
+  </form>
 </po-modal>

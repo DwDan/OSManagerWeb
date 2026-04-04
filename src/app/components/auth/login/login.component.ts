@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { loginLiterals } from '@i18n/auth/login.literals';
 import { I18nStore } from '@i18n/shared/i18n.store';
@@ -12,11 +13,10 @@ import {
   PoButtonType,
   PoCheckboxModule,
   PoFieldModule,
-  PoNotificationService,
   PoSelectOption,
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
-import { finalize } from 'rxjs';
+import { finalize, map, startWith } from 'rxjs';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({
@@ -26,7 +26,7 @@ import { ForgotPasswordComponent } from '../forgot-password/forgot-password.comp
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoFieldModule,
     PoButtonModule,
     PoCheckboxModule,
@@ -37,87 +37,65 @@ export class LoginComponent {
   @ViewChild('forgotPassword')
   forgotPassword!: ForgotPasswordComponent;
 
-  constructor() {
-    const rememberedEmail = localStorage.getItem('rememberedUserEmail');
-
-    if (rememberedEmail) {
-      this.email.set(rememberedEmail);
-      this.rememberUser.set(true);
-    }
-  }
-
   private readonly authenticationService = inject(AuthenticationService);
   private readonly i18nStore = inject(I18nStore);
   private readonly router = inject(Router);
-  private readonly notificationService = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(loginLiterals);
   readonly submitType = PoButtonType.Submit;
   readonly loading = signal(false);
-  readonly email = signal('');
-  readonly password = signal('');
-  readonly rememberUser = signal(false);
-  readonly emailTouched = signal(false);
-  readonly passwordTouched = signal(false);
   readonly loadingStr = computed(() => String(this.loading()));
+
+  readonly form = this.formBuilder.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]],
+    rememberUser: [false],
+    language: [this.i18nStore.currentLanguage() as AppLanguage],
+  });
 
   readonly languageOptions = computed<PoSelectOption[]>(() => [
     { label: 'Português (BR)', value: 'pt-BR' },
     { label: 'English', value: 'en-US' },
   ]);
 
-  readonly selectedLanguage = computed(() => this.i18nStore.currentLanguage());
-
-  readonly emailInvalid = computed(() => {
-    const value = this.email().trim();
-
-    if (!value) {
-      return true;
-    }
-
-    return !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  });
-
-  readonly passwordInvalid = computed(() => {
-    if (!this.passwordTouched()) {
-      return false;
-    }
-
-    return !this.password().trim();
-  });
+  readonly formInvalid = toSignal(
+    this.form.statusChanges.pipe(
+      startWith(this.form.status),
+      map(() => this.form.invalid),
+    ),
+    { initialValue: this.form.invalid },
+  );
 
   readonly submitDisabled = computed(() => {
-    return (
-      this.loading() ||
-      this.emailInvalid() ||
-      this.passwordInvalid() ||
-      !this.email().trim() ||
-      !this.password().trim()
-    );
+    return this.loading() || this.formInvalid();
   });
 
-  setEmail(value: string): void {
-    this.email.set(value);
+  constructor() {
+    const rememberedEmail = localStorage.getItem('rememberedUserEmail');
+
+    if (rememberedEmail) {
+      this.form.patchValue({
+        email: rememberedEmail,
+        rememberUser: true,
+      });
+    }
+
+    this.form.controls.language.valueChanges.subscribe((value) => {
+      if (!value) {
+        return;
+      }
+
+      this.i18nStore.setLanguage(value as AppLanguage);
+    });
   }
 
-  setPassword(value: string): void {
-    this.password.set(value);
+  get emailControl() {
+    return this.form.controls.email;
   }
 
-  setRememberUser(value: boolean): void {
-    this.rememberUser.set(value);
-  }
-
-  markEmailTouched(): void {
-    this.emailTouched.set(true);
-  }
-
-  markPasswordTouched(): void {
-    this.passwordTouched.set(true);
-  }
-
-  changeLanguage(value: string | number): void {
-    this.i18nStore.setLanguage(value as AppLanguage);
+  get passwordControl() {
+    return this.form.controls.password;
   }
 
   openForgotPasswordModal(): void {
@@ -125,16 +103,15 @@ export class LoginComponent {
   }
 
   login(): void {
-    this.emailTouched.set(true);
-    this.passwordTouched.set(true);
+    this.form.markAllAsTouched();
 
-    if (this.submitDisabled()) {
+    if (this.form.invalid) {
       return;
     }
 
     const request: LoginRequest = {
-      Email: this.email().trim(),
-      Password: this.password().trim(),
+      Email: this.form.controls.email.getRawValue().trim(),
+      Password: this.form.controls.password.getRawValue().trim(),
     };
 
     this.loading.set(true);
@@ -144,8 +121,11 @@ export class LoginComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          if (this.rememberUser()) {
-            localStorage.setItem('rememberedUserEmail', this.email().trim());
+          if (this.form.controls.rememberUser.getRawValue()) {
+            localStorage.setItem(
+              'rememberedUserEmail',
+              this.form.controls.email.getRawValue().trim(),
+            );
           } else {
             localStorage.removeItem('rememberedUserEmail');
           }

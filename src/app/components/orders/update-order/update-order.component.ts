@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -26,7 +26,7 @@ import { finalize } from 'rxjs';
   selector: 'app-update-order',
   templateUrl: './update-order.component.html',
   styleUrl: './update-order.component.scss',
-  imports: [CommonModule, FormsModule, PoModalModule, PoFieldModule, PoButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, PoModalModule, PoFieldModule, PoButtonModule],
 })
 export class UpdateOrderComponent extends BaseModalComponent<
   { orderId: string },
@@ -36,6 +36,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
   private readonly poNotification = inject(PoNotificationService);
   private readonly customersService = inject(CustomersService);
   private readonly servicesService = inject(ServicesService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -48,7 +49,18 @@ export class UpdateOrderComponent extends BaseModalComponent<
     action: () => this.close(),
   };
 
-  editForm: UpdateOrderRequest = this.createEmptyOrderForm();
+  readonly form = this.formBuilder.nonNullable.group({
+    customerId: ['', [Validators.required]],
+    services: [[] as string[]],
+    postalCode: [''],
+    street: ['', [Validators.required]],
+    number: [''],
+    city: ['', [Validators.required]],
+    state: ['', [Validators.required]],
+    country: ['Brasil', [Validators.required]],
+    complement: [''],
+    reference: [''],
+  });
 
   ngOnInit(): void {
     this.loadOrder();
@@ -56,15 +68,17 @@ export class UpdateOrderComponent extends BaseModalComponent<
     this.loadServices();
   }
 
-  loadOrder() {
+  loadOrder(): void {
+    this.loading.set(true);
+
     this.ordersService
       .getById(this.data!.orderId)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (order) => {
-          this.editForm = {
+          this.form.reset({
             customerId: order.customer.id,
-            services: order.services?.map((x) => x.id) ?? [],
+            services: order.services?.map((service) => service.id) ?? [],
             postalCode: order.address.postalCode,
             street: order.address.street,
             number: order.address.number,
@@ -73,16 +87,35 @@ export class UpdateOrderComponent extends BaseModalComponent<
             country: order.address.country,
             complement: order.address.complement ?? '',
             reference: order.address.reference ?? '',
-          };
+          });
         },
       });
   }
 
   saveEdit(): void {
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    const request: UpdateOrderRequest = {
+      customerId: this.form.controls.customerId.getRawValue(),
+      services: this.form.controls.services.getRawValue(),
+      postalCode: this.form.controls.postalCode.getRawValue(),
+      street: this.form.controls.street.getRawValue(),
+      number: this.form.controls.number.getRawValue(),
+      city: this.form.controls.city.getRawValue(),
+      state: this.form.controls.state.getRawValue(),
+      country: this.form.controls.country.getRawValue(),
+      complement: this.form.controls.complement.getRawValue(),
+      reference: this.form.controls.reference.getRawValue(),
+    };
+
     this.loading.set(true);
 
     this.ordersService
-      .update(this.data!.orderId, this.editForm)
+      .update(this.data!.orderId, request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

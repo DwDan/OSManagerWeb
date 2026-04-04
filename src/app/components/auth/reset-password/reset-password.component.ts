@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { resetPasswordLiterals } from '@i18n/auth/reset-password.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -14,7 +14,7 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, FormsModule],
+  imports: [PoPageModule, PoFieldModule, PoButtonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
@@ -23,31 +23,45 @@ export class ResetPasswordComponent {
   private readonly router = inject(Router);
   private readonly authenticationService = inject(AuthenticationService);
   private readonly notification = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(resetPasswordLiterals);
 
-  loading = signal(false);
+  readonly loading = signal(false);
 
-  email = this.route.snapshot.queryParamMap.get('email') ?? '';
-  token = this.route.snapshot.queryParamMap.get('token') ?? '';
+  readonly email = this.route.snapshot.queryParamMap.get('email') ?? '';
+  readonly token = this.route.snapshot.queryParamMap.get('token') ?? '';
 
-  form = {
-    newPassword: '',
-    confirmPassword: '',
-  };
+  readonly form = this.formBuilder.nonNullable.group({
+    newPassword: ['', [Validators.required]],
+    confirmPassword: ['', [Validators.required]],
+  });
+
+  get newPasswordControl() {
+    return this.form.controls.newPassword;
+  }
+
+  get confirmPasswordControl() {
+    return this.form.controls.confirmPassword;
+  }
 
   save(): void {
+    this.form.markAllAsTouched();
+
     if (!this.email || !this.token) {
       this.notification.error(this.literals().validations.invalidLink);
       return;
     }
 
-    if (!this.form.newPassword.trim() || !this.form.confirmPassword.trim()) {
+    if (this.form.invalid) {
       this.notification.warning(this.literals().validations.fillAllFields);
       return;
     }
 
-    if (this.form.newPassword !== this.form.confirmPassword) {
+    const newPassword = this.form.controls.newPassword.getRawValue();
+    const confirmPassword = this.form.controls.confirmPassword.getRawValue();
+
+    if (newPassword !== confirmPassword) {
       this.notification.warning(this.literals().validations.confirmationDoesNotMatch);
       return;
     }
@@ -58,7 +72,7 @@ export class ResetPasswordComponent {
       .resetPassword({
         email: this.email,
         token: this.token,
-        newPassword: this.form.newPassword,
+        newPassword: newPassword,
       })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({

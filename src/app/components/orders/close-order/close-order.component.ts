@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -22,7 +22,7 @@ import { finalize } from 'rxjs';
   selector: 'app-close-order',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoTableModule,
     PoPageModule,
     PoModalModule,
@@ -38,6 +38,7 @@ export class CloseOrderComponent extends BaseModalComponent<
 > {
   private readonly ordersService = inject(OrdersService);
   private readonly poNotification = inject(PoNotificationService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -48,21 +49,33 @@ export class CloseOrderComponent extends BaseModalComponent<
     action: () => this.close(),
   };
 
-  closeForm: CloseOrderRequest = {
-    executionResult: 1,
-    executionNotes: '',
-  };
+  readonly form = this.formBuilder.nonNullable.group({
+    executionResult: [1],
+    executionNotes: [''],
+  });
 
   readonly executionResultOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().executionResult.success, value: 1 },
     { label: this.literals().executionResult.failure, value: 2 },
   ]);
 
+  ngOnInit(): void {
+    this.form.reset({
+      executionResult: 1,
+      executionNotes: '',
+    });
+  }
+
   saveClose(): void {
+    const request: CloseOrderRequest = {
+      executionResult: this.form.controls.executionResult.getRawValue(),
+      executionNotes: this.form.controls.executionNotes.getRawValue(),
+    };
+
     this.loading.set(true);
 
     this.ordersService
-      .close(this.data!.orderId, this.closeForm)
+      .close(this.data!.orderId, request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

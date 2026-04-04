@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -24,7 +24,7 @@ import { finalize } from 'rxjs';
   selector: 'app-assign-technician',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     PoTableModule,
     PoPageModule,
     PoModalModule,
@@ -41,6 +41,7 @@ export class AssignTechnicianComponent extends BaseModalComponent<
   private readonly ordersService = inject(OrdersService);
   private readonly poNotification = inject(PoNotificationService);
   private readonly usersService = inject(UsersService);
+  private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -52,24 +53,32 @@ export class AssignTechnicianComponent extends BaseModalComponent<
     action: () => this.close(),
   };
 
-  assignTechnicianForm: AssignOrderTechnicianRequest = {
-    technicianId: '',
-  };
+  readonly form = this.formBuilder.nonNullable.group({
+    technicianId: ['', [Validators.required]],
+  });
 
-  readonly executionResultOptions = computed<PoSelectOption[]>(() => [
-    { label: this.literals().executionResult.success, value: 1 },
-    { label: this.literals().executionResult.failure, value: 2 },
-  ]);
+  ngOnInit(): void {
+    this.form.reset({
+      technicianId: '',
+    });
+    this.loadTechnicians();
+  }
 
   saveAssignTechnician(): void {
-    if (!this.assignTechnicianForm.technicianId) {
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid) {
       return;
     }
+
+    const request: AssignOrderTechnicianRequest = {
+      technicianId: this.form.controls.technicianId.getRawValue(),
+    };
 
     this.loading.set(true);
 
     this.ordersService
-      .assignTechnician(this.data!.orderId, this.assignTechnicianForm)
+      .assignTechnician(this.data!.orderId, request)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

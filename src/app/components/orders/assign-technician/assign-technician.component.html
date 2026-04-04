@@ -9,16 +9,15 @@
   [p-secondary-action]="closeAction"
   (p-close)="closeAction.action()"
 >
-  <div class="po-row">
+  <form [formGroup]="form" class="po-row">
     <div class="po-md-12">
       <po-select
         name="technicianId"
         [p-label]="literals().fields.technician"
         [p-options]="technicians()"
-        [ngModel]="assignTechnicianForm.technicianId"
-        (ngModelChange)="assignTechnicianForm.technicianId = $event"
+        formControlName="technicianId"
       >
       </po-select>
     </div>
-  </div>
+  </form>
 </po-modal>
