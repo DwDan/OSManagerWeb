@@ -1,0 +1,60 @@
+@if (totalPages() > 0) {
+  <div class="app-pagination">
+    <div class="app-pagination__info">
+      Exibindo {{ startItem() }} até {{ endItem() }} de {{ totalItems() }} registros
+    </div>
+
+    <div class="app-pagination__actions">
+      <button
+        type="button"
+        class="app-pagination__nav-button"
+        [disabled]="!canGoPrevious()"
+        (click)="goToFirstPage()"
+      >
+        «
+      </button>
+
+      <button
+        type="button"
+        class="app-pagination__nav-button"
+        [disabled]="!canGoPrevious()"
+        (click)="goToPreviousPage()"
+      >
+        ‹
+      </button>
+
+      @for (item of pages(); track trackByItem($index, item)) {
+        @if (item === 'ellipsis') {
+          <span class="app-pagination__ellipsis">...</span>
+        } @else {
+          <button
+            type="button"
+            class="app-pagination__page-button"
+            [class.app-pagination__page-button--active]="item === page()"
+            (click)="goToPage(item)"
+          >
+            {{ item }}
+          </button>
+        }
+      }
+
+      <button
+        type="button"
+        class="app-pagination__nav-button"
+        [disabled]="!canGoNext()"
+        (click)="goToNextPage()"
+      >
+        ›
+      </button>
+
+      <button
+        type="button"
+        class="app-pagination__nav-button"
+        [disabled]="!canGoNext()"
+        (click)="goToLastPage()"
+      >
+        »
+      </button>
+    </div>
+  </div>
+}
