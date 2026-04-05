@@ -5,10 +5,14 @@ import { AddOrderEvidencesRequest } from '@models/orders/requests/add-order-evid
 import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
 import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
+import { GerOrdersRequest } from '@models/orders/requests/get-orders.request';
 import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
 import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
+import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
 import { OrderResponse } from '@models/orders/responses/order.response';
+import { PagedResponse } from '@models/pagination/response/paged.response';
 import { Observable } from 'rxjs';
+import { buildHttpParams } from 'src/app/shared/extensions/http-params.extensions';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +25,14 @@ export class OrdersService {
     return this.http.post<string>(this.baseUrl, request);
   }
 
-  getOrders(): Observable<OrderResponse[]> {
-    return this.http.get<OrderResponse[]>(this.baseUrl);
+  getAllOrders(): Observable<OrderResponse[]> {
+    return this.http.get<OrderResponse[]>(`${this.baseUrl}/all`);
+  }
+
+  getOrders(request: GerOrdersRequest): Observable<PagedResponse<OrderListItemResponse>> {
+    const params = buildHttpParams(request);
+
+    return this.http.get<PagedResponse<OrderListItemResponse>>(this.baseUrl, { params });
   }
 
   getById(id: string): Observable<OrderDetailsResponse> {

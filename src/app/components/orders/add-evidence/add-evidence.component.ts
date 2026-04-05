@@ -42,11 +42,12 @@ export class AddEvidenceComponent extends BaseModalComponent<
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
+  readonly selectedEvidenceFiles = signal<File[]>([]);
 
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().send,
     action: this.save.bind(this),
-    disabled: this.loading() || !this.selectedEvidenceFiles.length,
+    disabled: this.loading() || this.selectedEvidenceFiles().length === 0,
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -54,26 +55,26 @@ export class AddEvidenceComponent extends BaseModalComponent<
     action: this.close.bind(this),
   }));
 
-  selectedEvidenceFiles: File[] = [];
-
   assignTechnicianForm: AssignOrderTechnicianRequest = {
     technicianId: '',
   };
 
   onEvidenceFilesChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.selectedEvidenceFiles = input.files ? Array.from(input.files) : [];
+    this.selectedEvidenceFiles.set(input.files ? Array.from(input.files) : []);
   }
 
   save(): void {
-    if (this.selectedEvidenceFiles.length === 0) {
+    const files = this.selectedEvidenceFiles();
+
+    if (files.length === 0) {
       return;
     }
 
     this.loading.set(true);
 
     this.ordersService
-      .addEvidences(this.data!.orderId, { files: this.selectedEvidenceFiles })
+      .addEvidences(this.data!.orderId, { files })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+  gap: 12px;
+}
+
+:host ::ng-deep .po-page-slide-footer {
+  --padding-footer: var(--spacing-sm) var(--spacing-md) 12px;
+}
+
+:host ::ng-deep po-page-slide-footer {
+  display: flex;
+  gap: 8px;
+}
+
+:host ::ng-deep po-page-slide-footer po-button {
+  flex: 1;
+}

@@ -1,11 +1,13 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
+import { GerOrdersRequest } from '@models/orders/requests/get-orders.request';
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
-import { OrderResponse } from '@models/orders/responses/order.response';
 import { OrderStatus } from '@models/orders/types/order-status.enum';
 import {
   PoButtonModule,
@@ -27,6 +29,7 @@ import { AssignTechnicianComponent } from './assign-technician/assign-technician
 import { CloseOrderComponent } from './close-order/close-order.component';
 import { CreaterOrderComponent } from './creater-order/creater-order.component';
 import { DetailOrderComponent } from './detail-order/detail-order.component';
+import { FilterOrderComponent } from './filter-order/filter-order.component';
 import { UpdateOrderComponent } from './update-order/update-order.component';
 
 @Component({
@@ -39,6 +42,8 @@ import { UpdateOrderComponent } from './update-order/update-order.component';
     PoModalModule,
     PoFieldModule,
     PoButtonModule,
+    PaginationComponent,
+    FilterOrderComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -47,6 +52,9 @@ export class OrdersComponent implements OnInit {
   private readonly ordersService = inject(OrdersService);
   private readonly poNotification = inject(PoNotificationService);
   private readonly modalService = inject(ModalService);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+
+  @ViewChild(FilterOrderComponent) filterComponent!: FilterOrderComponent;
 
   readonly literals = injectI18n(ordersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -54,18 +62,33 @@ export class OrdersComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
+  readonly isMobile = signal(false);
+
+  readonly page = signal<number>(0);
+  readonly pageSize = signal<number>(0);
+  readonly totalItems = signal<number>(0);
   readonly items = signal<OrderListItemResponse[]>([]);
 
-  readonly pageActions = computed<PoPageAction[]>(() => [
-    {
-      label: this.literals().pageActions.newOrder,
-      action: () => this.openCreateModal(),
-    },
-    {
-      label: this.literals().pageActions.refresh,
-      action: () => this.loadOrders(),
-    },
-  ]);
+  readonly request = signal<GerOrdersRequest>({ page: 1, pageSize: 10 });
+
+  readonly pageActions = computed<PoPageAction[]>(() => {
+    const actions: PoPageAction[] = [
+      {
+        label: this.literals().pageActions.newOrder,
+        action: () => this.openCreateModal(),
+      },
+    ];
+
+    if (this.isMobile()) {
+      actions.push({
+        label: this.common().filters,
+        icon: 'po-icon-filter',
+        action: () => this.openFilters(),
+      });
+    }
+
+    return actions;
+  });
 
   readonly tableActions = computed<PoTableAction[]>(() => [
     {
@@ -174,7 +197,15 @@ export class OrdersComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
+    this.breakpointObserver.observe('(max-width: 768px)').subscribe((result) => {
+      this.isMobile.set(result.matches);
+    });
+
     this.loadOrders();
+  }
+
+  openFilters(): void {
+    this.filterComponent.openMobileFilters();
   }
 
   openCreateModal(): void {
@@ -271,25 +302,30 @@ export class OrdersComponent implements OnInit {
     this.loading.set(true);
 
     this.ordersService
-      .getOrders()
+      .getOrders(this.request())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (orders) => {
-          this.items.set(orders.map((order) => this.mapOrderToListItem(order)));
+        next: (response) => {
+          this.page.set(response.page);
+          this.pageSize.set(response.pageSize);
+          this.totalItems.set(response.totalItems);
+          this.items.set(response.items);
         },
       });
   }
 
-  private mapOrderToListItem(order: OrderResponse): OrderListItemResponse {
-    return {
-      id: order.id,
-      code: order.code,
-      customerName: order.customer.name,
-      technicianName: order.technician?.name ?? this.common().notInformed,
-      status: order.status,
-      executionResult: order.executionResult,
-      city: order.address.city,
-      state: order.address.state,
-    };
+  onFilterChange(filter: Partial<GerOrdersRequest>): void {
+    this.request.set({
+      ...this.request(),
+      ...filter,
+      page: 1,
+    });
+
+    this.loadOrders();
+  }
+
+  onPageChange(page: number) {
+    this.request.set({ ...this.request(), page: page });
+    this.loadOrders();
   }
 }

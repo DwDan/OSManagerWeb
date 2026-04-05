@@ -1,0 +1,21 @@
+@if (!isMobile()) {
+  <po-accordion>
+    <po-accordion-item [p-label]="title()">
+      <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
+
+      <div class="actions">
+        <po-button p-kind="secondary" [p-label]="clearLabel()" (p-click)="onClear()" />
+        <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
+      </div>
+    </po-accordion-item>
+  </po-accordion>
+} @else {
+  <po-page-slide #mobileFilters [p-title]="title()" p-size="auto">
+    <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
+
+    <po-page-slide-footer>
+      <po-button p-kind="secondary" [p-label]="clearLabel()" (p-click)="onClear()" />
+      <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
+    </po-page-slide-footer>
+  </po-page-slide>
+}

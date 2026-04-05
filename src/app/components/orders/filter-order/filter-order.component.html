@@ -1,0 +1,61 @@
+<ng-template #filtersForm>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-sm-12 po-md-4 po-lg-4">
+      <po-input name="code" formControlName="code" [p-label]="literals().fields.code" />
+    </div>
+
+    <div class="po-sm-12 po-md-4 po-lg-4">
+      <po-select
+        name="status"
+        formControlName="status"
+        [p-label]="literals().fields.status"
+        [p-options]="statusOptions()"
+      />
+    </div>
+
+    <div class="po-sm-12 po-md-4 po-lg-4">
+      <po-select
+        name="executionResult"
+        formControlName="executionResult"
+        [p-label]="literals().fields.executionResult"
+        [p-options]="executionResultOptions()"
+      />
+    </div>
+
+    <div class="po-sm-12 po-md-12 po-lg-4">
+      <po-select
+        name="customerId"
+        formControlName="customerId"
+        [p-label]="literals().fields.customer"
+        [p-options]="customerOptions()"
+      />
+    </div>
+
+    <div class="po-sm-12 po-md-6 po-lg-4">
+      <po-select
+        name="technicianId"
+        formControlName="technicianId"
+        [p-label]="literals().fields.technician"
+        [p-options]="technicianOptions()"
+      />
+    </div>
+
+    <div class="po-sm-12 po-md-6 po-lg-4">
+      <po-select
+        name="serviceId"
+        formControlName="serviceId"
+        [p-label]="literals().fields.service"
+        [p-options]="serviceOptions()"
+      />
+    </div>
+  </form>
+</ng-template>
+
+<app-filter-container
+  [title]="literals().title"
+  [clearLabel]="common().clear"
+  [filterLabel]="common().filter"
+  [contentTemplate]="filtersForm"
+  (clear)="clearFilters()"
+  (filter)="filter()"
+/>

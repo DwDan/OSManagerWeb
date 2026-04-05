@@ -15,7 +15,6 @@ export abstract class BaseModalComponent<TData = unknown, TResult = unknown> {
   }
 
   close(): void {
-    this.modalRef?.close();
     this.closed.emit();
   }
 
