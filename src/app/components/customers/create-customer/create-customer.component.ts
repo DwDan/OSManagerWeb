@@ -18,6 +18,7 @@ import {
 } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-create-customer',
@@ -47,7 +48,7 @@ export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed:
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.form.invalid,
+    disabled: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -69,6 +70,8 @@ export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed:
     reference: [''],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   onAddressFound(address: PostalCodeAddress): void {
     this.form.patchValue({
       postalCode: address.postalCode,
@@ -85,7 +88,7 @@ export class CreateCustomerComponent extends BaseModalComponent<{}, { confirmed:
   }
 
   save(): void {
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       this.form.markAllAsTouched();
       return;
     }

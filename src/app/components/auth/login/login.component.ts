@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { loginLiterals } from '@i18n/auth/login.literals';
@@ -17,7 +16,8 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { ModalService } from '@services/modal/modal.service';
-import { finalize, map, startWith } from 'rxjs';
+import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({
@@ -46,18 +46,12 @@ export class LoginComponent {
     language: [this.i18nStore.currentLanguage() as AppLanguage],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   readonly languageOptions = computed<PoSelectOption[]>(() => [
     { label: 'Português (BR)', value: 'pt-BR' },
     { label: 'English', value: 'en-US' },
   ]);
-
-  readonly formInvalid = toSignal(
-    this.form.statusChanges.pipe(
-      startWith(this.form.status),
-      map(() => this.form.invalid),
-    ),
-    { initialValue: this.form.invalid },
-  );
 
   readonly submitDisabled = computed(() => {
     return this.loading() || this.formInvalid();
@@ -97,7 +91,7 @@ export class LoginComponent {
   login(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       return;
     }
 

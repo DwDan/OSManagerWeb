@@ -25,6 +25,7 @@ import { CustomersService } from '@services/customers/customers.service';
 import { OrdersService } from '@services/orders/orders.service';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-creater-order',
@@ -57,7 +58,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.form.invalid,
+    disabled: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -77,6 +78,8 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
     complement: [''],
     reference: [''],
   });
+
+  readonly formInvalid = formInvalidSignal(this.form);
 
   ngOnInit(): void {
     this.form.reset({
@@ -114,7 +117,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   save(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       return;
     }
 

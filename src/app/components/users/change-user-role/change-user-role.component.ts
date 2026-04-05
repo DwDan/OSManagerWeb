@@ -16,6 +16,7 @@ import {
 } from '@po-ui/ng-components';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-change-user-role',
@@ -45,10 +46,12 @@ export class ChangeUserRoleComponent extends BaseModalComponent<
     role: [Number(this.data?.user.role) || 2],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: () => this.changeRole(),
-    loading: this.loading() || this.form.invalid,
+    loading: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({

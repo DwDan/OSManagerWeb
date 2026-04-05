@@ -14,6 +14,7 @@ import {
 } from '@po-ui/ng-components';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-create-service',
@@ -35,7 +36,7 @@ export class CreateServiceComponent extends BaseModalComponent<void, { confirmed
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.form.invalid,
+    disabled: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -49,8 +50,10 @@ export class CreateServiceComponent extends BaseModalComponent<void, { confirmed
     amountToPay: [0],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   save(): void {
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       this.form.markAllAsTouched();
       return;
     }

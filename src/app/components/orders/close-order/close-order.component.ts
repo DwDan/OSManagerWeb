@@ -18,6 +18,7 @@ import {
 } from '@po-ui/ng-components';
 import { OrdersService } from '@services/orders/orders.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-close-order',
@@ -48,7 +49,7 @@ export class CloseOrderComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.form.invalid,
+    disabled: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -60,6 +61,8 @@ export class CloseOrderComponent extends BaseModalComponent<
     executionResult: [1],
     executionNotes: [''],
   });
+
+  readonly formInvalid = formInvalidSignal(this.form);
 
   readonly executionResultOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().executionResult.success, value: 1 },

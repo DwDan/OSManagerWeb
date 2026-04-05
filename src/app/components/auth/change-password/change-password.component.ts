@@ -11,6 +11,7 @@ import {
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-change-password',
@@ -34,6 +35,8 @@ export class ChangePasswordComponent {
     confirmPassword: ['', [Validators.required]],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   get currentPasswordControl() {
     return this.form.controls.currentPassword;
   }
@@ -49,7 +52,7 @@ export class ChangePasswordComponent {
   save(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       this.notificationService.warning(this.literals().validations.fillAllFields);
       return;
     }

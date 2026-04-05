@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BaseModalComponent } from '@directives/base-modal.component';
 import { forgotPasswordLiterals } from '@i18n/auth/forgot-password.literals';
@@ -12,7 +11,8 @@ import {
   PoNotificationService,
 } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
-import { finalize, map, startWith } from 'rxjs';
+import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-forgot-password',
@@ -33,6 +33,8 @@ export class ForgotPasswordComponent extends BaseModalComponent<{}, {}> {
     email: ['', [Validators.required, Validators.email]],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   readonly emailDisabled = computed(() => {
     return String(this.loading());
   });
@@ -41,14 +43,6 @@ export class ForgotPasswordComponent extends BaseModalComponent<{}, {}> {
     const control = this.form.controls.email;
     return control.touched && control.invalid;
   }
-
-  readonly formInvalid = toSignal(
-    this.form.statusChanges.pipe(
-      startWith(this.form.status),
-      map(() => this.form.invalid),
-    ),
-    { initialValue: this.form.invalid },
-  );
 
   readonly submitDisabled = computed(() => {
     return this.loading() || this.formInvalid();
@@ -69,7 +63,7 @@ export class ForgotPasswordComponent extends BaseModalComponent<{}, {}> {
   send(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid || this.loading()) {
+    if (this.formInvalid() || this.loading()) {
       return;
     }
 

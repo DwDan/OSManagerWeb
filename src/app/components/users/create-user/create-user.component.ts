@@ -14,6 +14,7 @@ import {
 } from '@po-ui/ng-components';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-create-user',
@@ -38,10 +39,12 @@ export class CreateUserComponent extends BaseModalComponent<void, { confirmed: b
     password: ['', [Validators.required]],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.literals().modals.create.confirm,
     action: () => this.createUser(),
-    loading: this.loading() || this.form.invalid,
+    loading: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -53,7 +56,7 @@ export class CreateUserComponent extends BaseModalComponent<void, { confirmed: b
   private createUser(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       this.notification.warning(this.literals().validations.fillAllFieldsToCreate);
       return;
     }

@@ -18,6 +18,7 @@ import {
 } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-update-customer',
@@ -50,7 +51,7 @@ export class UpdateCustomerComponent
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.loading() || this.form.invalid,
+    disabled: this.loading() || this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -72,12 +73,14 @@ export class UpdateCustomerComponent
     reference: [''],
   });
 
+  readonly formInvalid = formInvalidSignal(this.form);
+
   ngOnInit(): void {
     this.loadCustomer();
   }
 
   save(): void {
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       this.form.markAllAsTouched();
       return;
     }

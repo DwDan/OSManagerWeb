@@ -26,6 +26,7 @@ import { CustomersService } from '@services/customers/customers.service';
 import { OrdersService } from '@services/orders/orders.service';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
+import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-update-order',
@@ -61,7 +62,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.form.invalid,
+    disabled: this.loading() || this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
@@ -81,6 +82,8 @@ export class UpdateOrderComponent extends BaseModalComponent<
     complement: [''],
     reference: [''],
   });
+
+  readonly formInvalid = formInvalidSignal(this.form);
 
   ngOnInit(): void {
     this.loadOrder();
@@ -115,7 +118,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
   save(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid) {
+    if (this.formInvalid()) {
       return;
     }
 
