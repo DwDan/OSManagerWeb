@@ -1,0 +1,17 @@
+<ng-template #filtersForm>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-sm-12 po-md-4 po-lg-4">
+      <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
+    </div>
+  </form>
+</ng-template>
+
+<app-filter-container
+  [title]="literals().title"
+  [slide]="false"
+  [clearLabel]="common().clear"
+  [filterLabel]="common().filter"
+  [contentTemplate]="filtersForm"
+  (clear)="clearFilters()"
+  (filter)="filter()"
+/>

@@ -1,15 +1,30 @@
 <po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
-  <po-table
-    [p-auto-collapse]="true"
-    [p-actions]="tableActions()"
-    [p-columns]="columns()"
-    [p-hide-columns-manager]="true"
-    [p-hide-table-search]="true"
-    [p-items]="items()"
-    [p-loading]="loading()"
-    [p-sort]="true"
-    [p-striped]="true"
-    [p-spacing]="spacing.Large"
-  >
-  </po-table>
+  <div class="flex flex-col h-95">
+    <div class="mb-sm">
+      <app-filter-user (filterChange)="onFilterChange($event)" />
+    </div>
+    <po-table
+      [p-auto-collapse]="true"
+      [p-actions]="tableActions()"
+      [p-columns]="columns()"
+      [p-hide-columns-manager]="true"
+      [p-hide-table-search]="true"
+      [p-items]="items()"
+      [p-loading]="loading()"
+      [p-sort]="true"
+      [p-striped]="true"
+      [p-spacing]="spacing.Large"
+    >
+    </po-table>
+
+    <div class="mt-auto">
+      <app-pagination
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [totalItems]="totalItems()"
+        (pageChange)="onPageChange($event)"
+      >
+      </app-pagination>
+    </div>
+  </div>
 </po-page-default>

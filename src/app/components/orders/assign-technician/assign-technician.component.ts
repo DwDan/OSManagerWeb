@@ -99,7 +99,7 @@ export class AssignTechnicianComponent extends BaseModalComponent<
   }
 
   private loadTechnicians(): void {
-    this.usersService.getUsers().subscribe({
+    this.usersService.getAllUsers().subscribe({
       next: (users: UserResponse[]) => {
         this.technicians.set(
           users.map((user) => ({

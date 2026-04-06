@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
+import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import { ServiceResponse } from '@models/services/responses/service.response';
 import {
   PoPageAction,
@@ -17,11 +19,12 @@ import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
 import { CreateServiceComponent } from './create-service/create-service.component';
 import { DetailServiceComponent } from './detail-service/detail-service.component';
+import { FilterServiceComponent } from './filter-service/filter-service.component';
 import { UpdateServiceComponent } from './update-service/update-service.component';
 
 @Component({
   selector: 'app-services',
-  imports: [CommonModule, PoTableModule, PoPageModule],
+  imports: [CommonModule, PoTableModule, PoPageModule, PaginationComponent, FilterServiceComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
 })
@@ -35,7 +38,13 @@ export class ServicesComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
+
+  readonly page = signal<number>(0);
+  readonly pageSize = signal<number>(0);
+  readonly totalItems = signal<number>(0);
   readonly items = signal<ServiceResponse[]>([]);
+
+  readonly request = signal<GerServicesRequest>({ page: 1, pageSize: 10 });
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -104,12 +113,30 @@ export class ServicesComponent implements OnInit {
     this.loading.set(true);
 
     this.servicesService
-      .getServices()
+      .getServices(this.request())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (services) => {
-          this.items.set(services);
+        next: (response) => {
+          this.page.set(response.page);
+          this.pageSize.set(response.pageSize);
+          this.totalItems.set(response.totalItems);
+          this.items.set(response.items);
         },
       });
+  }
+
+  onFilterChange(filter: Partial<GerServicesRequest>): void {
+    this.request.set({
+      ...this.request(),
+      ...filter,
+      page: 1,
+    });
+
+    this.loadServices();
+  }
+
+  onPageChange(page: number) {
+    this.request.set({ ...this.request(), page: page });
+    this.loadServices();
   }
 }

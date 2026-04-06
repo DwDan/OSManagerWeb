@@ -148,7 +148,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   }
 
   private loadCustomers(): void {
-    this.customersService.getCustomers().subscribe({
+    this.customersService.getAllCustomers().subscribe({
       next: (customers: CustomerResponse[]) => {
         this.customers.set(
           customers.map((customer) => ({
@@ -161,7 +161,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   }
 
   private loadServices(): void {
-    this.servicesService.getServices().subscribe({
+    this.servicesService.getAllServices().subscribe({
       next: (services: ServiceResponse[]) => {
         this.services.set(
           services.map((service) => ({

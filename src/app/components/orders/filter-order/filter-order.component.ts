@@ -106,7 +106,7 @@ export class FilterOrderComponent implements OnInit {
   }
 
   private loadCustomers(): void {
-    this.customersService.getCustomers().subscribe({
+    this.customersService.getAllCustomers().subscribe({
       next: (response) => {
         this.customerOptions.set(
           response.map((customer) => ({
@@ -119,7 +119,7 @@ export class FilterOrderComponent implements OnInit {
   }
 
   private loadTechnicians(): void {
-    this.usersService.getUsers().subscribe({
+    this.usersService.getAllUsers().subscribe({
       next: (response) => {
         this.technicianOptions.set(
           response.map((technician) => ({
@@ -132,7 +132,7 @@ export class FilterOrderComponent implements OnInit {
   }
 
   private loadServices(): void {
-    this.servicesService.getServices().subscribe({
+    this.servicesService.getAllServices().subscribe({
       next: (response) => {
         this.serviceOptions.set(
           response.map((service) => ({

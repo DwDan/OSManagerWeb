@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
+import { GerCustomersRequest } from '@models/customers/requests/get-customers.request';
 import { CustomerListItemResponse } from '@models/customers/responses/customer-list-item.response';
-import { CustomerResponse } from '@models/customers/responses/customer.response';
+import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import {
   PoPageAction,
   PoPageModule,
@@ -18,11 +20,18 @@ import { ModalService } from '@services/modal/modal.service';
 import { finalize } from 'rxjs';
 import { CreateCustomerComponent } from './create-customer/create-customer.component';
 import { DetailCustomerComponent } from './detail-customer/detail-customer.component';
+import { FilterCustomerComponent } from './filter-customer/filter-customer.component';
 import { UpdateCustomerComponent } from './update-customer/update-customer.component';
 
 @Component({
   selector: 'app-customers',
-  imports: [CommonModule, PoTableModule, PoPageModule],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoPageModule,
+    PaginationComponent,
+    FilterCustomerComponent,
+  ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
 })
@@ -36,7 +45,13 @@ export class CustomersComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
+
+  readonly page = signal<number>(0);
+  readonly pageSize = signal<number>(0);
+  readonly totalItems = signal<number>(0);
   readonly items = signal<CustomerListItemResponse[]>([]);
+
+  readonly request = signal<GerCustomersRequest>({ page: 1, pageSize: 10 });
 
   readonly pageActions = computed<PoPageAction[]>(() => [
     {
@@ -96,23 +111,30 @@ export class CustomersComponent implements OnInit {
     this.loading.set(true);
 
     this.customersService
-      .getCustomers()
+      .getCustomers(this.request())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (customers) => {
-          this.items.set(customers.map((customer) => this.mapCustomerToListItem(customer)));
+        next: (response) => {
+          this.page.set(response.page);
+          this.pageSize.set(response.pageSize);
+          this.totalItems.set(response.totalItems);
+          this.items.set(response.items);
         },
       });
   }
 
-  private mapCustomerToListItem(customer: CustomerResponse): CustomerListItemResponse {
-    return {
-      id: customer.id,
-      name: customer.name,
-      email: customer.email,
-      phone: customer.phone,
-      city: customer.address.city,
-      state: customer.address.state,
-    };
+  onFilterChange(filter: Partial<GerServicesRequest>): void {
+    this.request.set({
+      ...this.request(),
+      ...filter,
+      page: 1,
+    });
+
+    this.loadCustomers();
+  }
+
+  onPageChange(page: number) {
+    this.request.set({ ...this.request(), page: page });
+    this.loadCustomers();
   }
 }

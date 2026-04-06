@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
+import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { usersLiterals } from '@i18n/users/users.literals';
+import { GerUsersRequest } from '@models/users/requests/get-users.request';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoDialogService,
@@ -20,13 +22,21 @@ import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
 import { ChangeUserRoleComponent } from './change-user-role/change-user-role.component';
 import { CreateUserComponent } from './create-user/create-user.component';
+import { FilterUserComponent } from './filter-user/filter-user.component';
 import { UpdateUserComponent } from './update-user/update-user.component';
 
 @Component({
   selector: 'app-usuarios',
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss',
-  imports: [CommonModule, PoTableModule, PoWidgetModule, PoPageModule],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoWidgetModule,
+    PoPageModule,
+    FilterUserComponent,
+    PaginationComponent,
+  ],
 })
 export class UsersComponent {
   private readonly service = inject(UsersService);
@@ -36,7 +46,12 @@ export class UsersComponent {
   readonly literals = injectI18n(usersLiterals);
   readonly common = injectI18n(commonLiterals);
 
+  readonly page = signal<number>(0);
+  readonly pageSize = signal<number>(0);
+  readonly totalItems = signal<number>(0);
   readonly items = signal<UserResponse[]>([]);
+  readonly request = signal<GerUsersRequest>({ page: 1, pageSize: 10 });
+
   readonly loading = signal(false);
   readonly spacing = PoTableColumnSpacing;
 
@@ -143,13 +158,31 @@ export class UsersComponent {
     this.loading.set(true);
 
     this.service
-      .getUsers()
+      .getUsers(this.request())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (users) => {
-          this.items.set(users);
+        next: (response) => {
+          this.page.set(response.page);
+          this.pageSize.set(response.pageSize);
+          this.totalItems.set(response.totalItems);
+          this.items.set(response.items);
         },
       });
+  }
+
+  onFilterChange(filter: Partial<GerUsersRequest>): void {
+    this.request.set({
+      ...this.request(),
+      ...filter,
+      page: 1,
+    });
+
+    this.loadUsers();
+  }
+
+  onPageChange(page: number) {
+    this.request.set({ ...this.request(), page: page });
+    this.loadUsers();
   }
 
   activate(user: UserResponse): void {

@@ -1,11 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
+import { PagedResponse } from '@models/pagination/response/paged.response';
 import { ChangeUserRoleRequest } from '@models/users/requests/change-user-role.request';
 import { CreateUserRequest } from '@models/users/requests/create-user.request';
+import { GerUsersRequest } from '@models/users/requests/get-users.request';
 import { UpdateUserRequest } from '@models/users/requests/update-user.request';
 import { UserResponse } from '@models/users/responses/user.response';
 import { Observable } from 'rxjs';
+import { buildHttpParams } from 'src/app/shared/extensions/http-params.extensions';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +21,14 @@ export class UsersService {
     return this.http.post<string>(this.baseUrl, request);
   }
 
-  getUsers(): Observable<UserResponse[]> {
-    return this.http.get<UserResponse[]>(this.baseUrl);
+  getAllUsers(): Observable<UserResponse[]> {
+    return this.http.get<UserResponse[]>(`${this.baseUrl}/all`);
+  }
+
+  getUsers(request: GerUsersRequest): Observable<PagedResponse<UserResponse>> {
+    const params = buildHttpParams(request);
+
+    return this.http.get<PagedResponse<UserResponse>>(this.baseUrl, { params });
   }
 
   getById(id: string): Observable<UserResponse> {
