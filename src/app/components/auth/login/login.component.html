@@ -62,6 +62,7 @@
         name="language"
         [p-label]="literals().language"
         [p-options]="languageOptions()"
+        [p-disabled]="loadingStr()"
         formControlName="language"
       >
       </po-select>

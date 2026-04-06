@@ -1,5 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
+import { paginationLiterals } from '@i18n/pagination/pagination.literals';
+import { injectI18n } from '@i18n/shared/inject-i18n';
 import { PoButtonModule } from '@po-ui/ng-components';
 
 type PaginationItem = number | 'ellipsis';
@@ -17,6 +19,7 @@ export class PaginationComponent {
   readonly totalItems = input<number>(0);
   readonly siblingCount = input<number>(1);
 
+  readonly literals = injectI18n(paginationLiterals);
   readonly pageChange = output<number>();
 
   readonly totalPages = computed(() => {
@@ -116,6 +119,13 @@ export class PaginationComponent {
   trackByItem(index: number, item: PaginationItem): string {
     return `${index}-${item}`;
   }
+
+  readonly infoText = computed(() =>
+    this.literals()
+      .info.replace('{{start}}', String(this.startItem()))
+      .replace('{{end}}', String(this.endItem()))
+      .replace('{{total}}', String(this.totalItems())),
+  );
 
   private range(start: number, end: number): number[] {
     if (start > end) {
