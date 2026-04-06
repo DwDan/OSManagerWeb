@@ -1,2 +1,226 @@
 /* You can add global styles to this file, and also import other style files */
 @import '@po-ui/style/css/po-theme-default.min.css';
+
+/* ===== FLEX ===== */
+.flex {
+  display: flex;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+/* DIRECTION */
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+/* ALIGN */
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+/* Wrap */
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+/* ===== GAP ===== */
+.gap-xs {
+  gap: 4px;
+}
+
+.gap-sm {
+  gap: 8px;
+}
+
+.gap-md {
+  gap: 16px;
+}
+
+.gap-lg {
+  gap: 24px;
+}
+
+/* ===== WIDTH ===== */
+.w-full {
+  width: 100%;
+}
+
+.w-auto {
+  width: auto;
+}
+
+/* ===== MARGIN ===== */
+.m-0 {
+  margin: 0;
+}
+.m-xs {
+  margin: 4px;
+}
+.m-sm {
+  margin: 8px;
+}
+.m-md {
+  margin: 16px;
+}
+.m-lg {
+  margin: 24px;
+}
+
+/* ===== MARGIN X ===== */
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.mx-xs {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.mx-sm {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.mx-md {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+.mx-lg {
+  margin-left: 24px;
+  margin-right: 24px;
+}
+
+/* ===== MARGIN Y ===== */
+.my-0 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.my-xs {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.my-sm {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.my-md {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+.my-lg {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* ===== MARGIN TOP ===== */
+.mt-0 {
+  margin-top: 0;
+}
+.mt-xs {
+  margin-top: 4px;
+}
+.mt-sm {
+  margin-top: 8px;
+}
+.mt-md {
+  margin-top: 16px;
+}
+.mt-lg {
+  margin-top: 24px;
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+.mb-xs {
+  margin-bottom: 4px;
+}
+.mb-sm {
+  margin-bottom: 8px;
+}
+.mb-md {
+  margin-bottom: 16px;
+}
+.mb-lg {
+  margin-bottom: 24px;
+}
+
+.ml-0 {
+  margin-left: 0;
+}
+.ml-xs {
+  margin-left: 4px;
+}
+.ml-sm {
+  margin-left: 8px;
+}
+.ml-md {
+  margin-left: 16px;
+}
+.ml-lg {
+  margin-left: 24px;
+}
+
+.mr-0 {
+  margin-right: 0;
+}
+.mr-xs {
+  margin-right: 4px;
+}
+.mr-sm {
+  margin-right: 8px;
+}
+.mr-md {
+  margin-right: 16px;
+}
+.mr-lg {
+  margin-right: 24px;
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+.mb-auto {
+  margin-bottom: auto;
+}
+
+/* ===== HEIGHT ===== */
+.h-full {
+  height: 100%;
+}
+
+.h-screen {
+  height: 100vh;
+}

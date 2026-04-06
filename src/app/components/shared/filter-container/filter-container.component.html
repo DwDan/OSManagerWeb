@@ -3,7 +3,7 @@
     <po-accordion-item [p-label]="title()">
       <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
 
-      <div class="actions">
+      <div class="flex justify-end gap-sm">
         <po-button p-kind="secondary" [p-label]="clearLabel()" (p-click)="onClear()" />
         <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
       </div>

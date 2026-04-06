@@ -34,7 +34,7 @@ export const commonLiterals = defineI18n({
     failure: 'Failure',
     notInformed: '-',
     clear: 'Clear',
-    filter: 'Filtrar',
-    filters: 'Filtros',
+    filter: 'Filter',
+    filters: 'Filters',
   },
 });
