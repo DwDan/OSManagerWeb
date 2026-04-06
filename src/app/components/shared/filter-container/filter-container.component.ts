@@ -13,6 +13,8 @@ import {
 import {
   PoAccordionModule,
   PoButtonModule,
+  PoModalComponent,
+  PoModalModule,
   PoPageModule,
   PoPageSlideComponent,
   PoPageSlideModule,
@@ -23,12 +25,20 @@ import {
   templateUrl: './filter-container.component.html',
   styleUrl: './filter-container.component.scss',
   standalone: true,
-  imports: [CommonModule, PoButtonModule, PoAccordionModule, PoPageModule, PoPageSlideModule],
+  imports: [
+    CommonModule,
+    PoButtonModule,
+    PoAccordionModule,
+    PoPageModule,
+    PoPageSlideModule,
+    PoModalModule,
+  ],
 })
 export class FilterContainerComponent implements OnInit {
   private readonly breakpointObserver = inject(BreakpointObserver);
 
-  @ViewChild('mobileFilters', { static: false }) mobileFilters!: PoPageSlideComponent;
+  @ViewChild('slideFilters', { static: false }) slideFilters!: PoPageSlideComponent;
+  @ViewChild('modalFilters', { static: false }) modalFilters!: PoModalComponent;
 
   readonly title = input.required<string>();
   readonly clearLabel = input.required<string>();
@@ -37,6 +47,7 @@ export class FilterContainerComponent implements OnInit {
 
   readonly clear = output<void>();
   readonly filter = output<void>();
+  readonly slide = input<boolean>();
 
   readonly isMobile = signal(false);
 
@@ -48,7 +59,11 @@ export class FilterContainerComponent implements OnInit {
 
   openMobileFilters(): void {
     if (this.isMobile()) {
-      this.mobileFilters.open();
+      if (this.slide()) {
+        this.slideFilters.open();
+      } else {
+        this.modalFilters.open();
+      }
     }
   }
 
@@ -60,7 +75,11 @@ export class FilterContainerComponent implements OnInit {
     this.filter.emit();
 
     if (this.isMobile()) {
-      this.mobileFilters.close();
+      if (this.slide()) {
+        this.slideFilters.close();
+      } else {
+        this.modalFilters.close();
+      }
     }
   }
 }

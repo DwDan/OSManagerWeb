@@ -9,8 +9,8 @@
       </div>
     </po-accordion-item>
   </po-accordion>
-} @else {
-  <po-page-slide #mobileFilters [p-title]="title()" p-size="auto">
+} @else if (slide()) {
+  <po-page-slide #slideFilters [p-title]="title()" p-size="auto">
     <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
 
     <po-page-slide-footer>
@@ -18,4 +18,14 @@
       <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
     </po-page-slide-footer>
   </po-page-slide>
+} @else {
+  <po-modal
+    #modalFilters
+    [p-title]="title()"
+    p-size="auto"
+    [p-primary-action]="{ label: filterLabel(), action: onFilter.bind(this) }"
+    [p-secondary-action]="{ label: clearLabel(), action: onClear.bind(this) }"
+  >
+    <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
+  </po-modal>
 }
