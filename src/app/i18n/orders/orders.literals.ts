@@ -126,7 +126,7 @@ export const ordersLiterals = defineI18n({
     },
     fields: {
       customer: 'Customer',
-      services: 'Serviços',
+      services: 'Services',
       phServices: 'Select services',
       postalCode: 'Postal code',
       street: 'Street',
