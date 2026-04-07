@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
@@ -8,6 +7,7 @@ import { injectI18n } from '@i18n/shared/inject-i18n';
 import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import { ServiceResponse } from '@models/services/responses/service.response';
 import {
+  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
@@ -25,14 +25,7 @@ import { UpdateServiceComponent } from './update-service/update-service.componen
 
 @Component({
   selector: 'app-services',
-  imports: [
-    CommonModule,
-    PoTableModule,
-    PoPageModule,
-    PaginationComponent,
-    FilterServiceComponent,
-    PageComponent,
-  ],
+  imports: [CommonModule, PoTableModule, PoPageModule, PaginationComponent, FilterServiceComponent],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
 })
@@ -57,8 +50,8 @@ export class ServicesComponent implements OnInit {
 
   readonly request = signal<GerServicesRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<AppPageAction[]>(() => {
-    const actions: AppPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => {
+    const actions: PoPageAction[] = [
       {
         label: this.literals().pageActions.newService,
         icon: 'an an-plus',

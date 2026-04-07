@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
@@ -9,6 +8,7 @@ import { GerCustomersRequest } from '@models/customers/requests/get-customers.re
 import { CustomerListItemResponse } from '@models/customers/responses/customer-list-item.response';
 import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import {
+  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
@@ -32,7 +32,6 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
     PoPageModule,
     PaginationComponent,
     FilterCustomerComponent,
-    PageComponent,
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
@@ -58,8 +57,8 @@ export class CustomersComponent implements OnInit {
 
   readonly request = signal<GerCustomersRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<AppPageAction[]>(() => {
-    const actions: AppPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => {
+    const actions: PoPageAction[] = [
       {
         label: this.literals().pageActions.newCustomer,
         icon: 'an an-plus',

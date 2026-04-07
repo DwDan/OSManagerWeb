@@ -1,4 +1,4 @@
-<app-page [p-title]="literals().title" [p-actions]="pageActions()">
+<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
   <div class="flex flex-col h-95">
     <div class="mb-sm">
       <app-filter-customer (filterChange)="onFilterChange($event)" />
@@ -27,4 +27,4 @@
       </app-pagination>
     </div>
   </div>
-</app-page>
+</po-page-default>

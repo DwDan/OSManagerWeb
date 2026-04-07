@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -14,6 +13,7 @@ import {
   PoFieldModule,
   PoModalModule,
   PoNotificationService,
+  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
@@ -44,7 +44,6 @@ import { UpdateOrderComponent } from './update-order/update-order.component';
     PoButtonModule,
     PaginationComponent,
     FilterOrderComponent,
-    PageComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -71,8 +70,8 @@ export class OrdersComponent implements OnInit {
 
   readonly request = signal<GerOrdersRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<AppPageAction[]>(() => {
-    const actions: AppPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => {
+    const actions: PoPageAction[] = [
       {
         label: this.literals().pageActions.newOrder,
         icon: 'an an-plus',

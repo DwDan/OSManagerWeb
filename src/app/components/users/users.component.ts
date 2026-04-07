@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal, ViewChild } from '@angular/core';
-import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -9,6 +8,7 @@ import { GerUsersRequest } from '@models/users/requests/get-users.request';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoDialogService,
+  PoPageAction,
   PoPageModule,
   PoSelectOption,
   PoTableAction,
@@ -37,7 +37,6 @@ import { UpdateUserComponent } from './update-user/update-user.component';
     PoPageModule,
     FilterUserComponent,
     PaginationComponent,
-    PageComponent,
   ],
 })
 export class UsersComponent {
@@ -93,8 +92,8 @@ export class UsersComponent {
     { property: 'emailConfirmed', label: this.literals().columns.emailConfirmed, type: 'boolean' },
   ]);
 
-  readonly pageActions = computed<AppPageAction[]>(() => {
-    const actions: AppPageAction[] = [
+  readonly pageActions = computed<PoPageAction[]>(() => {
+    const actions: PoPageAction[] = [
       {
         label: this.literals().pageActions.createUser,
         icon: 'an an-plus',
