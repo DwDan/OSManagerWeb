@@ -1,0 +1,78 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.app-page-shell {
+  min-width: 0;
+}
+
+.app-page__header {
+  min-width: 0;
+  padding-bottom: 16px;
+}
+
+.app-page__title-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-page__title {
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-neutral-dark-90);
+  word-break: break-word;
+}
+
+.app-page__subtitle {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-neutral-dark-60);
+}
+
+.app-page__actions {
+  flex: 0 0 auto;
+}
+
+.app-page__action-link {
+  text-decoration: none;
+}
+
+.app-page__breadcrumb {
+  font-size: 12px;
+}
+
+.app-page__breadcrumb-link {
+  text-decoration: none;
+}
+
+.app-page__breadcrumb-current {
+  font-weight: 600;
+}
+
+.app-page__breadcrumb-separator {
+  opacity: 0.6;
+}
+
+.app-page__content {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .app-page__title {
+    font-size: 24px;
+  }
+
+  .app-page__actions ::ng-deep .po-button-label {
+    display: none;
+  }
+
+  .app-page__actions ::ng-deep .po-button-icon {
+    margin-right: 0;
+  }
+
+  .app-page__actions ::ng-deep .po-button {
+    min-width: 40px;
+  }
+}

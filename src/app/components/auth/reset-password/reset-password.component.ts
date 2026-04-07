@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PageComponent } from '@components/shared/page-default/page.component';
 import { resetPasswordLiterals } from '@i18n/auth/reset-password.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
@@ -15,7 +16,14 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, ReactiveFormsModule, FormsModule],
+  imports: [
+    PoPageModule,
+    PoFieldModule,
+    PoButtonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    PageComponent,
+  ],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })

@@ -1,15 +1,5 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  TemplateRef,
-  ViewChild,
-  inject,
-  input,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, TemplateRef, ViewChild, computed, inject, input, output } from '@angular/core';
 import {
   PoAccordionModule,
   PoButtonModule,
@@ -19,6 +9,7 @@ import {
   PoPageSlideComponent,
   PoPageSlideModule,
 } from '@po-ui/ng-components';
+import { DevicesService } from '@services/devices/devices.service';
 
 @Component({
   selector: 'app-filter-container',
@@ -34,8 +25,8 @@ import {
     PoModalModule,
   ],
 })
-export class FilterContainerComponent implements OnInit {
-  private readonly breakpointObserver = inject(BreakpointObserver);
+export class FilterContainerComponent {
+  private readonly devicesService = inject(DevicesService);
 
   @ViewChild('slideFilters', { static: false }) slideFilters!: PoPageSlideComponent;
   @ViewChild('modalFilters', { static: false }) modalFilters!: PoModalComponent;
@@ -49,16 +40,10 @@ export class FilterContainerComponent implements OnInit {
   readonly filter = output<void>();
   readonly slide = input<boolean>();
 
-  readonly isMobile = signal(false);
-
-  ngOnInit(): void {
-    this.breakpointObserver.observe('(max-width: 768px)').subscribe((result) => {
-      this.isMobile.set(result.matches);
-    });
-  }
+  readonly isMobile = computed<boolean>(() => this.devicesService.isMobile());
 
   openMobileFilters(): void {
-    if (this.isMobile()) {
+    if (this.devicesService.isMobile()) {
       if (this.slide()) {
         this.slideFilters.open();
       } else {
@@ -74,7 +59,7 @@ export class FilterContainerComponent implements OnInit {
   onFilter(): void {
     this.filter.emit();
 
-    if (this.isMobile()) {
+    if (this.devicesService.isMobile()) {
       if (this.slide()) {
         this.slideFilters.close();
       } else {

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ViewChild } from '@angular/core';
+import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -8,7 +9,6 @@ import { GerUsersRequest } from '@models/users/requests/get-users.request';
 import { UserResponse } from '@models/users/responses/user.response';
 import {
   PoDialogService,
-  PoPageAction,
   PoPageModule,
   PoSelectOption,
   PoTableAction,
@@ -17,6 +17,7 @@ import {
   PoTableModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
+import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
@@ -36,12 +37,16 @@ import { UpdateUserComponent } from './update-user/update-user.component';
     PoPageModule,
     FilterUserComponent,
     PaginationComponent,
+    PageComponent,
   ],
 })
 export class UsersComponent {
   private readonly service = inject(UsersService);
   private readonly dialog = inject(PoDialogService);
   private readonly modalService = inject(ModalService);
+  private readonly devicesService = inject(DevicesService);
+
+  @ViewChild(FilterUserComponent) filterComponent!: FilterUserComponent;
 
   readonly literals = injectI18n(usersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -88,12 +93,25 @@ export class UsersComponent {
     { property: 'emailConfirmed', label: this.literals().columns.emailConfirmed, type: 'boolean' },
   ]);
 
-  readonly pageActions = computed<PoPageAction[]>(() => [
-    {
-      label: this.literals().pageActions.createUser,
-      action: () => this.openCreateModal(),
-    },
-  ]);
+  readonly pageActions = computed<AppPageAction[]>(() => {
+    const actions: AppPageAction[] = [
+      {
+        label: this.literals().pageActions.createUser,
+        icon: 'an an-plus',
+        action: () => this.openCreateModal(),
+      },
+    ];
+
+    if (this.devicesService.isMobile()) {
+      actions.push({
+        label: this.common().filters,
+        icon: 'an an-funnel',
+        action: () => this.openFilters(),
+      });
+    }
+
+    return actions;
+  });
 
   readonly tableActions = computed<PoTableAction[]>(() => [
     {
@@ -128,6 +146,10 @@ export class UsersComponent {
 
   ngOnInit(): void {
     this.loadUsers();
+  }
+
+  openFilters(): void {
+    this.filterComponent.openMobileFilters();
   }
 
   openCreateModal(): void {

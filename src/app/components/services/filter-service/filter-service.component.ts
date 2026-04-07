@@ -47,4 +47,8 @@ export class FilterServiceComponent {
       page: 1,
     });
   }
+
+  openMobileFilters(): void {
+    this.filterContainer.openMobileFilters();
+  }
 }

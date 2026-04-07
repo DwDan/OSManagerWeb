@@ -1,0 +1,77 @@
+<div class="po-page app-page-shell">
+  @if (breadcrumb().length > 0) {
+    <div class="po-row">
+      <div class="po-md-12">
+        <nav class="app-page__breadcrumb flex flex-wrap items-center gap-xs mb-sm">
+          @for (item of breadcrumb(); track $index) {
+            @if (item.link) {
+              <a class="app-page__breadcrumb-link" [routerLink]="item.link">
+                {{ item.label }}
+              </a>
+            } @else {
+              <span class="app-page__breadcrumb-current">{{ item.label }}</span>
+            }
+
+            @if ($index < breadcrumb().length - 1) {
+              <span class="app-page__breadcrumb-separator">/</span>
+            }
+          }
+        </nav>
+      </div>
+    </div>
+  }
+
+  <div class="po-row">
+    <div class="po-md-12">
+      <header class="app-page__header flex items-center justify-between flex-wrap gap-md">
+        <div class="app-page__title-wrapper">
+          <h1 class="app-page__title m-0">{{ title() }}</h1>
+
+          @if (subtitle()) {
+            <p class="app-page__subtitle m-0 mt-xs">{{ subtitle() }}</p>
+          }
+        </div>
+
+        @if (renderedActions().length > 0) {
+          <div class="app-page__actions flex items-center justify-end flex-wrap gap-sm">
+            @for (action of renderedActions(); track trackByAction($index, action)) {
+              @if (action.url) {
+                <a
+                  class="app-page__action-link"
+                  [href]="action.url"
+                  [target]="action.target || '_self'"
+                  [attr.aria-label]="action.label || action.icon || 'action'"
+                >
+                  <po-button
+                    [p-label]="action.label"
+                    [p-icon]="action.icon || ''"
+                    [p-kind]="action.kind || 'primary'"
+                    [p-disabled]="!!action.disabled"
+                  >
+                  </po-button>
+                </a>
+              } @else {
+                <po-button
+                  [p-label]="action.label"
+                  [p-icon]="action.icon || ''"
+                  [p-kind]="action.kind || 'primary'"
+                  [p-disabled]="!!action.disabled"
+                  (p-click)="executeAction(action)"
+                >
+                </po-button>
+              }
+            }
+          </div>
+        }
+      </header>
+    </div>
+  </div>
+
+  <div class="po-row">
+    <div class="po-md-12">
+      <section class="app-page__content">
+        <ng-content />
+      </section>
+    </div>
+  </div>
+</div>

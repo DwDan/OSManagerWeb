@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PageComponent } from '@components/shared/page-default/page.component';
 import { changePasswordLiterals } from '@i18n/auth/change-password.literals';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -15,7 +16,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
   selector: 'app-change-password',
-  imports: [PoPageModule, PoFieldModule, PoButtonModule, ReactiveFormsModule],
+  imports: [PoPageModule, PoFieldModule, PoButtonModule, ReactiveFormsModule, PageComponent],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
 })

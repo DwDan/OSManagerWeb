@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
@@ -8,7 +9,6 @@ import { GerCustomersRequest } from '@models/customers/requests/get-customers.re
 import { CustomerListItemResponse } from '@models/customers/responses/customer-list-item.response';
 import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import {
-  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
@@ -16,6 +16,7 @@ import {
   PoTableModule,
 } from '@po-ui/ng-components';
 import { CustomersService } from '@services/customers/customers.service';
+import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { finalize } from 'rxjs';
 import { CreateCustomerComponent } from './create-customer/create-customer.component';
@@ -31,6 +32,7 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
     PoPageModule,
     PaginationComponent,
     FilterCustomerComponent,
+    PageComponent,
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
@@ -38,6 +40,9 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
 export class CustomersComponent implements OnInit {
   private readonly customersService = inject(CustomersService);
   private readonly modalService = inject(ModalService);
+  private readonly devicesService = inject(DevicesService);
+
+  @ViewChild(FilterCustomerComponent) filterComponent!: FilterCustomerComponent;
 
   readonly literals = injectI18n(customersLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -53,16 +58,25 @@ export class CustomersComponent implements OnInit {
 
   readonly request = signal<GerCustomersRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<PoPageAction[]>(() => [
-    {
-      label: this.literals().pageActions.newCustomer,
-      action: () => this.openCreateModal(),
-    },
-    {
-      label: this.literals().pageActions.refresh,
-      action: () => this.loadCustomers(),
-    },
-  ]);
+  readonly pageActions = computed<AppPageAction[]>(() => {
+    const actions: AppPageAction[] = [
+      {
+        label: this.literals().pageActions.newCustomer,
+        icon: 'an an-plus',
+        action: () => this.openCreateModal(),
+      },
+    ];
+
+    if (this.devicesService.isMobile()) {
+      actions.push({
+        label: this.common().filters,
+        icon: 'an an-funnel',
+        action: () => this.openFilters(),
+      });
+    }
+
+    return actions;
+  });
 
   readonly tableActions = computed<PoTableAction[]>(() => [
     {
@@ -85,6 +99,10 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomers();
+  }
+
+  openFilters(): void {
+    this.filterComponent.openMobileFilters();
   }
 
   openCreateModal(): void {

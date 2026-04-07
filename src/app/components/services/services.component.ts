@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
@@ -7,13 +8,13 @@ import { injectI18n } from '@i18n/shared/inject-i18n';
 import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import { ServiceResponse } from '@models/services/responses/service.response';
 import {
-  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
+import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { ServicesService } from '@services/services/services.service';
 import { finalize } from 'rxjs';
@@ -24,13 +25,23 @@ import { UpdateServiceComponent } from './update-service/update-service.componen
 
 @Component({
   selector: 'app-services',
-  imports: [CommonModule, PoTableModule, PoPageModule, PaginationComponent, FilterServiceComponent],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoPageModule,
+    PaginationComponent,
+    FilterServiceComponent,
+    PageComponent,
+  ],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
 })
 export class ServicesComponent implements OnInit {
   private readonly servicesService = inject(ServicesService);
   private readonly modalService = inject(ModalService);
+  private readonly devicesService = inject(DevicesService);
+
+  @ViewChild(FilterServiceComponent) filterComponent!: FilterServiceComponent;
 
   readonly literals = injectI18n(servicesLiterals);
   readonly common = injectI18n(commonLiterals);
@@ -46,16 +57,25 @@ export class ServicesComponent implements OnInit {
 
   readonly request = signal<GerServicesRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<PoPageAction[]>(() => [
-    {
-      label: this.literals().pageActions.newService,
-      action: () => this.openCreateModal(),
-    },
-    {
-      label: this.literals().pageActions.refresh,
-      action: () => this.loadServices(),
-    },
-  ]);
+  readonly pageActions = computed<AppPageAction[]>(() => {
+    const actions: AppPageAction[] = [
+      {
+        label: this.literals().pageActions.newService,
+        icon: 'an an-plus',
+        action: () => this.openCreateModal(),
+      },
+    ];
+
+    if (this.devicesService.isMobile()) {
+      actions.push({
+        label: this.common().filters,
+        icon: 'an an-funnel',
+        action: () => this.openFilters(),
+      });
+    }
+
+    return actions;
+  });
 
   readonly tableActions = computed<PoTableAction[]>(() => [
     {
@@ -87,6 +107,10 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadServices();
+  }
+
+  openFilters(): void {
+    this.filterComponent.openMobileFilters();
   }
 
   openCreateModal(): void {

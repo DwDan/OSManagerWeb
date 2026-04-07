@@ -39,6 +39,10 @@ export class FilterCustomerComponent {
     this.emitFilter();
   }
 
+  openMobileFilters(): void {
+    this.filterContainer.openMobileFilters();
+  }
+
   private emitFilter(): void {
     const rawValue = this.form.getRawValue();
 

@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { PageComponent } from '@components/shared/page-default/page.component';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { unauthorizedLiterals } from '@i18n/unauthorized/unauthorized.literals';
 import { PoButtonModule, PoPageModule, PoWidgetModule } from '@po-ui/ng-components';
 
 @Component({
   selector: 'app-unauthorized',
-  imports: [CommonModule, PoPageModule, PoWidgetModule, PoButtonModule],
+  imports: [CommonModule, PoPageModule, PoWidgetModule, PoButtonModule, PageComponent],
   templateUrl: './unauthorized.component.html',
   styleUrl: './unauthorized.component.scss',
 })

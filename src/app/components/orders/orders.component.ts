@@ -1,7 +1,7 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AppPageAction, PageComponent } from '@components/shared/page-default/page.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -14,13 +14,13 @@ import {
   PoFieldModule,
   PoModalModule,
   PoNotificationService,
-  PoPageAction,
   PoPageModule,
   PoTableAction,
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
+import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { OrdersService } from '@services/orders/orders.service';
 import { finalize } from 'rxjs';
@@ -44,6 +44,7 @@ import { UpdateOrderComponent } from './update-order/update-order.component';
     PoButtonModule,
     PaginationComponent,
     FilterOrderComponent,
+    PageComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -52,7 +53,7 @@ export class OrdersComponent implements OnInit {
   private readonly ordersService = inject(OrdersService);
   private readonly poNotification = inject(PoNotificationService);
   private readonly modalService = inject(ModalService);
-  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly devicesService = inject(DevicesService);
 
   @ViewChild(FilterOrderComponent) filterComponent!: FilterOrderComponent;
 
@@ -62,7 +63,6 @@ export class OrdersComponent implements OnInit {
   readonly spacing = PoTableColumnSpacing;
 
   readonly loading = signal(false);
-  readonly isMobile = signal(false);
 
   readonly page = signal<number>(0);
   readonly pageSize = signal<number>(0);
@@ -71,18 +71,19 @@ export class OrdersComponent implements OnInit {
 
   readonly request = signal<GerOrdersRequest>({ page: 1, pageSize: 10 });
 
-  readonly pageActions = computed<PoPageAction[]>(() => {
-    const actions: PoPageAction[] = [
+  readonly pageActions = computed<AppPageAction[]>(() => {
+    const actions: AppPageAction[] = [
       {
         label: this.literals().pageActions.newOrder,
+        icon: 'an an-plus',
         action: () => this.openCreateModal(),
       },
     ];
 
-    if (this.isMobile()) {
+    if (this.devicesService.isMobile()) {
       actions.push({
         label: this.common().filters,
-        icon: 'po-icon-filter',
+        icon: 'an an-funnel',
         action: () => this.openFilters(),
       });
     }
@@ -197,10 +198,6 @@ export class OrdersComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
-    this.breakpointObserver.observe('(max-width: 768px)').subscribe((result) => {
-      this.isMobile.set(result.matches);
-    });
-
     this.loadOrders();
   }
 
