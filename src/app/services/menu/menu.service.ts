@@ -1,43 +1,37 @@
-import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { PoMenuFilter, PoMenuItem, PoMenuItemFiltered } from '@po-ui/ng-components';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { environment } from '@environments/environment';
+import { PoMenuItem } from '@po-ui/ng-components';
+import { map, Observable, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MenuService implements PoMenuFilter {
-  private menus: PoMenuItem[] = [];
-  private router = inject(Router);
+export class MenuService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = `${environment.apiUrl}/menus`;
+  private readonly menusSignal = signal<PoMenuItem[] | null>(null);
+  public readonly menus = this.menusSignal.asReadonly();
 
-  setMenus(menus: PoMenuItem[]): void {
-    this.menus = menus;
+  getMenus(): Observable<PoMenuItem[]> {
+    return this.http.get<PoMenuItem[]>(this.baseUrl);
   }
 
-  getFilteredData(search: string): Observable<PoMenuItemFiltered[]> {
-    const termo = search.trim().toLowerCase();
+  loadMenus(): Observable<PoMenuItem[]> {
+    const currentMenus = this.menusSignal();
 
-    const menusFiltrados = this.menus
-      .filter((menu) => {
-        if (!termo) {
-          return true;
-        }
+    if (currentMenus) {
+      return of(currentMenus);
+    }
 
-        const label = menu.label?.toLowerCase() ?? '';
-        const shortLabel = menu.shortLabel?.toLowerCase() ?? '';
+    return this.getMenus().pipe(tap((menus) => this.menusSignal.set(menus)));
+  }
 
-        return label.includes(termo) || shortLabel.includes(termo);
-      })
-      .map((menu) => ({
-        label: menu.label ?? '',
-        link: menu.link ?? '',
-        action: () => {
-          if (menu.link) {
-            this.router.navigateByUrl(menu.link);
-          }
-        },
-      }));
+  hasAccess(link: string): Observable<boolean> {
+    return this.loadMenus().pipe(map((menus) => menus.some((menu) => menu.link === link)));
+  }
 
-    return of(menusFiltrados);
+  clear(): void {
+    this.menusSignal.set(null);
   }
 }

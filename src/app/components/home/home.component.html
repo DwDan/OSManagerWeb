@@ -1,10 +1,5 @@
 <div class="po-wrapper">
-  <po-menu
-    [p-filter]="false"
-    [p-menus]="menus()"
-    [p-service]="menuFilterService"
-    [p-automatic-toggle]="true"
-  >
+  <po-menu [p-filter]="false" [p-menus]="menus()" [p-automatic-toggle]="true">
     <div *p-menu-header-template class="po-p-2 po-font-title sample-menu-header-text-color">
       <p>{{ literals().welcome }}</p>
       <p>

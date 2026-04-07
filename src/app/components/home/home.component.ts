@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { homeLiterals } from '@i18n/home/home.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -24,8 +24,8 @@ export class HomeComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly usersService = inject(UsersService);
   private readonly authenticationService = inject(AuthenticationService);
+  private readonly menuService = inject(MenuService);
 
-  public readonly menuFilterService = inject(MenuService);
   readonly literals = injectI18n(homeLiterals);
 
   nomeUsuario: string = this.literals().loading;
@@ -47,42 +47,22 @@ export class HomeComponent implements OnInit {
     },
   ]);
 
-  readonly menus = computed<PoMenuItem[]>(() => [
-    {
-      label: this.literals().menu.dashboard,
-      icon: 'an an-house',
-      shortLabel: this.literals().menu.dashboardShort,
-      link: '/dashboard',
-    },
-    {
-      label: this.literals().menu.manageUsers,
-      icon: 'an an-user',
-      shortLabel: this.literals().menu.usersShort,
-      link: '/users',
-    },
-    {
-      label: this.literals().menu.orders,
-      icon: 'an an-clock',
-      shortLabel: this.literals().menu.ordersShort,
-      link: '/orders',
-    },
-    {
-      label: this.literals().menu.customers,
-      icon: 'an an-briefcase',
-      shortLabel: this.literals().menu.customersShort,
-      link: '/customers',
-    },
-    {
-      label: this.literals().menu.services,
-      icon: 'an an-wrench',
-      shortLabel: this.literals().menu.servicesShort,
-      link: '/services',
-    },
-  ]);
+  readonly menus = signal<PoMenuItem[]>([]);
 
   ngOnInit(): void {
-    this.menuFilterService.setMenus(this.menus());
+    this.loadMenus();
     this.carregarUsuarioLogado();
+  }
+
+  private loadMenus(): void {
+    this.menuService.loadMenus().subscribe({
+      next: (menus) => {
+        this.menus.set(menus);
+      },
+      error: () => {
+        this.menus.set([]);
+      },
+    });
   }
 
   private carregarUsuarioLogado(): void {
@@ -122,6 +102,7 @@ export class HomeComponent implements OnInit {
   }
 
   private logout(): void {
+    this.menuService.clear();
     this.authenticationService.logout();
     this.router.navigate(['/login']);
   }
