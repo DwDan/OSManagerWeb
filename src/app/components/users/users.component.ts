@@ -25,6 +25,7 @@ import { ChangeUserRoleComponent } from './change-user-role/change-user-role.com
 import { CreateUserComponent } from './create-user/create-user.component';
 import { FilterUserComponent } from './filter-user/filter-user.component';
 import { UpdateUserComponent } from './update-user/update-user.component';
+import { UserListViewComponent } from './user-list-view/user-list-view.component';
 
 @Component({
   selector: 'app-usuarios',
@@ -37,6 +38,7 @@ import { UpdateUserComponent } from './update-user/update-user.component';
     PoPageModule,
     FilterUserComponent,
     PaginationComponent,
+    UserListViewComponent,
   ],
 })
 export class UsersComponent {
@@ -95,7 +97,7 @@ export class UsersComponent {
   readonly pageActions = computed<PoPageAction[]>(() => {
     const actions: PoPageAction[] = [
       {
-        label: this.literals().pageActions.createUser,
+        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.createUser,
         icon: 'an an-plus',
         action: () => this.openCreateModal(),
       },
@@ -201,8 +203,8 @@ export class UsersComponent {
     this.loadUsers();
   }
 
-  onPageChange(page: number) {
-    this.request.set({ ...this.request(), page: page });
+  onPageChange(page: number): void {
+    this.request.set({ ...this.request(), page });
     this.loadUsers();
   }
 

@@ -1,0 +1,57 @@
+@if (!isMobile()) {
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="actions()"
+    [p-columns]="columns()"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  >
+    <ng-template p-table-column-template let-value p-property="amountToReceive">
+      {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
+    </ng-template>
+
+    <ng-template p-table-column-template let-value p-property="amountToPay">
+      {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
+    </ng-template>
+  </po-table>
+} @else {
+  <po-list-view [p-items]="items()" p-property-title="name">
+    <ng-template p-list-view-content-template let-item>
+      <div class="service-list-view__content po-row">
+        <div class="po-sm-12">
+          <po-info
+            [p-label]="literals().columns.amountToReceive"
+            [p-value]="formatCurrency(item.amountToReceive)"
+          />
+        </div>
+
+        <div class="po-sm-12">
+          <po-info
+            [p-label]="literals().columns.amountToPay"
+            [p-value]="formatCurrency(item.amountToPay)"
+          />
+        </div>
+
+        <div class="po-sm-12">
+          <div class="service-list-view__actions">
+            @for (action of getVisibleActions(item); track action.label) {
+              <button
+                type="button"
+                class="service-list-view__action"
+                [disabled]="loading()"
+                (click)="executeAction(action, item)"
+              >
+                {{ action.label }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </po-list-view>
+}

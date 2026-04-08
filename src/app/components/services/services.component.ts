@@ -21,11 +21,19 @@ import { finalize } from 'rxjs';
 import { CreateServiceComponent } from './create-service/create-service.component';
 import { DetailServiceComponent } from './detail-service/detail-service.component';
 import { FilterServiceComponent } from './filter-service/filter-service.component';
+import { ServiceListViewComponent } from './service-list-view/service-list-view.component';
 import { UpdateServiceComponent } from './update-service/update-service.component';
 
 @Component({
   selector: 'app-services',
-  imports: [CommonModule, PoTableModule, PoPageModule, PaginationComponent, FilterServiceComponent],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoPageModule,
+    PaginationComponent,
+    FilterServiceComponent,
+    ServiceListViewComponent,
+  ],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
 })
@@ -53,7 +61,7 @@ export class ServicesComponent implements OnInit {
   readonly pageActions = computed<PoPageAction[]>(() => {
     const actions: PoPageAction[] = [
       {
-        label: this.literals().pageActions.newService,
+        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newService,
         icon: 'an an-plus',
         action: () => this.openCreateModal(),
       },
@@ -152,8 +160,8 @@ export class ServicesComponent implements OnInit {
     this.loadServices();
   }
 
-  onPageChange(page: number) {
-    this.request.set({ ...this.request(), page: page });
+  onPageChange(page: number): void {
+    this.request.set({ ...this.request(), page });
     this.loadServices();
   }
 }

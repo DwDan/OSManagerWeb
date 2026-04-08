@@ -6,7 +6,6 @@ import { customersLiterals } from '@i18n/customers/customers.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { GerCustomersRequest } from '@models/customers/requests/get-customers.request';
 import { CustomerListItemResponse } from '@models/customers/responses/customer-list-item.response';
-import { GerServicesRequest } from '@models/services/requests/get-services.request';
 import {
   PoPageAction,
   PoPageModule,
@@ -20,6 +19,7 @@ import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { finalize } from 'rxjs';
 import { CreateCustomerComponent } from './create-customer/create-customer.component';
+import { CustomerListViewComponent } from './customer-list-view/customer-list-view.component';
 import { DetailCustomerComponent } from './detail-customer/detail-customer.component';
 import { FilterCustomerComponent } from './filter-customer/filter-customer.component';
 import { UpdateCustomerComponent } from './update-customer/update-customer.component';
@@ -32,6 +32,7 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
     PoPageModule,
     PaginationComponent,
     FilterCustomerComponent,
+    CustomerListViewComponent,
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
@@ -60,7 +61,7 @@ export class CustomersComponent implements OnInit {
   readonly pageActions = computed<PoPageAction[]>(() => {
     const actions: PoPageAction[] = [
       {
-        label: this.literals().pageActions.newCustomer,
+        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newCustomer,
         icon: 'an an-plus',
         action: () => this.openCreateModal(),
       },
@@ -140,7 +141,7 @@ export class CustomersComponent implements OnInit {
       });
   }
 
-  onFilterChange(filter: Partial<GerServicesRequest>): void {
+  onFilterChange(filter: Partial<GerCustomersRequest>): void {
     this.request.set({
       ...this.request(),
       ...filter,
@@ -150,8 +151,8 @@ export class CustomersComponent implements OnInit {
     this.loadCustomers();
   }
 
-  onPageChange(page: number) {
-    this.request.set({ ...this.request(), page: page });
+  onPageChange(page: number): void {
+    this.request.set({ ...this.request(), page });
     this.loadCustomers();
   }
 }

@@ -3,26 +3,13 @@
     <div class="mb-sm">
       <app-filter-service (filterChange)="onFilterChange($event)" />
     </div>
-    <po-table
-      [p-auto-collapse]="true"
-      [p-actions]="tableActions()"
-      [p-columns]="columns()"
-      [p-hide-columns-manager]="true"
-      [p-hide-table-search]="true"
-      [p-items]="items()"
-      [p-loading]="loading()"
-      [p-sort]="true"
-      [p-striped]="true"
-      [p-spacing]="spacing.Large"
-    >
-      <ng-template p-table-column-template let-value p-property="amountToReceive">
-        {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
-      </ng-template>
 
-      <ng-template p-table-column-template let-value p-property="amountToPay">
-        {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
-      </ng-template>
-    </po-table>
+    <app-service-list-view
+      [items]="items()"
+      [loading]="loading()"
+      [columns]="columns()"
+      [actions]="tableActions()"
+    />
 
     <div class="mt-auto">
       <app-pagination

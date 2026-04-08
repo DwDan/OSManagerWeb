@@ -18,6 +18,8 @@ export const commonLiterals = defineI18n({
     clear: 'Limpar',
     filter: 'Filtrar',
     filters: 'Filtros',
+    yes: 'Sim',
+    no: 'Não',
   },
   enUS: {
     save: 'Save',
@@ -36,5 +38,7 @@ export const commonLiterals = defineI18n({
     clear: 'Clear',
     filter: 'Filter',
     filters: 'Filters',
+    yes: 'Yes',
+    no: 'No',
   },
 });

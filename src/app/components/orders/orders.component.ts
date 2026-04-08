@@ -30,6 +30,7 @@ import { CloseOrderComponent } from './close-order/close-order.component';
 import { CreaterOrderComponent } from './creater-order/creater-order.component';
 import { DetailOrderComponent } from './detail-order/detail-order.component';
 import { FilterOrderComponent } from './filter-order/filter-order.component';
+import { OrderListViewComponent } from './order-list-view/order-list-view.component';
 import { UpdateOrderComponent } from './update-order/update-order.component';
 
 @Component({
@@ -44,6 +45,7 @@ import { UpdateOrderComponent } from './update-order/update-order.component';
     PoButtonModule,
     PaginationComponent,
     FilterOrderComponent,
+    OrderListViewComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -73,7 +75,7 @@ export class OrdersComponent implements OnInit {
   readonly pageActions = computed<PoPageAction[]>(() => {
     const actions: PoPageAction[] = [
       {
-        label: this.literals().pageActions.newOrder,
+        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newOrder,
         icon: 'an an-plus',
         action: () => this.openCreateModal(),
       },
@@ -320,8 +322,8 @@ export class OrdersComponent implements OnInit {
     this.loadOrders();
   }
 
-  onPageChange(page: number) {
-    this.request.set({ ...this.request(), page: page });
+  onPageChange(page: number): void {
+    this.request.set({ ...this.request(), page });
     this.loadOrders();
   }
 }
