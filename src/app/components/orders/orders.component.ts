@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -46,6 +47,7 @@ import { UpdateOrderComponent } from './update-order/update-order.component';
     PaginationComponent,
     FilterOrderComponent,
     OrderListViewComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.scss',
@@ -73,13 +75,7 @@ export class OrdersComponent implements OnInit {
   readonly request = signal<GerOrdersRequest>({ page: 1, pageSize: 10 });
 
   readonly pageActions = computed<PoPageAction[]>(() => {
-    const actions: PoPageAction[] = [
-      {
-        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newOrder,
-        icon: 'an an-plus',
-        action: () => this.openCreateModal(),
-      },
-    ];
+    const actions: PoPageAction[] = [];
 
     if (this.devicesService.isMobile()) {
       actions.push({
@@ -88,6 +84,13 @@ export class OrdersComponent implements OnInit {
         action: () => this.openFilters(),
       });
     }
+
+    actions.push({
+      label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newOrder,
+      icon: 'an an-plus',
+      type: 'primary',
+      action: () => this.openCreateModal(),
+    });
 
     return actions;
   });

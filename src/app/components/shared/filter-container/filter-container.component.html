@@ -1,14 +1,16 @@
 @if (!isMobile()) {
-  <po-accordion>
-    <po-accordion-item [p-label]="title()">
-      <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
+  <div class="po-mb-2">
+    <po-accordion>
+      <po-accordion-item [p-label]="title()">
+        <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>
 
-      <div class="flex justify-end gap-sm">
-        <po-button p-kind="secondary" [p-label]="clearLabel()" (p-click)="onClear()" />
-        <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
-      </div>
-    </po-accordion-item>
-  </po-accordion>
+        <div class="flex justify-end gap-sm">
+          <po-button p-kind="secondary" [p-label]="clearLabel()" (p-click)="onClear()" />
+          <po-button p-kind="primary" [p-label]="filterLabel()" (p-click)="onFilter()" />
+        </div>
+      </po-accordion-item>
+    </po-accordion>
+  </div>
 } @else if (slide()) {
   <po-page-slide #slideFilters [p-title]="title()" p-size="auto">
     <ng-container *ngTemplateOutlet="contentTemplate()"></ng-container>

@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.app-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.app-page-header__title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-sm);
+  letter-spacing: var(--letter-spacing-auto);
+  color: var(--color-neutral-dark-70);
+}
+
+.app-page-header__actions {
+  display: flex;
+  gap: 8px;
+}

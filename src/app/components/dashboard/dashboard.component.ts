@@ -1,4 +1,5 @@
 import { Component, computed } from '@angular/core';
+import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { dashboardLiterals } from '@i18n/dashboard/dashboard.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import {
@@ -13,7 +14,7 @@ import {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule],
+  imports: [PoWidgetModule, PoChartModule, PoTableModule, PoPageModule, PageHeaderComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })

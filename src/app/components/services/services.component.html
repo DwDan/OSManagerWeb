@@ -1,24 +1,29 @@
-<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
-  <div class="flex flex-col h-95">
-    <div class="mb-sm">
+<div class="page-container">
+  <div class="po-row">
+    <div class="po-md-12">
+      <app-page-header [title]="literals().title" [actions]="pageActions()" />
+    </div>
+
+    <div class="po-md-12">
       <app-filter-service (filterChange)="onFilterChange($event)" />
     </div>
 
-    <app-service-list-view
-      [items]="items()"
-      [loading]="loading()"
-      [columns]="columns()"
-      [actions]="tableActions()"
-    />
-
-    <div class="mt-auto pb-md">
-      <app-pagination
-        [page]="page()"
-        [pageSize]="pageSize()"
-        [totalItems]="totalItems()"
-        (pageChange)="onPageChange($event)"
-      >
-      </app-pagination>
+    <div class="po-md-12">
+      <app-service-list-view
+        [items]="items()"
+        [loading]="loading()"
+        [columns]="columns()"
+        [actions]="tableActions()"
+      />
     </div>
   </div>
-</po-page-default>
+
+  <div class="page-container__pagination">
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

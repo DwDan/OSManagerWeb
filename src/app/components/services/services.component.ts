@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
@@ -33,6 +34,7 @@ import { UpdateServiceComponent } from './update-service/update-service.componen
     PaginationComponent,
     FilterServiceComponent,
     ServiceListViewComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
@@ -59,13 +61,7 @@ export class ServicesComponent implements OnInit {
   readonly request = signal<GerServicesRequest>({ page: 1, pageSize: 10 });
 
   readonly pageActions = computed<PoPageAction[]>(() => {
-    const actions: PoPageAction[] = [
-      {
-        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newService,
-        icon: 'an an-plus',
-        action: () => this.openCreateModal(),
-      },
-    ];
+    const actions: PoPageAction[] = [];
 
     if (this.devicesService.isMobile()) {
       actions.push({
@@ -74,6 +70,13 @@ export class ServicesComponent implements OnInit {
         action: () => this.openFilters(),
       });
     }
+
+    actions.push({
+      label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newService,
+      icon: 'an an-plus',
+      type: 'primary',
+      action: () => this.openCreateModal(),
+    });
 
     return actions;
   });

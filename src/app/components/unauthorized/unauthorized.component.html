@@ -1,32 +1,30 @@
-<po-page-default>
-  <div class="unauthorized-page">
-    <div class="unauthorized-page__content">
-      <div class="unauthorized-page__icon-wrapper">
-        <div class="unauthorized-page__icon-circle">
-          <i class="an an-lock unauthorized-page__icon"></i>
-        </div>
-      </div>
-
-      <h1 class="unauthorized-page__title">
-        {{ literals().title }}
-      </h1>
-
-      <p class="unauthorized-page__subtitle">
-        {{ literals().subtitle }}
-      </p>
-
-      <p class="unauthorized-page__description">
-        {{ literals().description }}
-      </p>
-
-      <div class="unauthorized-page__actions">
-        <po-button
-          po-button
-          p-kind="primary"
-          [p-label]="actions().primary"
-          (click)="goToDashboard()"
-        ></po-button>
+<div class="unauthorized-page">
+  <div class="unauthorized-page__content">
+    <div class="unauthorized-page__icon-wrapper">
+      <div class="unauthorized-page__icon-circle">
+        <i class="an an-lock unauthorized-page__icon"></i>
       </div>
     </div>
+
+    <h1 class="unauthorized-page__title">
+      {{ literals().title }}
+    </h1>
+
+    <p class="unauthorized-page__subtitle">
+      {{ literals().subtitle }}
+    </p>
+
+    <p class="unauthorized-page__description">
+      {{ literals().description }}
+    </p>
+
+    <div class="unauthorized-page__actions">
+      <po-button
+        po-button
+        p-kind="primary"
+        [p-label]="actions().primary"
+        (click)="goToDashboard()"
+      ></po-button>
+    </div>
   </div>
-</po-page-default>
+</div>

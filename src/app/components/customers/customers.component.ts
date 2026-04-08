@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { customersLiterals } from '@i18n/customers/customers.literals';
@@ -33,6 +34,7 @@ import { UpdateCustomerComponent } from './update-customer/update-customer.compo
     PaginationComponent,
     FilterCustomerComponent,
     CustomerListViewComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './customers.component.html',
   styleUrl: './customers.component.scss',
@@ -59,13 +61,7 @@ export class CustomersComponent implements OnInit {
   readonly request = signal<GerCustomersRequest>({ page: 1, pageSize: 10 });
 
   readonly pageActions = computed<PoPageAction[]>(() => {
-    const actions: PoPageAction[] = [
-      {
-        label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newCustomer,
-        icon: 'an an-plus',
-        action: () => this.openCreateModal(),
-      },
-    ];
+    const actions: PoPageAction[] = [];
 
     if (this.devicesService.isMobile()) {
       actions.push({
@@ -74,6 +70,13 @@ export class CustomersComponent implements OnInit {
         action: () => this.openFilters(),
       });
     }
+
+    actions.push({
+      label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newCustomer,
+      icon: 'an an-plus',
+      type: 'primary',
+      action: () => this.openCreateModal(),
+    });
 
     return actions;
   });

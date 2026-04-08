@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
 
   readonly literals = injectI18n(homeLiterals);
 
-  nomeUsuario: string = this.literals().loading;
+  userName: string = this.literals().loading;
 
   profile: PoToolbarProfile = {
     title: this.literals().loading,
@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit {
     const userId = sessionStorage.getItem('userId');
 
     if (!userId) {
-      this.nomeUsuario = this.literals().defaultUser;
+      this.userName = this.literals().defaultUser;
 
       this.profile = {
         title: this.literals().defaultUser,
@@ -80,15 +80,15 @@ export class HomeComponent implements OnInit {
 
     this.usersService.getById(userId).subscribe({
       next: (user) => {
-        this.nomeUsuario = `${user.firstName} ${user.lastName}`;
+        this.userName = `${user.firstName} ${user.lastName}`;
 
         this.profile = {
-          title: this.nomeUsuario,
+          title: this.userName,
           subtitle: user.email,
         };
       },
       error: () => {
-        this.nomeUsuario = this.literals().defaultUser;
+        this.userName = this.literals().defaultUser;
 
         this.profile = {
           title: this.literals().defaultUser,
