@@ -11,13 +11,14 @@ import {
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
+  PoWidgetModule,
 } from '@po-ui/ng-components';
 import { DevicesService } from '@services/devices/devices.service';
 
 @Component({
   selector: 'app-user-list-view',
   standalone: true,
-  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule],
+  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule, PoWidgetModule],
   templateUrl: './user-list-view.component.html',
   styleUrl: './user-list-view.component.scss',
 })
@@ -58,7 +59,7 @@ export class UserListViewComponent {
     action.action(item);
   }
 
-  getRoleLabel(role: number): string {
+  getRoleLabel(role: string): string {
     const column = this.columns().find((item) => item.property === 'role');
 
     if (!column || column.type !== 'label' || !column.labels) {

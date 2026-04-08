@@ -12,63 +12,74 @@
     [p-spacing]="spacing.Large"
   />
 } @else {
-  <po-list-view [p-items]="items()" p-property-title="code">
-    <ng-template p-list-view-content-template let-item>
-      <div class="order-list-view__content po-row">
-        <div class="po-sm-12">
-          <po-info
-            [p-label]="literals().columns.customer"
-            [p-value]="item.customerName || common().notInformed"
-          />
-        </div>
+  @for (item of items(); track item.id) {
+    <div class="mb-md">
+      <po-widget>
+        <div class="order-list-view__content po-row">
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.code"
+              [p-value]="item.code || common().notInformed"
+            />
+          </div>
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.customer"
+              [p-value]="item.customerName || common().notInformed"
+            />
+          </div>
 
-        <div class="po-sm-12">
-          <po-info
-            [p-label]="literals().columns.technician"
-            [p-value]="item.technicianName || common().notInformed"
-          />
-        </div>
+          <div class="po-sm-12">
+            <po-info
+              [p-label]="literals().columns.technician"
+              [p-value]="item.technicianName || common().notInformed"
+            />
+          </div>
 
-        <div class="po-sm-6">
-          <po-info
-            [p-label]="literals().columns.city"
-            [p-value]="item.city || common().notInformed"
-          />
-        </div>
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.city"
+              [p-value]="item.city || common().notInformed"
+            />
+          </div>
 
-        <div class="po-sm-6">
-          <po-info
-            [p-label]="literals().columns.state"
-            [p-value]="item.state || common().notInformed"
-          />
-        </div>
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.state"
+              [p-value]="item.state || common().notInformed"
+            />
+          </div>
 
-        <div class="po-sm-6">
-          <po-info [p-label]="literals().columns.status" [p-value]="getStatusLabel(item.status)" />
-        </div>
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.status"
+              [p-value]="getStatusLabel(item.status)"
+            />
+          </div>
 
-        <div class="po-sm-6">
-          <po-info
-            [p-label]="literals().columns.result"
-            [p-value]="getExecutionResultLabel(item.executionResult)"
-          />
-        </div>
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.result"
+              [p-value]="getExecutionResultLabel(item.executionResult)"
+            />
+          </div>
 
-        <div class="po-sm-12">
-          <div class="order-list-view__actions">
-            @for (action of getVisibleActions(item); track action.label) {
-              <button
-                type="button"
-                class="order-list-view__action"
-                [disabled]="loading()"
-                (click)="executeAction(action, item)"
-              >
-                {{ action.label }}
-              </button>
-            }
+          <div class="po-sm-12">
+            <div class="order-list-view__actions">
+              @for (action of getVisibleActions(item); track action.label) {
+                <button
+                  type="button"
+                  class="order-list-view__action"
+                  [disabled]="loading()"
+                  (click)="executeAction(action, item)"
+                >
+                  {{ action.label }}
+                </button>
+              }
+            </div>
           </div>
         </div>
-      </div>
-    </ng-template>
-  </po-list-view>
+      </po-widget>
+    </div>
+  }
 }

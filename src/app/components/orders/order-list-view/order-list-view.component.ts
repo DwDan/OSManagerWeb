@@ -11,13 +11,14 @@ import {
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
+  PoWidgetModule,
 } from '@po-ui/ng-components';
 import { DevicesService } from '@services/devices/devices.service';
 
 @Component({
   selector: 'app-order-list-view',
   standalone: true,
-  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule],
+  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule, PoWidgetModule],
   templateUrl: './order-list-view.component.html',
   styleUrl: './order-list-view.component.scss',
 })
