@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
-import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { servicesLiterals } from '@i18n/services/services.literals';
@@ -34,7 +33,6 @@ import { UpdateServiceComponent } from './update-service/update-service.componen
     PaginationComponent,
     FilterServiceComponent,
     ServiceListViewComponent,
-    PageHeaderComponent,
   ],
   templateUrl: './services.component.html',
   styleUrl: './services.component.scss',
@@ -72,7 +70,7 @@ export class ServicesComponent implements OnInit {
     }
 
     actions.push({
-      label: this.devicesService.isMobile() ? '' : this.literals().pageActions.newService,
+      label: this.literals().pageActions.newService,
       icon: 'an an-plus',
       type: 'primary',
       action: () => this.openCreateModal(),

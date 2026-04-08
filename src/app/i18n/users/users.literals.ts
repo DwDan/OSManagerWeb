@@ -4,7 +4,7 @@ export const usersLiterals = defineI18n({
   ptBR: {
     title: 'Gerenciar Usuários',
     pageActions: {
-      createUser: 'Criar usuário',
+      createUser: 'Novo usuário',
     },
     tableActions: {
       edit: 'Editar',
@@ -36,8 +36,7 @@ export const usersLiterals = defineI18n({
     },
     modals: {
       create: {
-        title: 'Criar usuário',
-        confirm: 'Criar',
+        title: 'Novo usuário',
       },
       edit: {
         title: 'Editar usuário',
@@ -80,7 +79,7 @@ export const usersLiterals = defineI18n({
   enUS: {
     title: 'Manage Users',
     pageActions: {
-      createUser: 'Create user',
+      createUser: 'New user',
     },
     tableActions: {
       edit: 'Edit',
@@ -112,8 +111,7 @@ export const usersLiterals = defineI18n({
     },
     modals: {
       create: {
-        title: 'Create user',
-        confirm: 'Create',
+        title: 'New user',
       },
       edit: {
         title: 'Edit user',

@@ -1,9 +1,5 @@
-<div class="page-container">
+<po-page-default [p-title]="literals().title" [p-actions]="pageActions()">
   <div class="po-row">
-    <div class="po-md-12">
-      <app-page-header [title]="literals().title" [actions]="pageActions()" />
-    </div>
-
     <div class="po-md-12">
       <app-filter-user (filterChange)="onFilterChange($event)" />
     </div>
@@ -16,14 +12,14 @@
         [actions]="tableActions()"
       />
     </div>
-  </div>
 
-  <div class="page-container__pagination">
-    <app-pagination
-      [page]="page()"
-      [pageSize]="pageSize()"
-      [totalItems]="totalItems()"
-      (pageChange)="onPageChange($event)"
-    />
+    <div class="po-md-12">
+      <app-pagination
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [totalItems]="totalItems()"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
   </div>
-</div>
+</po-page-default>

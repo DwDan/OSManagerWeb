@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal, ViewChild } from '@angular/core';
-import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
@@ -40,7 +39,6 @@ import { UserListViewComponent } from './user-list-view/user-list-view.component
     FilterUserComponent,
     PaginationComponent,
     UserListViewComponent,
-    PageHeaderComponent,
   ],
 })
 export class UsersComponent {
@@ -108,7 +106,7 @@ export class UsersComponent {
     }
 
     actions.push({
-      label: this.devicesService.isMobile() ? '' : this.literals().pageActions.createUser,
+      label: this.literals().pageActions.createUser,
       icon: 'an an-plus',
       type: 'primary',
       action: () => this.openCreateModal(),
