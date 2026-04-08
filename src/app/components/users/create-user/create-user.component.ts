@@ -44,7 +44,8 @@ export class CreateUserComponent extends BaseModalComponent<void, { confirmed: b
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.literals().modals.create.confirm,
     action: () => this.createUser(),
-    loading: this.loading() || this.formInvalid(),
+    loading: this.loading(),
+    disabled: this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({

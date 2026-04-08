@@ -47,12 +47,14 @@ export class AddEvidenceComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().send,
     action: this.save.bind(this),
-    disabled: this.loading() || this.selectedEvidenceFiles().length === 0,
+    loading: this.loading(),
+    disabled: this.selectedEvidenceFiles().length === 0,
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
     action: this.close.bind(this),
+    loading: this.loading(),
   }));
 
   assignTechnicianForm: AssignOrderTechnicianRequest = {

@@ -51,7 +51,8 @@ export class ForgotPasswordComponent extends BaseModalComponent<{}, {}> {
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.loading() ? this.literals().submitting : this.literals().submit,
     action: this.send.bind(this),
-    disabled: this.submitDisabled(),
+    loading: this.loading(),
+    disabled: this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({

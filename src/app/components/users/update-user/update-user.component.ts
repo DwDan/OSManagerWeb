@@ -46,7 +46,8 @@ export class UpdateUserComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: () => this.updateUser(),
-    loading: this.loading() || this.formInvalid(),
+    loading: this.loading(),
+    disabled: this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({

@@ -51,7 +51,8 @@ export class ChangeUserRoleComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: () => this.changeRole(),
-    loading: this.loading() || this.formInvalid(),
+    loading: this.loading(),
+    disabled: this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({

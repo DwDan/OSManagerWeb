@@ -49,12 +49,14 @@ export class CloseOrderComponent extends BaseModalComponent<
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
     action: this.save.bind(this),
-    disabled: this.loading() || this.formInvalid(),
+    loading: this.loading(),
+    disabled: this.formInvalid(),
   }));
 
   readonly secondaryAction = computed<PoModalAction>(() => ({
     label: this.common().cancel,
     action: this.close.bind(this),
+    loading: this.loading(),
   }));
 
   readonly form = this.formBuilder.nonNullable.group({
