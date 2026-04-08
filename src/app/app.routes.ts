@@ -39,6 +39,12 @@ export const routes: Routes = [
         canMatch: [menuPermissionGuard],
       },
       {
+        path: 'my-orders',
+        loadComponent: () =>
+          import('./components/my-orders/my-orders.component').then((m) => m.MyOrdersComponent),
+        canMatch: [menuPermissionGuard],
+      },
+      {
         path: 'customers',
         loadComponent: () =>
           import('./components/customers/customers.component').then((m) => m.CustomersComponent),

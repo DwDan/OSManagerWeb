@@ -6,21 +6,24 @@ import { ForgotPasswordRequest } from '@models/auth/requests/forgot-password.req
 import { ResetPasswordRequest } from '@models/auth/requests/reset-password.request';
 import { LoginRequest } from '@models/login/requests/login.request';
 import { LoginResponse } from '@models/login/responses/login.response';
-import { tap } from 'rxjs';
+import { MenuService } from '@services/menu/menu.service';
+import { map, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private httpService = inject(HttpClient);
+  private readonly httpService = inject(HttpClient);
+  private readonly menuService = inject(MenuService);
   private readonly baseUrl = `${environment.apiUrl}/auth`;
 
   login(request: LoginRequest) {
     return this.httpService.post<LoginResponse>(`${this.baseUrl}/login`, request).pipe(
       tap((response) => {
-        sessionStorage.setItem('token', response?.token);
-        sessionStorage.setItem('userId', response?.userId);
+        sessionStorage.setItem('token', response.token);
+        sessionStorage.setItem('userId', response.userId);
       }),
+      switchMap((response) => this.menuService.loadMenus().pipe(map(() => response))),
     );
   }
 
@@ -43,5 +46,9 @@ export class AuthenticationService {
 
   isLoggedIn() {
     return sessionStorage.getItem('token') !== null;
+  }
+
+  userId() {
+    return sessionStorage.getItem('userId')!;
   }
 }

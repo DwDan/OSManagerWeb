@@ -1,0 +1,29 @@
+<div class="page-container">
+  <div class="po-row">
+    <div class="po-md-12">
+      <app-page-header [title]="literals().myOrdersTitle" [actions]="pageActions()" />
+    </div>
+
+    <div class="po-md-12">
+      <app-filter-my-order (filterChange)="onFilterChange($event)" />
+    </div>
+
+    <div class="po-md-12">
+      <app-order-list-view
+        [items]="items()"
+        [loading]="loading()"
+        [columns]="columns()"
+        [actions]="tableActions()"
+      />
+    </div>
+  </div>
+
+  <div class="page-container__pagination">
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

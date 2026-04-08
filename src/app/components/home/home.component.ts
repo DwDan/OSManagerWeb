@@ -50,19 +50,8 @@ export class HomeComponent implements OnInit {
   readonly menus = signal<PoMenuItem[]>([]);
 
   ngOnInit(): void {
-    this.loadMenus();
+    this.menus.set(this.menuService.getMenus());
     this.carregarUsuarioLogado();
-  }
-
-  private loadMenus(): void {
-    this.menuService.loadMenus().subscribe({
-      next: (menus) => {
-        this.menus.set(menus);
-      },
-      error: () => {
-        this.menus.set([]);
-      },
-    });
   }
 
   private carregarUsuarioLogado(): void {

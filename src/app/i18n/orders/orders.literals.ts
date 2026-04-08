@@ -3,6 +3,7 @@ import { defineI18n } from '../shared/define-i18n';
 export const ordersLiterals = defineI18n({
   ptBR: {
     title: 'Ordens de Serviço',
+    myOrdersTitle: 'Minhas Ordens de Serviço',
     pageActions: {
       newOrder: 'Nova ordem',
     },
@@ -102,6 +103,8 @@ export const ordersLiterals = defineI18n({
   },
   enUS: {
     title: 'Service Orders',
+    myOrdersTitle: 'My Service Orders',
+
     pageActions: {
       newOrder: 'New order',
     },
