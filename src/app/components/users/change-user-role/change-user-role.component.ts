@@ -65,7 +65,7 @@ export class ChangeUserRoleComponent extends BaseModalComponent<
     const roleValue = this.form.controls.role.getRawValue();
 
     const request: ChangeUserRoleRequest = {
-      role: roleValue === 1 ? 'Admin' : 'Technician',
+      role: roleValue,
     };
 
     this.loading.set(true);
