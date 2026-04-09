@@ -25,6 +25,7 @@ import {
   PoTableColumnSpacing,
   PoTableModule,
 } from '@po-ui/ng-components';
+import { AuthenticationService } from '@services/authentication/authentication.service';
 import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { OrdersService } from '@services/orders/orders.service';
@@ -53,6 +54,7 @@ export class MyOrdersComponent implements OnInit {
   private readonly poNotification = inject(PoNotificationService);
   private readonly modalService = inject(ModalService);
   private readonly devicesService = inject(DevicesService);
+  private readonly authService = inject(AuthenticationService);
 
   @ViewChild(FilterMyOrderComponent) filterComponent!: FilterMyOrderComponent;
 
@@ -68,7 +70,11 @@ export class MyOrdersComponent implements OnInit {
   readonly totalItems = signal<number>(0);
   readonly items = signal<OrderListItemResponse[]>([]);
 
-  readonly request = signal<GerOrdersRequest>({ page: 1, pageSize: 10 });
+  readonly request = signal<GerOrdersRequest>({
+    page: 1,
+    pageSize: 10,
+    technicianId: this.authService.userId(),
+  });
 
   readonly pageActions = computed<PoPageAction[]>(() => {
     const actions: PoPageAction[] = [];

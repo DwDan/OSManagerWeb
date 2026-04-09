@@ -12,7 +12,6 @@ import { PoFieldModule, PoSelectOption } from '@po-ui/ng-components';
 import { AuthenticationService } from '@services/authentication/authentication.service';
 import { CustomersService } from '@services/customers/customers.service';
 import { ServicesService } from '@services/services/services.service';
-import { UsersService } from '@services/users/users.service';
 
 @Component({
   selector: 'app-filter-my-order',
@@ -24,7 +23,6 @@ import { UsersService } from '@services/users/users.service';
 export class FilterMyOrderComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly customersService = inject(CustomersService);
-  private readonly usersService = inject(UsersService);
   private readonly servicesService = inject(ServicesService);
   private readonly authService = inject(AuthenticationService);
 
