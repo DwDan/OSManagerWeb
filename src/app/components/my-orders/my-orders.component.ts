@@ -6,7 +6,6 @@ import { CloseOrderComponent } from '@components/orders/close-order/close-order.
 import { CreaterOrderComponent } from '@components/orders/creater-order/creater-order.component';
 import { DetailOrderComponent } from '@components/orders/detail-order/detail-order.component';
 import { OrderListViewComponent } from '@components/orders/order-list-view/order-list-view.component';
-import { PageHeaderComponent } from '@components/shared/page-header/page-header.component';
 import { PaginationComponent } from '@components/shared/pagination/pagination.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
@@ -44,7 +43,6 @@ import { FilterMyOrderComponent } from './filter-my-order/filter-my-order.compon
     PoButtonModule,
     PaginationComponent,
     OrderListViewComponent,
-    PageHeaderComponent,
     FilterMyOrderComponent,
   ],
   templateUrl: './my-orders.component.html',
