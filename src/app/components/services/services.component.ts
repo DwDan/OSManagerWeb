@@ -108,7 +108,7 @@ export class ServicesComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
-    this.loadServices();
+    this.loadData();
   }
 
   openFilters(): void {
@@ -118,7 +118,7 @@ export class ServicesComponent implements OnInit {
   openCreateModal(): void {
     this.modalService.open(CreateServiceComponent).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadServices();
+        this.loadData();
       }
     });
   }
@@ -126,7 +126,7 @@ export class ServicesComponent implements OnInit {
   openEditModal(id: string): void {
     this.modalService.open(UpdateServiceComponent, { serviceId: id }).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadServices();
+        this.loadData();
       }
     });
   }
@@ -135,7 +135,7 @@ export class ServicesComponent implements OnInit {
     this.modalService.open(DetailServiceComponent, { serviceId: id }).subscribe();
   }
 
-  private loadServices(): void {
+  private loadData(): void {
     this.loading.set(true);
 
     this.servicesService
@@ -158,11 +158,16 @@ export class ServicesComponent implements OnInit {
       page: 1,
     });
 
-    this.loadServices();
+    this.loadData();
   }
 
   onPageChange(page: number): void {
     this.request.set({ ...this.request(), page });
-    this.loadServices();
+    this.loadData();
+  }
+
+  onPageSizeChange(pageSize: number): void {
+    this.request.set({ ...this.request(), pageSize });
+    this.loadData();
   }
 }

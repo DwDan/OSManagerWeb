@@ -1,5 +1,24 @@
 @if (totalPages() > 0) {
   <div class="app-pagination">
+    <div class="app-pagination__page-size-container">
+      <label class="app-pagination__page-size-label" for="page-size">
+        {{ literals().pageSize }}
+      </label>
+
+      <select
+        id="page-size"
+        class="app-pagination__page-size"
+        [value]="pageSize()"
+        (change)="onPageSizeChange($event)"
+      >
+        @for (size of normalizedPageSizeOptions(); track size) {
+          <option [value]="size">
+            {{ size }}
+          </option>
+        }
+      </select>
+    </div>
+
     <div class="app-pagination__info">
       {{ infoText() }}
     </div>

@@ -19,6 +19,31 @@
   flex-wrap: wrap;
 }
 
+.app-pagination__page-size-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 8px;
+}
+
+.app-pagination__page-size-label {
+  font-size: 14px;
+  color: #4a5c60;
+  white-space: nowrap;
+}
+
+.app-pagination__page-size {
+  min-width: 88px;
+  height: 36px;
+  border: 1px solid #cfd4d7;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #2d3a3d;
+  cursor: pointer;
+}
+
 .app-pagination__nav-button,
 .app-pagination__page-button {
   min-width: 36px;
@@ -47,4 +72,24 @@
   text-align: center;
   font-size: 14px;
   color: #4a5c60;
+}
+
+@media (max-width: 768px) {
+  .app-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-pagination__actions {
+    justify-content: flex-start;
+  }
+
+  .app-pagination__page-size-container {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .app-pagination__page-size {
+    flex: 1;
+  }
 }

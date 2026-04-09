@@ -99,7 +99,7 @@ export class CustomersComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
-    this.loadCustomers();
+    this.loadData();
   }
 
   openFilters(): void {
@@ -109,7 +109,7 @@ export class CustomersComponent implements OnInit {
   openCreateModal(): void {
     this.modalService.open(CreateCustomerComponent).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadCustomers();
+        this.loadData();
       }
     });
   }
@@ -117,7 +117,7 @@ export class CustomersComponent implements OnInit {
   openEditModal(id: string): void {
     this.modalService.open(UpdateCustomerComponent, { customerId: id }).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadCustomers();
+        this.loadData();
       }
     });
   }
@@ -126,7 +126,7 @@ export class CustomersComponent implements OnInit {
     this.modalService.open(DetailCustomerComponent, { customerId: id });
   }
 
-  private loadCustomers(): void {
+  private loadData(): void {
     this.loading.set(true);
 
     this.customersService
@@ -149,11 +149,16 @@ export class CustomersComponent implements OnInit {
       page: 1,
     });
 
-    this.loadCustomers();
+    this.loadData();
   }
 
   onPageChange(page: number): void {
     this.request.set({ ...this.request(), page });
-    this.loadCustomers();
+    this.loadData();
+  }
+
+  onPageSizeChange(pageSize: number): void {
+    this.request.set({ ...this.request(), pageSize });
+    this.loadData();
   }
 }

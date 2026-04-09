@@ -177,7 +177,7 @@ export class MyOrdersComponent implements OnInit {
   ]);
 
   ngOnInit(): void {
-    this.loadOrders();
+    this.loadData();
   }
 
   openFilters(): void {
@@ -190,7 +190,7 @@ export class MyOrdersComponent implements OnInit {
         return;
       }
 
-      this.loadOrders();
+      this.loadData();
     });
   }
 
@@ -207,7 +207,7 @@ export class MyOrdersComponent implements OnInit {
       .subscribe({
         next: () => {
           this.poNotification.success(this.literals().notifications.startedExecution);
-          this.loadOrders();
+          this.loadData();
         },
       });
   }
@@ -218,7 +218,7 @@ export class MyOrdersComponent implements OnInit {
         return;
       }
 
-      this.loadOrders();
+      this.loadData();
     });
   }
 
@@ -226,7 +226,7 @@ export class MyOrdersComponent implements OnInit {
     this.modalService.open(AddEvidenceComponent, { orderId: id });
   }
 
-  private loadOrders(): void {
+  private loadData(): void {
     this.loading.set(true);
 
     this.ordersService
@@ -249,11 +249,16 @@ export class MyOrdersComponent implements OnInit {
       page: 1,
     });
 
-    this.loadOrders();
+    this.loadData();
   }
 
   onPageChange(page: number): void {
     this.request.set({ ...this.request(), page });
-    this.loadOrders();
+    this.loadData();
+  }
+
+  onPageSizeChange(pageSize: number): void {
+    this.request.set({ ...this.request(), pageSize });
+    this.loadData();
   }
 }

@@ -2,14 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, input, output } from '@angular/core';
 import { paginationLiterals } from '@i18n/pagination/pagination.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
-import { PoButtonModule } from '@po-ui/ng-components';
 
 type PaginationItem = number | 'ellipsis';
 
 @Component({
   selector: 'app-pagination',
   standalone: true,
-  imports: [CommonModule, PoButtonModule],
+  imports: [CommonModule],
   templateUrl: './pagination.component.html',
   styleUrl: './pagination.component.scss',
 })
@@ -18,9 +17,20 @@ export class PaginationComponent {
   readonly pageSize = input<number>(10);
   readonly totalItems = input<number>(0);
   readonly siblingCount = input<number>(1);
+  readonly pageSizeOptions = input<number[]>([10, 50, 100, 500, 1000]);
 
   readonly literals = injectI18n(paginationLiterals);
+
   readonly pageChange = output<number>();
+  readonly pageSizeChange = output<number>();
+
+  readonly normalizedPageSizeOptions = computed(() => {
+    const options = this.pageSizeOptions()
+      .filter((size) => Number.isInteger(size) && size > 0)
+      .sort((first, second) => first - second);
+
+    return [...new Set(options)];
+  });
 
   readonly totalPages = computed(() => {
     const totalItems = this.totalItems();
@@ -90,6 +100,13 @@ export class PaginationComponent {
     return Math.min(this.page() * this.pageSize(), this.totalItems());
   });
 
+  readonly infoText = computed(() =>
+    this.literals()
+      .info.replace('{{start}}', String(this.startItem()))
+      .replace('{{end}}', String(this.endItem()))
+      .replace('{{total}}', String(this.totalItems())),
+  );
+
   goToPage(page: number): void {
     const totalPages = this.totalPages();
 
@@ -116,16 +133,21 @@ export class PaginationComponent {
     this.goToPage(this.totalPages());
   }
 
+  onPageSizeChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    const pageSize = Number(target.value);
+    const availableOptions = this.normalizedPageSizeOptions();
+
+    if (!availableOptions.includes(pageSize) || pageSize === this.pageSize()) {
+      return;
+    }
+
+    this.pageSizeChange.emit(pageSize);
+  }
+
   trackByItem(index: number, item: PaginationItem): string {
     return `${index}-${item}`;
   }
-
-  readonly infoText = computed(() =>
-    this.literals()
-      .info.replace('{{start}}', String(this.startItem()))
-      .replace('{{end}}', String(this.endItem()))
-      .replace('{{total}}', String(this.totalItems())),
-  );
 
   private range(start: number, end: number): number[] {
     if (start > end) {

@@ -147,7 +147,7 @@ export class UsersComponent {
   ]);
 
   ngOnInit(): void {
-    this.loadUsers();
+    this.loadData();
   }
 
   openFilters(): void {
@@ -157,7 +157,7 @@ export class UsersComponent {
   openCreateModal(): void {
     this.modalService.open(CreateUserComponent).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadUsers();
+        this.loadData();
       }
     });
   }
@@ -165,7 +165,7 @@ export class UsersComponent {
   openUpdateModal(user: UserResponse): void {
     this.modalService.open(UpdateUserComponent, { user }).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadUsers();
+        this.loadData();
       }
     });
   }
@@ -173,12 +173,12 @@ export class UsersComponent {
   openChangeRoleModal(user: UserResponse): void {
     this.modalService.open(ChangeUserRoleComponent, { user }).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadUsers();
+        this.loadData();
       }
     });
   }
 
-  private loadUsers(): void {
+  private loadData(): void {
     this.loading.set(true);
 
     this.service
@@ -201,12 +201,17 @@ export class UsersComponent {
       page: 1,
     });
 
-    this.loadUsers();
+    this.loadData();
   }
 
   onPageChange(page: number): void {
     this.request.set({ ...this.request(), page });
-    this.loadUsers();
+    this.loadData();
+  }
+
+  onPageSizeChange(pageSize: number): void {
+    this.request.set({ ...this.request(), pageSize });
+    this.loadData();
   }
 
   activate(user: UserResponse): void {
@@ -223,7 +228,7 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.loadUsers();
+              this.loadData();
             },
           });
       },
@@ -244,7 +249,7 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.loadUsers();
+              this.loadData();
             },
           });
       },
@@ -265,7 +270,7 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.loadUsers();
+              this.loadData();
             },
           });
       },
@@ -286,7 +291,7 @@ export class UsersComponent {
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
             next: () => {
-              this.loadUsers();
+              this.loadData();
             },
           });
       },

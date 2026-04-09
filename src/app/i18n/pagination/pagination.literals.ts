@@ -3,6 +3,7 @@ import { defineI18n } from '@i18n/shared/define-i18n';
 export const paginationLiterals = defineI18n({
   ptBR: {
     info: 'Exibindo {{start}} até {{end}} de {{total}} registros',
+    pageSize: 'Itens por página',
     actions: {
       first: 'Primeira página',
       previous: 'Página anterior',
@@ -12,6 +13,7 @@ export const paginationLiterals = defineI18n({
   },
   enUS: {
     info: 'Showing {{start}} to {{end}} of {{total}} records',
+    pageSize: 'Items per page',
     actions: {
       first: 'First page',
       previous: 'Previous page',
