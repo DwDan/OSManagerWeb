@@ -189,7 +189,7 @@ export class OrdersComponent implements OnInit {
         },
         {
           value: 'Unsuccessful',
-          color: 'color-01',
+          color: 'color-07',
           label: this.literals().executionResult.failure,
           icon: 'an an-x',
         },
