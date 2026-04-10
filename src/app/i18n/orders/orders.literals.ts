@@ -78,8 +78,8 @@ export const ordersLiterals = defineI18n({
       evidences: 'Evidências',
     },
     executionResult: {
-      success: 'Sucesso',
-      failure: 'Falha',
+      successful: 'Sucesso',
+      unsuccessful: 'Falha',
     },
     notifications: {
       created: 'Ordem criada com sucesso.',
@@ -179,8 +179,8 @@ export const ordersLiterals = defineI18n({
       evidences: 'Evidences',
     },
     executionResult: {
-      success: 'Success',
-      failure: 'Failure',
+      successful: 'Successful',
+      unsuccessful: 'Unsuccessful',
     },
     notifications: {
       created: 'Order created successfully.',

@@ -67,8 +67,8 @@ export class CloseOrderComponent extends BaseModalComponent<
   readonly formInvalid = formInvalidSignal(this.form);
 
   readonly executionResultOptions = computed<PoSelectOption[]>(() => [
-    { label: this.literals().executionResult.success, value: 1 },
-    { label: this.literals().executionResult.failure, value: 2 },
+    { label: this.literals().executionResult.successful, value: 1 },
+    { label: this.literals().executionResult.unsuccessful, value: 2 },
   ]);
 
   ngOnInit(): void {

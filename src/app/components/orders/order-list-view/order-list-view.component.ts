@@ -4,6 +4,8 @@ import { commonLiterals } from '@i18n/common/common.literals';
 import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
+import { ExecutionResult } from '@models/orders/types/execution-result.enum';
+import { OrderStatus } from '@models/orders/types/order-status.enum';
 import {
   PoInfoModule,
   PoListViewModule,
@@ -59,26 +61,26 @@ export class OrderListViewComponent {
     action.action(item);
   }
 
-  getStatusLabel(status: string): string {
+  getStatusLabel(status: OrderStatus): string {
     const column = this.columns().find((item) => item.property === 'status');
 
     if (!column || column.type !== 'label' || !column.labels) {
-      return status;
+      return String(status);
     }
 
     const label = column.labels.find((item) => item.value === status);
     return String(label?.label ?? status);
   }
 
-  getExecutionResultLabel(result: string | null | undefined): string {
-    if (!result) {
+  getExecutionResultLabel(result: ExecutionResult | null | undefined): string {
+    if (result === null || result === undefined) {
       return this.common().notInformed;
     }
 
     const column = this.columns().find((item) => item.property === 'executionResult');
 
     if (!column || column.type !== 'label' || !column.labels) {
-      return result;
+      return String(result);
     }
 
     const label = column.labels.find((item) => item.value === result);

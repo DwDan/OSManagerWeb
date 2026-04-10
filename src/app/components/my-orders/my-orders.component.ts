@@ -163,13 +163,13 @@ export class MyOrdersComponent implements OnInit {
         {
           value: ExecutionResult.Successful,
           color: 'color-12',
-          label: this.literals().executionResult.success,
+          label: this.literals().executionResult.successful,
           icon: 'an an-check',
         },
         {
           value: ExecutionResult.Unsuccessful,
           color: 'color-01',
-          label: this.literals().executionResult.failure,
+          label: this.literals().executionResult.unsuccessful,
           icon: 'an an-x',
         },
       ],
