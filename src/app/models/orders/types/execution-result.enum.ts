@@ -1,4 +1,4 @@
 export enum ExecutionResult {
-  Successful = 'Successful',
-  Unsuccessful = 'Unsuccessful',
+  Successful = 1,
+  Unsuccessful = 2,
 }

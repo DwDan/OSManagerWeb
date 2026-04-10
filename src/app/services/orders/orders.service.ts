@@ -5,6 +5,7 @@ import { AddOrderEvidencesRequest } from '@models/orders/requests/add-order-evid
 import { AssignOrderTechnicianRequest } from '@models/orders/requests/assign-order-technician.request';
 import { CloseOrderRequest } from '@models/orders/requests/close-order.request';
 import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
+import { ExportOrdersToExcelRequest } from '@models/orders/requests/export-orders-to-excel.request';
 import { GerOrdersRequest } from '@models/orders/requests/get-orders.request';
 import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
 import { OrderDetailsResponse } from '@models/orders/responses/order-details.response';
@@ -75,6 +76,15 @@ export class OrdersService {
 
   downloadEvidence(orderId: string, evidenceId: string): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${orderId}/evidences/${evidenceId}/download`, {
+      responseType: 'blob',
+    });
+  }
+
+  export(request: ExportOrdersToExcelRequest): Observable<Blob> {
+    const params = buildHttpParams(request);
+
+    return this.http.get(`${this.baseUrl}/export`, {
+      params,
       responseType: 'blob',
     });
   }

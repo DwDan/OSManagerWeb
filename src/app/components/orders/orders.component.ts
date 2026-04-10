@@ -7,6 +7,7 @@ import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { GerOrdersRequest } from '@models/orders/requests/get-orders.request';
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
+import { ExecutionResult } from '@models/orders/types/execution-result.enum';
 import { OrderStatus } from '@models/orders/types/order-status.enum';
 import {
   PoButtonModule,
@@ -80,6 +81,7 @@ export class OrdersComponent implements OnInit {
         label: this.common().filters,
         icon: 'an an-funnel',
         action: () => this.openFilters(),
+        disabled: this.loading(),
       });
     }
 
@@ -88,6 +90,15 @@ export class OrdersComponent implements OnInit {
       icon: 'an an-plus',
       type: 'primary',
       action: () => this.openCreateModal(),
+      disabled: this.loading(),
+    });
+
+    actions.push({
+      label: this.literals().pageActions.export,
+      icon: 'an an-export',
+      type: 'primary',
+      action: () => this.export(),
+      disabled: this.loading(),
     });
 
     return actions;
@@ -145,31 +156,31 @@ export class OrdersComponent implements OnInit {
       type: 'label',
       labels: [
         {
-          value: 'Pending',
+          value: OrderStatus.Pending,
           color: 'color-07',
           label: this.literals().status.Pending,
           icon: 'an an-clock',
         },
         {
-          value: 'Open',
+          value: OrderStatus.Open,
           color: 'color-10',
           label: this.literals().status.Open,
           icon: 'an an-folder-open',
         },
         {
-          value: 'InProgress',
+          value: OrderStatus.InProgress,
           color: 'color-08',
           label: this.literals().status.InProgress,
           icon: 'an an-gear',
         },
         {
-          value: 'Closed',
+          value: OrderStatus.Closed,
           color: 'color-12',
           label: this.literals().status.Closed,
           icon: 'an an-check',
         },
         {
-          value: 'Canceled',
+          value: OrderStatus.Canceled,
           color: 'color-01',
           label: this.literals().status.Canceled,
           icon: 'an an-x',
@@ -182,13 +193,13 @@ export class OrdersComponent implements OnInit {
       type: 'label',
       labels: [
         {
-          value: 'Successful',
+          value: ExecutionResult.Successful,
           color: 'color-12',
           label: this.literals().executionResult.success,
           icon: 'an an-check',
         },
         {
-          value: 'Unsuccessful',
+          value: ExecutionResult.Unsuccessful,
           color: 'color-07',
           label: this.literals().executionResult.failure,
           icon: 'an an-x',
@@ -205,6 +216,28 @@ export class OrdersComponent implements OnInit {
 
   openFilters(): void {
     this.filterComponent.openMobileFilters();
+  }
+
+  export(): void {
+    this.loading.set(true);
+
+    this.ordersService
+      .export(this.request())
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((blob) => {
+        const file = new Blob([blob], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+
+        const url = window.URL.createObjectURL(file);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'orders.xlsx';
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      });
   }
 
   openCreateModal(): void {

@@ -6,6 +6,7 @@ export const ordersLiterals = defineI18n({
     myOrdersTitle: 'Minhas Ordens de Serviço',
     pageActions: {
       newOrder: 'Nova ordem',
+      export: 'Exportar',
     },
     tableActions: {
       details: 'Detalhes',
@@ -104,9 +105,9 @@ export const ordersLiterals = defineI18n({
   enUS: {
     title: 'Service Orders',
     myOrdersTitle: 'My Service Orders',
-
     pageActions: {
       newOrder: 'New order',
+      export: 'Export',
     },
     tableActions: {
       details: 'Details',

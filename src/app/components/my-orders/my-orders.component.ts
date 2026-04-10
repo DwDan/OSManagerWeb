@@ -84,6 +84,7 @@ export class MyOrdersComponent implements OnInit {
         label: this.common().filters,
         icon: 'an an-funnel',
         action: () => this.openFilters(),
+        disabled: this.loading(),
       });
     }
 

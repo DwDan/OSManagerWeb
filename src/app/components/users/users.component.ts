@@ -102,6 +102,7 @@ export class UsersComponent {
         label: this.common().filters,
         icon: 'an an-funnel',
         action: () => this.openFilters(),
+        disabled: this.loading(),
       });
     }
 
@@ -110,6 +111,7 @@ export class UsersComponent {
       icon: 'an an-plus',
       type: 'primary',
       action: () => this.openCreateModal(),
+      disabled: this.loading(),
     });
 
     return actions;
