@@ -12,6 +12,7 @@ import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { GerOrdersRequest } from '@models/orders/requests/get-orders.request';
 import { OrderListItemResponse } from '@models/orders/responses/order-list-item.response';
+import { ExecutionResult } from '@models/orders/types/execution-result.enum';
 import { OrderStatus } from '@models/orders/types/order-status.enum';
 import {
   PoButtonModule,
@@ -123,31 +124,31 @@ export class MyOrdersComponent implements OnInit {
       type: 'label',
       labels: [
         {
-          value: 'Pending',
+          value: OrderStatus.Pending,
           color: 'color-07',
           label: this.literals().status.Pending,
           icon: 'an an-clock',
         },
         {
-          value: 'Open',
+          value: OrderStatus.Open,
           color: 'color-10',
           label: this.literals().status.Open,
           icon: 'an an-folder-open',
         },
         {
-          value: 'InProgress',
+          value: OrderStatus.InProgress,
           color: 'color-08',
           label: this.literals().status.InProgress,
           icon: 'an an-gear',
         },
         {
-          value: 'Closed',
+          value: OrderStatus.Closed,
           color: 'color-12',
           label: this.literals().status.Closed,
           icon: 'an an-check',
         },
         {
-          value: 'Canceled',
+          value: OrderStatus.Canceled,
           color: 'color-01',
           label: this.literals().status.Canceled,
           icon: 'an an-x',
@@ -160,13 +161,13 @@ export class MyOrdersComponent implements OnInit {
       type: 'label',
       labels: [
         {
-          value: 'Successful',
+          value: ExecutionResult.Successful,
           color: 'color-12',
           label: this.literals().executionResult.success,
           icon: 'an an-check',
         },
         {
-          value: 'Unsuccessful',
+          value: ExecutionResult.Unsuccessful,
           color: 'color-01',
           label: this.literals().executionResult.failure,
           icon: 'an an-x',
