@@ -22,6 +22,7 @@
               [p-value]="item.firstName || common().notInformed"
             />
           </div>
+
           <div class="po-sm-6">
             <po-info
               [p-label]="literals().columns.lastName"
@@ -37,21 +38,51 @@
           </div>
 
           <div class="po-sm-6">
-            <po-info [p-label]="literals().columns.role" [p-value]="getRoleLabel(item.role)" />
+            <div class="user-list-view__tag-field">
+              <div class="user-list-view__tag-label">
+                {{ literals().columns.role }}
+              </div>
+
+              @if (getRoleTag(item.role); as roleTag) {
+                <po-tag
+                  [p-value]="roleTag.label"
+                  [p-color]="roleTag.color!"
+                  [p-icon]="roleTag.icon!"
+                />
+              }
+            </div>
           </div>
 
           <div class="po-sm-6">
-            <po-info
-              [p-label]="literals().columns.isActive"
-              [p-value]="getBooleanLabel(item.isActive)"
-            />
+            <div class="user-list-view__tag-field">
+              <div class="user-list-view__tag-label">
+                {{ literals().columns.isActive }}
+              </div>
+
+              @if (getBooleanTag(item.isActive); as activeTag) {
+                <po-tag
+                  [p-value]="activeTag.label"
+                  [p-color]="activeTag.color!"
+                  [p-icon]="activeTag.icon!"
+                />
+              }
+            </div>
           </div>
 
           <div class="po-sm-6">
-            <po-info
-              [p-label]="literals().columns.emailConfirmed"
-              [p-value]="getBooleanLabel(item.emailConfirmed)"
-            />
+            <div class="user-list-view__tag-field">
+              <div class="user-list-view__tag-label">
+                {{ literals().columns.emailConfirmed }}
+              </div>
+
+              @if (getBooleanTag(item.emailConfirmed); as emailConfirmedTag) {
+                <po-tag
+                  [p-value]="emailConfirmedTag.label"
+                  [p-color]="emailConfirmedTag.color!"
+                  [p-icon]="emailConfirmedTag.icon!"
+                />
+              }
+            </div>
           </div>
 
           <div class="po-sm-12">

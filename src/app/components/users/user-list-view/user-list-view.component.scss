@@ -28,3 +28,14 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.user-list-view__tag-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.user-list-view__tag-label {
+  font-size: 12px;
+  font-weight: 600;
+}

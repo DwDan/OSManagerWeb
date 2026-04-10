@@ -11,14 +11,28 @@ import {
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
+  PoTagModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
 import { DevicesService } from '@services/devices/devices.service';
 
+type UserTagViewModel = {
+  label: string;
+  color?: string;
+  icon?: string;
+};
+
 @Component({
   selector: 'app-user-list-view',
   standalone: true,
-  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule, PoWidgetModule],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoListViewModule,
+    PoInfoModule,
+    PoWidgetModule,
+    PoTagModule,
+  ],
   templateUrl: './user-list-view.component.html',
   styleUrl: './user-list-view.component.scss',
 })
@@ -59,18 +73,43 @@ export class UserListViewComponent {
     action.action(item);
   }
 
-  getRoleLabel(role: string): string {
+  getRoleTag(role: string): UserTagViewModel {
     const column = this.columns().find((item) => item.property === 'role');
 
     if (!column || column.type !== 'label' || !column.labels) {
-      return String(role);
+      return {
+        label: String(role),
+      };
     }
 
-    const label = column.labels.find((item) => item.value === role);
-    return String(label?.label ?? role);
+    const tag = column.labels.find((item) => item.value === role);
+
+    return {
+      label: String(tag?.label ?? role),
+      color: tag?.color,
+      icon: typeof tag?.icon === 'string' ? tag.icon : undefined,
+    };
+  }
+
+  getBooleanTag(value: boolean): UserTagViewModel {
+    return value
+      ? {
+          label: this.common().yes,
+          color: 'color-12',
+          icon: 'an an-check',
+        }
+      : {
+          label: this.common().no,
+          color: 'color-07',
+          icon: 'an an-x',
+        };
+  }
+
+  getRoleLabel(role: string): string {
+    return this.getRoleTag(role).label;
   }
 
   getBooleanLabel(value: boolean): string {
-    return value ? this.common().yes : this.common().no;
+    return this.getBooleanTag(value).label;
   }
 }

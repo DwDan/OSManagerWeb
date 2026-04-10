@@ -13,14 +13,28 @@ import {
   PoTableColumn,
   PoTableColumnSpacing,
   PoTableModule,
+  PoTagModule,
   PoWidgetModule,
 } from '@po-ui/ng-components';
 import { DevicesService } from '@services/devices/devices.service';
 
+type OrderTagViewModel = {
+  label: string;
+  color?: string;
+  icon?: string;
+};
+
 @Component({
   selector: 'app-order-list-view',
   standalone: true,
-  imports: [CommonModule, PoTableModule, PoListViewModule, PoInfoModule, PoWidgetModule],
+  imports: [
+    CommonModule,
+    PoTableModule,
+    PoListViewModule,
+    PoInfoModule,
+    PoWidgetModule,
+    PoTagModule,
+  ],
   templateUrl: './order-list-view.component.html',
   styleUrl: './order-list-view.component.scss',
 })
@@ -61,29 +75,45 @@ export class OrderListViewComponent {
     action.action(item);
   }
 
-  getStatusLabel(status: OrderStatus): string {
+  getStatusTag(status: OrderStatus): OrderTagViewModel {
     const column = this.columns().find((item) => item.property === 'status');
 
     if (!column || column.type !== 'label' || !column.labels) {
-      return String(status);
+      return {
+        label: String(status),
+      };
     }
 
-    const label = column.labels.find((item) => item.value === status);
-    return String(label?.label ?? status);
+    const tag = column.labels.find((item) => item.value === status);
+
+    return {
+      label: String(tag?.label ?? status),
+      color: tag?.color,
+      icon: typeof tag?.icon === 'string' ? tag.icon : undefined,
+    };
   }
 
-  getExecutionResultLabel(result: ExecutionResult | null | undefined): string {
+  getExecutionResultTag(result: ExecutionResult | null | undefined): OrderTagViewModel {
     if (result === null || result === undefined) {
-      return this.common().notInformed;
+      return {
+        label: this.common().notInformed,
+      };
     }
 
     const column = this.columns().find((item) => item.property === 'executionResult');
 
     if (!column || column.type !== 'label' || !column.labels) {
-      return String(result);
+      return {
+        label: String(result),
+      };
     }
 
-    const label = column.labels.find((item) => item.value === result);
-    return String(label?.label ?? result);
+    const tag = column.labels.find((item) => item.value === result);
+
+    return {
+      label: String(tag?.label ?? result),
+      color: tag?.color,
+      icon: typeof tag?.icon === 'string' ? tag.icon : undefined,
+    };
   }
 }
