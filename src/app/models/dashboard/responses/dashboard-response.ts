@@ -1,12 +1,9 @@
-import { DashboardChartSerie } from './dashboard-chart-serie.response';
-import { DashboardLatestOrder } from './dashboard-latest-order.response';
+import { DashboardCardResponse } from './dashboard-card.response';
+import { DashboardChartResponse } from './dashboard-chart.response';
+import { DashboardLatestOrdersResponse } from './dashboard-latest-orders.response';
 
 export interface DashboardResponse {
-  totalCustomers: number;
-  totalServices: number;
-  activeOrders: number;
-  closedOrders: number;
-  chartCategories: string[];
-  chartSeries: DashboardChartSerie[];
-  latestOrders: DashboardLatestOrder[];
+  cards: DashboardCardResponse[];
+  chart?: DashboardChartResponse | null;
+  latestOrders?: DashboardLatestOrdersResponse | null;
 }

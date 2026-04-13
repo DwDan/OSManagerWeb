@@ -1,6 +1,6 @@
 import { OrderStatus } from '@models/orders/types/order-status.enum';
 
-export interface DashboardLatestOrder {
+export interface DashboardLatestOrderResponse {
   id: string;
   code: string;
   customer: string;
