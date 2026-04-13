@@ -1,26 +1,26 @@
 <po-page-default [p-title]="literals().title">
   <div class="po-row">
     <div class="po-md-3">
-      <po-widget [p-title]="literals().widgets.users">
-        <h2 class="kpi">{{ totalUsuarios }}</h2>
+      <po-widget [p-title]="literals().widgets.customers">
+        <h2 class="kpi">{{ totalCustomers() }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget [p-title]="literals().widgets.orders">
-        <h2 class="kpi">{{ totalOrdens }}</h2>
+      <po-widget [p-title]="literals().widgets.services">
+        <h2 class="kpi">{{ totalServices() }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget [p-title]="literals().widgets.open">
-        <h2 class="kpi text-warning">{{ ordensAbertas }}</h2>
+      <po-widget [p-title]="literals().widgets.activeOrders">
+        <h2 class="kpi text-warning">{{ activeOrders() }}</h2>
       </po-widget>
     </div>
 
     <div class="po-md-3">
-      <po-widget [p-title]="literals().widgets.closed">
-        <h2 class="kpi text-success">{{ ordensFinalizadas }}</h2>
+      <po-widget [p-title]="literals().widgets.closedOrders">
+        <h2 class="kpi text-success">{{ closedOrders() }}</h2>
       </po-widget>
     </div>
   </div>

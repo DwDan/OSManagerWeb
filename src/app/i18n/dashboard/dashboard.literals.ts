@@ -4,22 +4,12 @@ export const dashboardLiterals = defineI18n({
   ptBR: {
     title: 'Dashboard',
     widgets: {
-      users: 'Usuários',
-      orders: 'Ordens',
-      open: 'Abertas',
-      closed: 'Finalizadas',
-      ordersWeek: 'Ordens na semana',
+      customers: 'Clientes',
+      services: 'Serviços',
+      activeOrders: 'Ordens ativas',
+      closedOrders: 'Ordens finalizadas',
+      ordersWeek: 'Ordens nos últimos 7 dias',
       latestOrders: 'Últimas ordens',
-    },
-    chartCategories: {
-      monday: 'Seg',
-      tuesday: 'Ter',
-      wednesday: 'Qua',
-      thursday: 'Qui',
-      friday: 'Sex',
-    },
-    chartSeries: {
-      orders: 'Ordens',
     },
     table: {
       code: 'Código',
@@ -27,30 +17,22 @@ export const dashboardLiterals = defineI18n({
       status: 'Status',
     },
     status: {
+      pending: 'Pendente',
       open: 'Aberta',
+      inProgress: 'Em execução',
       closed: 'Finalizada',
-      inProgress: 'Em andamento',
+      canceled: 'Cancelada',
     },
   },
   enUS: {
     title: 'Dashboard',
     widgets: {
-      users: 'Users',
-      orders: 'Orders',
-      open: 'Open',
-      closed: 'Closed',
-      ordersWeek: 'Orders this week',
+      customers: 'Customers',
+      services: 'Services',
+      activeOrders: 'Active orders',
+      closedOrders: 'Closed orders',
+      ordersWeek: 'Orders in the last 7 days',
       latestOrders: 'Latest orders',
-    },
-    chartCategories: {
-      monday: 'Mon',
-      tuesday: 'Tue',
-      wednesday: 'Wed',
-      thursday: 'Thu',
-      friday: 'Fri',
-    },
-    chartSeries: {
-      orders: 'Orders',
     },
     table: {
       code: 'Code',
@@ -58,9 +40,11 @@ export const dashboardLiterals = defineI18n({
       status: 'Status',
     },
     status: {
+      pending: 'Pending',
       open: 'Open',
-      closed: 'Closed',
       inProgress: 'In progress',
+      closed: 'Closed',
+      canceled: 'Canceled',
     },
   },
 });
