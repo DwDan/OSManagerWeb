@@ -10,7 +10,15 @@
     [p-sort]="true"
     [p-striped]="true"
     [p-spacing]="spacing.Large"
-  />
+  >
+    <ng-template p-table-column-template let-value p-property="totalToReceive">
+      {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
+    </ng-template>
+
+    <ng-template p-table-column-template let-value p-property="totalToPay">
+      {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
+    </ng-template>
+  </po-table>
 } @else {
   @for (item of items(); track item.id) {
     <div class="mb-md">

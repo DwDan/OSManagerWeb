@@ -215,12 +215,12 @@ export class OrdersComponent implements OnInit {
     {
       property: 'totalToReceive',
       label: this.literals().columns.totalToReceive,
-      type: 'currency',
+      type: 'columnTemplate',
     },
     {
       property: 'totalToPay',
       label: this.literals().columns.totalToPay,
-      type: 'currency',
+      type: 'columnTemplate',
     },
     { property: 'city', label: this.literals().columns.city },
     { property: 'state', label: this.literals().columns.state },
