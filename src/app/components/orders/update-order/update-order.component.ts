@@ -75,6 +75,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
   readonly form = this.formBuilder.nonNullable.group({
     customerId: ['', [Validators.required]],
     services: [[] as string[]],
+    scheduledAt: [new Date()],
     postalCode: [''],
     street: ['', [Validators.required]],
     number: [''],
@@ -104,6 +105,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
           this.form.reset({
             customerId: order.customer.id,
             services: order.services?.map((service) => service.id) ?? [],
+            scheduledAt: order.scheduledAt,
             postalCode: order.address.postalCode,
             street: order.address.street,
             number: order.address.number,
@@ -127,6 +129,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
     const request: UpdateOrderRequest = {
       customerId: this.form.controls.customerId.getRawValue(),
       services: this.form.controls.services.getRawValue(),
+      scheduledAt: this.form.controls.scheduledAt.value,
       postalCode: this.form.controls.postalCode.getRawValue(),
       street: this.form.controls.street.getRawValue(),
       number: this.form.controls.number.getRawValue(),
@@ -195,6 +198,7 @@ export class UpdateOrderComponent extends BaseModalComponent<
     return {
       customerId: '',
       services: [],
+      scheduledAt: new Date(),
       postalCode: '',
       street: '',
       number: '',

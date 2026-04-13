@@ -71,6 +71,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
   readonly form = this.formBuilder.nonNullable.group({
     customerId: ['', [Validators.required]],
     services: [[] as string[]],
+    scheduledAt: new Date(),
     postalCode: [''],
     street: ['', [Validators.required]],
     number: [''],
@@ -87,6 +88,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
     this.form.reset({
       customerId: '',
       services: [],
+      scheduledAt: new Date(),
       postalCode: '',
       street: '',
       number: '',
@@ -126,6 +128,7 @@ export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: b
     const request: CreateOrderRequest = {
       customerId: this.form.controls.customerId.getRawValue(),
       services: this.form.controls.services.getRawValue(),
+      scheduledAt: this.form.controls.scheduledAt.value,
       postalCode: this.form.controls.postalCode.getRawValue(),
       street: this.form.controls.street.getRawValue(),
       number: this.form.controls.number.getRawValue(),

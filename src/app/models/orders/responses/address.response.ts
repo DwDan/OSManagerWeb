@@ -1,5 +1,6 @@
 export interface AddressResponse {
   postalCode: string;
+  scheduledAt: Date;
   street: string;
   number: string;
   city: string;

@@ -20,12 +20,31 @@
       </div>
 
       <div class="po-md-4">
-        <strong>{{ literals().details.status }}:</strong> {{ order.status }}
+        <strong>{{ literals().details.status }}:</strong>
+
+        <div class="po-mt-1">
+          @if (getStatusTag(order.status); as statusTag) {
+            <po-tag
+              [p-value]="statusTag.label"
+              [p-color]="statusTag.color!"
+              [p-icon]="statusTag.icon!"
+            />
+          }
+        </div>
       </div>
 
       <div class="po-md-4">
         <strong>{{ literals().details.result }}:</strong>
-        {{ order.executionResult || common().notInformed }}
+
+        <div class="po-mt-1">
+          @if (getExecutionResultTag(order.executionResult); as resultTag) {
+            <po-tag
+              [p-value]="resultTag.label"
+              [p-color]="resultTag.color!"
+              [p-icon]="resultTag.icon!"
+            />
+          }
+        </div>
       </div>
 
       <div class="po-md-4">
@@ -64,7 +83,7 @@
       <div class="po-md-12">
         @for (audit of order.audits; track audit.id) {
           <div class="po-row">
-            <div class="po-md-3">{{ audit.status }}</div>
+            <div class="po-md-3">{{ getStatusTag(audit.status).label }}</div>
             <div class="po-md-5">{{ audit.userName || audit.userId }}</div>
             <div class="po-md-4">{{ audit.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
           </div>
