@@ -210,7 +210,7 @@ export class OrdersComponent implements OnInit {
       property: 'scheduledAt',
       label: this.literals().columns.scheduledAt,
       type: 'date',
-      format: 'dd/MM/yyyy',
+      format: 'dd/MM/yyyy HH:mm',
     },
     {
       property: 'totalToReceive',

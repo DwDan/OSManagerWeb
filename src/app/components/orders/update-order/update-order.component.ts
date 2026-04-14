@@ -11,7 +11,6 @@ import { ordersLiterals } from '@i18n/orders/orders.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomerResponse } from '@models/customers/responses/customer.response';
 import { PostalCodeAddress } from '@models/locations/response/postal-code-address.response';
-import { CreateOrderRequest } from '@models/orders/requests/create-order.request';
 import { UpdateOrderRequest } from '@models/orders/requests/update-order.request';
 import { ServiceResponse } from '@models/services/responses/service.response';
 import {
@@ -26,7 +25,8 @@ import {
 import { CustomersService } from '@services/customers/customers.service';
 import { OrdersService } from '@services/orders/orders.service';
 import { ServicesService } from '@services/services/services.service';
-import { finalize } from 'rxjs';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
@@ -91,22 +91,39 @@ export class UpdateOrderComponent extends BaseModalComponent<
   readonly formInvalid = formInvalidSignal(this.form);
 
   ngOnInit(): void {
-    this.loadOrder();
-    this.loadCustomers();
-    this.loadServices();
+    this.loadData();
   }
 
-  loadOrder(): void {
+  private loadData(): void {
     this.loading.set(true);
 
-    this.ordersService
-      .getById(this.data!.orderId)
+    forkJoin({
+      order: this.ordersService.getById(this.data!.orderId),
+      customers: this.customersService.getAllCustomers(),
+      services: this.servicesService.getAllServices(),
+    })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: (order) => {
-          this.form.reset({
+        next: ({ order, customers, services }) => {
+          this.customers.set(
+            customers.map((customer: CustomerResponse) => ({
+              label: customer.name,
+              value: customer.id,
+            })),
+          );
+
+          this.services.set(
+            services.map((service: ServiceResponse) => ({
+              label: service.name,
+              value: service.id,
+            })),
+          );
+
+          const selectedServices = order.services?.map((service) => service.id) ?? [];
+
+          this.form.patchValue({
             customerId: order.customer.id,
-            services: order.services?.map((service) => service.id) ?? [],
+            services: [],
             scheduledAt: order.scheduledAt,
             postalCode: order.address.postalCode,
             street: order.address.street,
@@ -116,6 +133,10 @@ export class UpdateOrderComponent extends BaseModalComponent<
             country: order.address.country,
             complement: order.address.complement ?? '',
             reference: order.address.reference ?? '',
+          });
+
+          setTimeout(() => {
+            this.form.controls.services.setValue(selectedServices);
           });
         },
       });
@@ -168,47 +189,5 @@ export class UpdateOrderComponent extends BaseModalComponent<
 
   onAddressNotFound(): void {
     this.poNotification.warning(this.literals().validations.invalidPostalCode);
-  }
-
-  private loadCustomers(): void {
-    this.customersService.getAllCustomers().subscribe({
-      next: (customers: CustomerResponse[]) => {
-        this.customers.set(
-          customers.map((customer) => ({
-            label: customer.name,
-            value: customer.id,
-          })),
-        );
-      },
-    });
-  }
-
-  private loadServices(): void {
-    this.servicesService.getAllServices().subscribe({
-      next: (services: ServiceResponse[]) => {
-        this.services.set(
-          services.map((service) => ({
-            label: service.name,
-            value: service.id,
-          })),
-        );
-      },
-    });
-  }
-
-  private createEmptyOrderForm(): CreateOrderRequest {
-    return {
-      customerId: '',
-      services: [],
-      scheduledAt: new Date(),
-      postalCode: '',
-      street: '',
-      number: '',
-      city: '',
-      state: '',
-      country: 'Brasil',
-      complement: '',
-      reference: '',
-    };
   }
 }
