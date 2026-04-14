@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CloseOrderComponent } from './close-order.component';
 
 describe('CloseOrderComponent', () => {
@@ -8,9 +10,9 @@ describe('CloseOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CloseOrderComponent]
-    })
-    .compileComponents();
+      imports: [CloseOrderComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CloseOrderComponent);
     component = fixture.componentInstance;

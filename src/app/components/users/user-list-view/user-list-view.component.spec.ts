@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UserListViewComponent } from './user-list-view.component';
 
 describe('UserListViewComponent', () => {
@@ -8,9 +10,9 @@ describe('UserListViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserListViewComponent]
-    })
-    .compileComponents();
+      imports: [UserListViewComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UserListViewComponent);
     component = fixture.componentInstance;

@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FilterServiceComponent } from './filter-service.component';
 
 describe('FilterServiceComponent', () => {
@@ -8,9 +10,9 @@ describe('FilterServiceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FilterServiceComponent]
-    })
-    .compileComponents();
+      imports: [FilterServiceComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(FilterServiceComponent);
     component = fixture.componentInstance;

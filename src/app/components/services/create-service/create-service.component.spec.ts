@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CreateServiceComponent } from './create-service.component';
 
 describe('CreateServiceComponent', () => {
@@ -8,9 +10,9 @@ describe('CreateServiceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateServiceComponent]
-    })
-    .compileComponents();
+      imports: [CreateServiceComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CreateServiceComponent);
     component = fixture.componentInstance;

@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { StateSelectComponent } from './state-select.component';
 
 describe('StateSelectComponent', () => {
@@ -8,9 +10,9 @@ describe('StateSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StateSelectComponent]
-    })
-    .compileComponents();
+      imports: [StateSelectComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StateSelectComponent);
     component = fixture.componentInstance;

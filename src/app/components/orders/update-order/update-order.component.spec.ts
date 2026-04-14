@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { UpdateOrderComponent } from './update-order.component';
 
 describe('UpdateOrderComponent', () => {
@@ -8,9 +10,9 @@ describe('UpdateOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UpdateOrderComponent]
-    })
-    .compileComponents();
+      imports: [UpdateOrderComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UpdateOrderComponent);
     component = fixture.componentInstance;

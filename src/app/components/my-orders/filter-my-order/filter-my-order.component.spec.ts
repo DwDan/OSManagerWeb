@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { FilterMyOrderComponent } from './filter-my-order.component';
 
 describe('FilterMyOrderComponent', () => {
@@ -9,6 +11,7 @@ describe('FilterMyOrderComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FilterMyOrderComponent],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterMyOrderComponent);
