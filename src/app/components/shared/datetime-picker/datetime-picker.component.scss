@@ -1,0 +1,27 @@
+.app-datetime-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-datetime-picker__label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.app-datetime-picker__required {
+  margin-left: 4px;
+}
+
+.app-datetime-picker__fields {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .app-datetime-picker__fields {
+    grid-template-columns: 1fr;
+  }
+}

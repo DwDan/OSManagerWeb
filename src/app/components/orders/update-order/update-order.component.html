@@ -15,7 +15,7 @@
       ></po-select>
     </div>
 
-    <div class="po-md-8">
+    <div class="po-md-6">
       <po-multiselect
         name="editServices"
         [p-label]="literals().fields.services"
@@ -25,12 +25,12 @@
       ></po-multiselect>
     </div>
 
-    <div class="po-md-4">
-      <po-datepicker
+    <div class="po-md-6">
+      <app-datetime-picker
         name="editScheduledAt"
-        [p-label]="literals().fields.scheduledAt"
+        [label]="literals().fields.scheduledAt"
         formControlName="scheduledAt"
-      ></po-datepicker>
+      ></app-datetime-picker>
     </div>
 
     <div class="po-md-4">

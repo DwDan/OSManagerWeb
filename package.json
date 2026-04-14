@@ -22,6 +22,7 @@
     "@po-ui/ng-components": "^20.13.1",
     "@po-ui/ng-templates": "^20.13.1",
     "@po-ui/style": "^20.13.1",
+    "moment": "^2.30.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.1"

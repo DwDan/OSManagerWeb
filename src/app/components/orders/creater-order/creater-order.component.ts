@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CitySelectComponent } from '@components/shared/city-select/city-select.component';
+import { DatetimePickerComponent } from '@components/shared/datetime-picker/datetime-picker.component';
 import { PostalCodeComponent } from '@components/shared/postal-code/postal-code.component';
 import { StateSelectComponent } from '@components/shared/state-select/state-select.component';
 import { BaseModalComponent } from '@directives/base-modal.component';
@@ -40,6 +41,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
     StateSelectComponent,
     CitySelectComponent,
     PostalCodeComponent,
+    DatetimePickerComponent,
   ],
 })
 export class CreaterOrderComponent extends BaseModalComponent<{}, { confirmed: boolean }> {

@@ -1,0 +1,21 @@
+<div class="app-datetime-picker">
+  <label class="app-datetime-picker__label">
+    {{ label }}
+    @if (required) {
+      <span class="app-datetime-picker__required">*</span>
+    }
+  </label>
+
+  <div class="app-datetime-picker__fields">
+    <po-datepicker [formControl]="dateControl" [p-disabled]="poDisabled" (p-blur)="onDateBlur()" />
+
+    <po-input
+      [formControl]="timeControl"
+      p-label=""
+      p-mask="99:99"
+      [p-disabled]="poDisabled"
+      [p-placeholder]="placeholderTime"
+      (p-blur)="onTimeBlur()"
+    />
+  </div>
+</div>
