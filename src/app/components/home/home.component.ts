@@ -51,11 +51,11 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.menus.set(this.menuService.getMenus());
-    this.carregarUsuarioLogado();
+    this.loadLoggedUser();
   }
 
-  private carregarUsuarioLogado(): void {
-    const userId = sessionStorage.getItem('userId');
+  private loadLoggedUser(): void {
+    const userId = this.authenticationService.userId();
 
     if (!userId) {
       this.userName = this.literals().defaultUser;
@@ -91,6 +91,17 @@ export class HomeComponent implements OnInit {
   }
 
   private logout(): void {
+    this.authenticationService.logoutRequest().subscribe({
+      next: () => {
+        this.finishLogout();
+      },
+      error: () => {
+        this.finishLogout();
+      },
+    });
+  }
+
+  private finishLogout(): void {
     this.menuService.clear();
     this.authenticationService.logout();
     this.router.navigate(['/login']);

@@ -9,6 +9,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiErrorResponse } from '@models/api/api-error-response';
 import { PoNotificationService } from '@po-ui/ng-components';
+import { SessionService } from '@services/session/session.service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -42,13 +43,14 @@ function handleError(
   const apiError = normalizeError(response.error);
 
   if (response.status === 401) {
-    notifyApiError(notificationService, apiError, 'Não autorizado.');
-
-    if (!isLoginRequest(response.url)) {
-      sessionStorage.removeItem('token');
-      router.navigate(['/login']);
+    if (isAuthRequest(response.url)) {
+      return;
     }
 
+    notifyApiError(notificationService, apiError, 'Não autorizado.');
+
+    inject(SessionService).clearSession();
+    router.navigate(['/login']);
     return;
   }
 
@@ -118,10 +120,12 @@ function normalizeError(error: unknown): ApiErrorResponse | null {
   };
 }
 
-function isLoginRequest(url: string | null): boolean {
+function isAuthRequest(url: string | null): boolean {
   if (!url) {
     return false;
   }
 
-  return url.includes('/auth/login');
+  return (
+    url.includes('/auth/login') || url.includes('/auth/refresh') || url.includes('/auth/logout')
+  );
 }
