@@ -1,0 +1,49 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.update.title"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-6">
+      <po-input
+        name="editName"
+        [p-label]="literals().fields.name"
+        formControlName="name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editSlug"
+        [p-label]="literals().fields.slug"
+        formControlName="slug"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editDocument"
+        [p-label]="literals().fields.document"
+        formControlName="document"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-email
+        name="editEmail"
+        [p-label]="literals().fields.email"
+        formControlName="email"
+      ></po-email>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="editPhoneNumber"
+        [p-label]="literals().fields.phoneNumber"
+        formControlName="phoneNumber"
+      ></po-input>
+    </div>
+  </form>
+</po-modal>

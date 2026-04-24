@@ -1,0 +1,26 @@
+<po-page-default [p-title]="literals().pageTitle" [p-actions]="pageActions()">
+  <div class="po-row">
+    <div class="po-md-12">
+      <app-filter-tenant (filterChange)="onFilterChange($event)" />
+    </div>
+
+    <div class="po-md-12">
+      <app-tenant-list-view
+        [items]="items()"
+        [loading]="loading()"
+        [columns]="columns()"
+        [actions]="tableActions()"
+      />
+    </div>
+
+    <div class="po-md-12">
+      <app-pagination
+        [page]="page()"
+        [pageSize]="pageSize()"
+        [totalItems]="totalItems()"
+        (pageChange)="onPageChange($event)"
+        (pageSizeChange)="onPageSizeChange($event)"
+      />
+    </div>
+  </div>
+</po-page-default>

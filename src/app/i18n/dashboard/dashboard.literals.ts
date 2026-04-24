@@ -15,10 +15,16 @@ export const dashboardLiterals = defineI18n({
       myOrdersWeek: 'Minhas ordens nos últimos 7 dias',
       latestOrders: 'Últimas ordens',
       myLatestOrders: 'Minhas últimas ordens',
+      tenants: 'Tenants',
+      activeTenants: 'Tenants ativos',
+      trialTenants: 'Tenants em trial',
+      plans: 'Planos',
+      tenantsWeek: 'Tenants nos últimos 7 dias',
     },
     chartSeries: {
       orders: 'Ordens',
       myOrders: 'Minhas ordens',
+      tenants: 'Tenants',
     },
     table: {
       code: 'Código',
@@ -47,10 +53,16 @@ export const dashboardLiterals = defineI18n({
       myOrdersWeek: 'My orders in the last 7 days',
       latestOrders: 'Latest orders',
       myLatestOrders: 'My latest orders',
+      tenants: 'Tenants',
+      activeTenants: 'Active tenants',
+      trialTenants: 'Trial tenants',
+      plans: 'Plans',
+      tenantsWeek: 'Tenants in the last 7 days',
     },
     chartSeries: {
       orders: 'Orders',
       myOrders: 'My orders',
+      tenants: 'Tenants',
     },
     table: {
       code: 'Code',

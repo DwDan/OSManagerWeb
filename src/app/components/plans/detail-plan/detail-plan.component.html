@@ -1,0 +1,54 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="primaryAction()"
+  (p-close)="close()"
+>
+  @if (plan(); as plan) {
+    <div class="po-row">
+      <div class="po-md-6">
+        <strong>{{ literals().details.name }}:</strong> {{ plan.name }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.code }}:</strong> {{ plan.code }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.price }}:</strong> {{ formatCurrency(plan.price) }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.maxUsers }}:</strong>
+        {{ plan.maxUsers === 2147483647 ? literals().common.unlimited : plan.maxUsers }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.maxOrdersPerMonth }}:</strong>
+        {{ plan.maxOrdersPerMonth ?? literals().common.unlimited }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.isActive }}:</strong>
+        <div class="po-mt-1">
+          <po-tag
+            [p-value]="plan.isActive ? literals().status.active : literals().status.inactive"
+            [p-color]="plan.isActive ? 'color-12' : 'color-07'"
+            [p-icon]="plan.isActive ? 'an an-check' : 'an an-x'"
+          />
+        </div>
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.isPublic }}:</strong>
+        <div class="po-mt-1">
+          <po-tag
+            [p-value]="plan.isPublic ? literals().visibility.public : literals().visibility.private"
+            [p-color]="plan.isPublic ? 'color-08' : 'color-01'"
+            [p-icon]="plan.isPublic ? 'an an-eye' : 'an an-eye-slash'"
+          />
+        </div>
+      </div>
+    </div>
+  }
+</po-modal>

@@ -1,0 +1,79 @@
+@if (!isMobile()) {
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="actions()"
+    [p-columns]="columns()"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  />
+} @else {
+  @for (item of items(); track item.id) {
+    <div class="mb-md">
+      <po-widget>
+        <div class="po-row">
+          <div class="po-sm-12">
+            <po-info [p-label]="literals().columns.name" [p-value]="item.name" />
+          </div>
+
+          <div class="po-sm-12">
+            <po-info [p-label]="literals().columns.slug" [p-value]="item.slug" />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.document"
+              [p-value]="item.document || common().notInformed"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.email"
+              [p-value]="item.email || common().notInformed"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.phoneNumber"
+              [p-value]="item.phoneNumber || common().notInformed"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.currentPlan"
+              [p-value]="item.currentPlanName || common().notInformed"
+            />
+          </div>
+
+          <div class="po-sm-12 mt-sm">
+            <label class="po-font-text-small po-text-color">{{ literals().columns.status }}</label>
+            <div class="mt-xs">
+              <po-tag
+                [p-value]="getStatusTag(item.status).label"
+                [p-color]="getStatusTag(item.status).color"
+                [p-icon]="getStatusTag(item.status).icon"
+              />
+            </div>
+          </div>
+
+          @if (getVisibleActions(item).length) {
+            <div class="po-sm-12 mt-md">
+              <div class="d-flex flex-wrap gap-sm">
+                @for (action of getVisibleActions(item); track action.label) {
+                  <po-button [p-label]="action.label" (p-click)="executeAction(action, item)" />
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </po-widget>
+    </div>
+  }
+}

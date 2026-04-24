@@ -148,6 +148,16 @@ export class DashboardComponent {
         return this.literals().widgets.pendingOrders;
       case 'in-progress-orders':
         return this.literals().widgets.inProgressOrders;
+
+      case 'tenants':
+        return this.literals().widgets.tenants;
+      case 'active-tenants':
+        return this.literals().widgets.activeTenants;
+      case 'trial-tenants':
+        return this.literals().widgets.trialTenants;
+      case 'plans':
+        return this.literals().widgets.plans;
+
       default:
         return key;
     }
@@ -172,6 +182,8 @@ export class DashboardComponent {
         return this.literals().widgets.ordersWeek;
       case 'my-orders-last-7-days':
         return this.literals().widgets.myOrdersWeek;
+      case 'tenants-last-7-days':
+        return this.literals().widgets.tenantsWeek;
       default:
         return key;
     }
@@ -183,6 +195,8 @@ export class DashboardComponent {
         return this.literals().chartSeries.orders;
       case 'my-orders':
         return this.literals().chartSeries.myOrders;
+      case 'tenants':
+        return this.literals().chartSeries.tenants;
       default:
         return key;
     }

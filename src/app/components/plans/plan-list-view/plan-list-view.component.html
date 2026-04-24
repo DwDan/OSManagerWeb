@@ -1,0 +1,78 @@
+@if (!isMobile()) {
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="actions()"
+    [p-columns]="columns()"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  >
+    <ng-template p-table-column-template let-value p-property="price">
+      {{ value != null ? (value | currency: 'BRL' : 'symbol' : '1.2-2') : common().notInformed }}
+    </ng-template>
+  </po-table>
+} @else {
+  @for (item of items(); track item.id) {
+    <div class="mb-md">
+      <po-widget>
+        <div class="po-row">
+          <div class="po-sm-12">
+            <po-info [p-label]="literals().columns.name" [p-value]="item.name" />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info [p-label]="literals().columns.code" [p-value]="item.code" />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info [p-label]="literals().columns.price" [p-value]="formatCurrency(item.price)" />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.maxUsers"
+              [p-value]="formatMaxUsers(item.maxUsers)"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.maxOrdersPerMonth"
+              [p-value]="formatMaxOrders(item.maxOrdersPerMonth)"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.isActive"
+              [p-value]="item.isActive ? literals().status.active : literals().status.inactive"
+            />
+          </div>
+
+          <div class="po-sm-6">
+            <po-info
+              [p-label]="literals().columns.isPublic"
+              [p-value]="
+                item.isPublic ? literals().visibility.public : literals().visibility.private
+              "
+            />
+          </div>
+
+          @if (getVisibleActions(item).length) {
+            <div class="po-sm-12 mt-md">
+              <div class="d-flex flex-wrap gap-sm">
+                @for (action of getVisibleActions(item); track action.label) {
+                  <po-button [p-label]="action.label" (p-click)="executeAction(action, item)" />
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </po-widget>
+    </div>
+  }
+}

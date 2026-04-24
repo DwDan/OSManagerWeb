@@ -1,0 +1,57 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.create.title"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-6">
+      <po-input
+        name="createName"
+        [p-label]="literals().fields.name"
+        formControlName="name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createCode"
+        [p-label]="literals().fields.code"
+        formControlName="code"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="createPrice"
+        [p-label]="literals().fields.price"
+        formControlName="price"
+      ></po-number>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="createMaxUsers"
+        [p-label]="literals().fields.maxUsers"
+        formControlName="maxUsers"
+      ></po-number>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="createMaxOrdersPerMonth"
+        [p-label]="literals().fields.maxOrdersPerMonth"
+        formControlName="maxOrdersPerMonth"
+      ></po-number>
+    </div>
+
+    <div class="po-md-6">
+      <po-switch
+        name="createIsPublic"
+        [p-label]="literals().fields.isPublic"
+        formControlName="isPublic"
+      ></po-switch>
+    </div>
+  </form>
+</po-modal>

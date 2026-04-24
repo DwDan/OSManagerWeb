@@ -71,6 +71,16 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'tenants',
+        loadComponent: () =>
+          import('./components/tenants/tenants.component').then((m) => m.TenantsComponent),
+      },
+      {
+        path: 'plans',
+        loadComponent: () =>
+          import('./components/plans/plans.component').then((m) => m.PlansComponent),
+      },
+      {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full',

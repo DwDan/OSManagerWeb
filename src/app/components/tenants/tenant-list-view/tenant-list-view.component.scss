@@ -1,0 +1,41 @@
+.tenant-list-view__content {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.tenant-list-view__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tenant-list-view__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-neutral-light-30);
+  border-radius: 8px;
+  background: var(--color-neutral-light-00);
+  color: var(--color-neutral-dark-90);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.tenant-list-view__action:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tenant-list-view__tag-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tenant-list-view__tag-label {
+  font-size: 12px;
+  font-weight: 600;
+}

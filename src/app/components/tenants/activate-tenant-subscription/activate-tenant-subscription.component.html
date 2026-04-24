@@ -1,0 +1,50 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.activateSubscription.title"
+  [p-primary-action]="{
+    label: common().save,
+    action: save.bind(this),
+    loading: loading(),
+    disabled: loading(),
+  }"
+  [p-secondary-action]="{
+    label: common().cancel,
+    action: close.bind(this),
+    disabled: loading(),
+  }"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-sm-12">
+      <po-select
+        name="planId"
+        formControlName="planId"
+        [p-label]="literals().fields.plan"
+        [p-options]="planOptions()"
+      />
+    </div>
+
+    <div class="po-sm-12">
+      <po-datepicker
+        name="subscriptionEndsAtUtc"
+        formControlName="subscriptionEndsAtUtc"
+        [p-label]="literals().fields.subscriptionEndsAtUtc"
+      />
+    </div>
+
+    <div class="po-sm-12">
+      <po-input
+        name="externalCustomerId"
+        formControlName="externalCustomerId"
+        [p-label]="literals().fields.externalCustomerId"
+      />
+    </div>
+
+    <div class="po-sm-12">
+      <po-input
+        name="externalSubscriptionId"
+        formControlName="externalSubscriptionId"
+        [p-label]="literals().fields.externalSubscriptionId"
+      />
+    </div>
+  </form>
+</po-modal>

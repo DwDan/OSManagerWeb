@@ -1,1 +1,1 @@
-export type UserRole = 'Admin' | 'Technician';
+export type UserRole = 'SaaSAdmin' | 'Admin' | 'Technician';

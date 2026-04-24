@@ -1,0 +1,138 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="primaryAction()"
+  (p-close)="close()"
+>
+  @if (selectedTenant(); as tenant) {
+    <div class="po-row">
+      <div class="po-md-6">
+        <strong>{{ literals().details.name }}:</strong> {{ tenant.name }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.slug }}:</strong> {{ tenant.slug }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.document }}:</strong>
+        {{ tenant.document || common().notInformed }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.email }}:</strong>
+        {{ tenant.email || common().notInformed }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.phoneNumber }}:</strong>
+        {{ tenant.phoneNumber || common().notInformed }}
+      </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.currentPlan }}:</strong>
+        {{ tenant.currentPlanName || common().notInformed }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.createdAtUtc }}:</strong>
+        {{ tenant.createdAtUtc | date: 'dd/MM/yyyy HH:mm' }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.subscriptionEndsAtUtc }}:</strong>
+        {{
+          tenant.subscriptionEndsAtUtc
+            ? (tenant.subscriptionEndsAtUtc | date: 'dd/MM/yyyy')
+            : common().notInformed
+        }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.trialEndsAtUtc }}:</strong>
+        {{
+          tenant.trialEndsAtUtc
+            ? (tenant.trialEndsAtUtc | date: 'dd/MM/yyyy')
+            : common().notInformed
+        }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.suspendedAtUtc }}:</strong>
+        {{
+          tenant.suspendedAtUtc
+            ? (tenant.suspendedAtUtc | date: 'dd/MM/yyyy HH:mm')
+            : common().notInformed
+        }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.externalCustomerId }}:</strong>
+        {{ tenant.externalCustomerId || common().notInformed }}
+      </div>
+
+      <div class="po-md-4">
+        <strong>{{ literals().details.externalSubscriptionId }}:</strong>
+        {{ tenant.externalSubscriptionId || common().notInformed }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.status }}:</strong>
+
+        <div class="po-mt-1">
+          @if (getStatusTag(tenant.status); as statusTag) {
+            <po-tag
+              [p-value]="statusTag.label"
+              [p-color]="statusTag.color"
+              [p-icon]="statusTag.icon"
+            />
+          }
+        </div>
+      </div>
+
+      <div class="po-md-12 po-mt-3">
+        <strong>{{ literals().subscriptions.title }}:</strong>
+
+        @if (loadingSubscriptions()) {
+          <p class="po-mt-2">{{ literals().subscriptions.loading }}</p>
+        }
+
+        @if (!loadingSubscriptions() && subscriptions().length === 0) {
+          <p class="po-mt-2">{{ literals().subscriptions.empty }}</p>
+        }
+
+        @if (subscriptions().length > 0) {
+          <div class="po-row po-mt-2">
+            @for (subscription of subscriptions(); track subscription.id) {
+              <div class="po-md-12 po-mb-3">
+                <div>
+                  <strong>{{ literals().subscriptions.plan }}:</strong>
+                  {{ subscription.planName || common().notInformed }}
+                </div>
+
+                <div>
+                  <strong>{{ literals().subscriptions.status }}:</strong>
+                  {{ getSubscriptionStatusLabel(subscription.status) }}
+                </div>
+
+                <div>
+                  <strong>{{ literals().subscriptions.startedAtUtc }}:</strong>
+                  {{ subscription.startedAtUtc | date: 'dd/MM/yyyy' }}
+                </div>
+
+                <div>
+                  <strong>{{ literals().subscriptions.endsAtUtc }}:</strong>
+                  {{
+                    subscription.endsAtUtc
+                      ? (subscription.endsAtUtc | date: 'dd/MM/yyyy')
+                      : common().notInformed
+                  }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</po-modal>

@@ -1,0 +1,49 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.update.title"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-6">
+      <po-input
+        name="editName"
+        [p-label]="literals().fields.name"
+        formControlName="name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="editPrice"
+        [p-label]="literals().fields.price"
+        formControlName="price"
+      ></po-number>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="editMaxUsers"
+        [p-label]="literals().fields.maxUsers"
+        formControlName="maxUsers"
+      ></po-number>
+    </div>
+
+    <div class="po-md-4">
+      <po-number
+        name="editMaxOrdersPerMonth"
+        [p-label]="literals().fields.maxOrdersPerMonth"
+        formControlName="maxOrdersPerMonth"
+      ></po-number>
+    </div>
+
+    <div class="po-md-6">
+      <po-switch
+        name="editIsPublic"
+        [p-label]="literals().fields.isPublic"
+        formControlName="isPublic"
+      ></po-switch>
+    </div>
+  </form>
+</po-modal>

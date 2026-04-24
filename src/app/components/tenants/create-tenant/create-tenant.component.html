@@ -1,0 +1,58 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.create.title"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-6">
+      <po-input
+        name="createName"
+        [p-label]="literals().fields.name"
+        formControlName="name"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createSlug"
+        [p-label]="literals().fields.slug"
+        formControlName="slug"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-select
+        name="createPlan"
+        [p-label]="literals().fields.plan"
+        [p-options]="plans()"
+        formControlName="planId"
+      ></po-select>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createDocument"
+        [p-label]="literals().fields.document"
+        formControlName="document"
+      ></po-input>
+    </div>
+
+    <div class="po-md-6">
+      <po-email
+        name="createEmail"
+        [p-label]="literals().fields.email"
+        formControlName="email"
+      ></po-email>
+    </div>
+
+    <div class="po-md-6">
+      <po-input
+        name="createPhoneNumber"
+        [p-label]="literals().fields.phoneNumber"
+        formControlName="phoneNumber"
+      ></po-input>
+    </div>
+  </form>
+</po-modal>
