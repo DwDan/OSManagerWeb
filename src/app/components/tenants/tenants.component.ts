@@ -102,6 +102,7 @@ export class TenantsComponent implements OnInit {
     {
       label: this.literals().tableActions.edit,
       action: (row: TenantPagedItemResponse) => this.openEditModal(row.id),
+      visible: (row: TenantPagedItemResponse) => row.status !== TenantStatus.Canceled,
     },
     {
       label: this.literals().tableActions.suspend,
@@ -113,12 +114,15 @@ export class TenantsComponent implements OnInit {
       label: this.literals().tableActions.cancel,
       action: (row: TenantPagedItemResponse) => this.cancel(row.id),
       visible: (row: TenantPagedItemResponse) =>
-        row.status !== TenantStatus.Canceled && row.status !== TenantStatus.Expired,
+        row.status !== TenantStatus.Canceled && row.status !== TenantStatus.Pending,
     },
     {
       label: this.literals().tableActions.expire,
       action: (row: TenantPagedItemResponse) => this.expire(row.id),
-      visible: (row: TenantPagedItemResponse) => row.status !== TenantStatus.Expired,
+      visible: (row: TenantPagedItemResponse) =>
+        row.status === TenantStatus.Active ||
+        row.status === TenantStatus.Trial ||
+        row.status === TenantStatus.Suspended,
     },
     {
       label: this.literals().tableActions.markPastDue,
@@ -136,6 +140,7 @@ export class TenantsComponent implements OnInit {
       visible: (row: TenantPagedItemResponse) =>
         row.status === TenantStatus.Pending ||
         row.status === TenantStatus.Trial ||
+        row.status === TenantStatus.Suspended ||
         row.status === TenantStatus.Expired,
     },
   ]);
@@ -200,7 +205,7 @@ export class TenantsComponent implements OnInit {
       property: 'subscriptionEndsAtUtc',
       label: this.literals().columns.subscriptionEndsAtUtc,
       type: 'date',
-      format: 'dd/MM/yyyy',
+      format: 'dd/MM/yyyy HH:mm',
     },
   ]);
 

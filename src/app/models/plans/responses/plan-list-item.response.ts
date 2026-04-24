@@ -3,7 +3,7 @@ export interface PlanListItemResponse {
   name: string;
   code: string;
   price: number;
-  maxUsers: number;
+  maxAdminUsers: number;
   maxOrdersPerMonth?: number;
   isActive: boolean;
   isPublic: boolean;

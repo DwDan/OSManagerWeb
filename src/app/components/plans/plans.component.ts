@@ -87,8 +87,8 @@ export class PlansComponent implements OnInit {
       type: 'columnTemplate',
     },
     {
-      property: 'maxUsers',
-      label: this.literals().columns.maxUsers,
+      property: 'maxAdminUsers',
+      label: this.literals().columns.maxAdminUsers,
     },
     {
       property: 'maxOrdersPerMonth',

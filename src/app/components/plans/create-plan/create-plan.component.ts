@@ -50,7 +50,7 @@ export class CreatePlanComponent extends BaseModalComponent<void, { confirmed: b
     name: ['', [Validators.required]],
     code: ['', [Validators.required]],
     price: [0, [Validators.required]],
-    maxUsers: [1, [Validators.required]],
+    maxAdminUsers: [1, [Validators.required]],
     maxOrdersPerMonth: [0],
     isPublic: [true],
   });
@@ -69,7 +69,7 @@ export class CreatePlanComponent extends BaseModalComponent<void, { confirmed: b
       name: rawValue.name,
       code: rawValue.code,
       price: rawValue.price,
-      maxUsers: rawValue.maxUsers,
+      maxAdminUsers: rawValue.maxAdminUsers,
       maxOrdersPerMonth: rawValue.maxOrdersPerMonth || undefined,
       isPublic: rawValue.isPublic,
     };

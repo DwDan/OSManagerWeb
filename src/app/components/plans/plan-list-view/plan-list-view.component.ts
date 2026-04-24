@@ -88,7 +88,7 @@ export class PlanListViewComponent {
     return String(value);
   }
 
-  formatMaxUsers(value: number): string {
+  formatMaxAdminUsers(value: number): string {
     if (value === 2147483647) {
       return this.literals().common.unlimited;
     }

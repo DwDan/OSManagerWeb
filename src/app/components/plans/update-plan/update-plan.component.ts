@@ -52,7 +52,7 @@ export class UpdatePlanComponent extends BaseModalComponent<
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
     price: [0, [Validators.required]],
-    maxUsers: [1, [Validators.required]],
+    maxAdminUsers: [1, [Validators.required]],
     maxOrdersPerMonth: [0],
     isPublic: [true],
   });
@@ -74,7 +74,7 @@ export class UpdatePlanComponent extends BaseModalComponent<
     const request: UpdatePlanRequest = {
       name: rawValue.name,
       price: rawValue.price,
-      maxUsers: rawValue.maxUsers,
+      maxAdminUsers: rawValue.maxAdminUsers,
       maxOrdersPerMonth: rawValue.maxOrdersPerMonth || undefined,
       isPublic: rawValue.isPublic,
     };
@@ -109,7 +109,7 @@ export class UpdatePlanComponent extends BaseModalComponent<
           this.form.reset({
             name: plan.name,
             price: plan.price,
-            maxUsers: plan.maxUsers,
+            maxAdminUsers: plan.maxAdminUsers,
             maxOrdersPerMonth: plan.maxOrdersPerMonth ?? 0,
             isPublic: plan.isPublic,
           });

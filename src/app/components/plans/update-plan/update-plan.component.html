@@ -24,9 +24,9 @@
 
     <div class="po-md-4">
       <po-number
-        name="editMaxUsers"
-        [p-label]="literals().fields.maxUsers"
-        formControlName="maxUsers"
+        name="editMaxAdminUsers"
+        [p-label]="literals().fields.maxAdminUsers"
+        formControlName="maxAdminUsers"
       ></po-number>
     </div>
 
@@ -41,6 +41,7 @@
     <div class="po-md-6">
       <po-switch
         name="editIsPublic"
+        [p-hide-label-status]="true"
         [p-label]="literals().fields.isPublic"
         formControlName="isPublic"
       ></po-switch>

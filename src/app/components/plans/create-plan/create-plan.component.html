@@ -32,9 +32,9 @@
 
     <div class="po-md-4">
       <po-number
-        name="createMaxUsers"
-        [p-label]="literals().fields.maxUsers"
-        formControlName="maxUsers"
+        name="createMaxAdminUsers"
+        [p-label]="literals().fields.maxAdminUsers"
+        formControlName="maxAdminUsers"
       ></po-number>
     </div>
 
@@ -49,6 +49,7 @@
     <div class="po-md-6">
       <po-switch
         name="createIsPublic"
+        [p-hide-label-status]="true"
         [p-label]="literals().fields.isPublic"
         formControlName="isPublic"
       ></po-switch>
