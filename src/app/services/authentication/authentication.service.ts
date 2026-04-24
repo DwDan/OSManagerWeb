@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import { ChangePasswordRequest } from '@models/auth/requests/change-password.request';
+import { ConfirmEmailAndSetPasswordRequest } from '@models/auth/requests/confirm-email-and-set-password.request';
 import { ForgotPasswordRequest } from '@models/auth/requests/forgot-password.request';
 import { LogoutRequest } from '@models/auth/requests/logout.request';
 import { RefreshTokenRequest } from '@models/auth/requests/refresh-token.request';
@@ -52,6 +53,10 @@ export class AuthenticationService {
 
   forgotPassword(request: ForgotPasswordRequest): Observable<{ message: string }> {
     return this.httpService.post<{ message: string }>(`${this.baseUrl}/forgot-password`, request);
+  }
+
+  confirmEmailAndSetPassword(request: ConfirmEmailAndSetPasswordRequest): Observable<void> {
+    return this.httpService.post<void>(`${this.baseUrl}/confirm-email-and-set-password`, request);
   }
 
   logoutRequest(): Observable<void> {

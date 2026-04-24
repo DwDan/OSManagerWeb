@@ -16,6 +16,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'confirm-email-and-set-password',
+    loadComponent: () =>
+      import('./components/auth/confirm-email-and-set-password/confirm-email-and-set-password.component').then(
+        (m) => m.ConfirmEmailAndSetPasswordComponent,
+      ),
+  },
+  {
     path: '',
     canActivate: [authGuard],
     loadComponent: () => import('./components/home/home.component').then((m) => m.HomeComponent),
