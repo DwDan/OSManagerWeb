@@ -7,4 +7,6 @@ export interface PlanListItemResponse {
   maxOrdersPerMonth?: number;
   isActive: boolean;
   isPublic: boolean;
+  isRecommended: boolean;
+  featureKeys: string[];
 }

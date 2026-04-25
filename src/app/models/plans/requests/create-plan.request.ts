@@ -5,4 +5,6 @@ export interface CreatePlanRequest {
   maxAdminUsers: number;
   maxOrdersPerMonth?: number;
   isPublic: boolean;
+  isRecommended: boolean;
+  featureKeys: string[];
 }

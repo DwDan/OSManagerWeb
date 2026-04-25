@@ -55,6 +55,8 @@ export class UpdatePlanComponent extends BaseModalComponent<
     maxAdminUsers: [1, [Validators.required]],
     maxOrdersPerMonth: [0],
     isPublic: [true],
+    isRecommended: [false],
+    featureKeys: [''],
   });
 
   readonly formInvalid = formInvalidSignal(this.form);
@@ -71,12 +73,19 @@ export class UpdatePlanComponent extends BaseModalComponent<
 
     const rawValue = this.form.getRawValue();
 
+    const featureKeys = rawValue.featureKeys
+      .split(',')
+      .map((item: string) => item.trim())
+      .filter((item: string) => item.length > 0);
+
     const request: UpdatePlanRequest = {
       name: rawValue.name,
       price: rawValue.price,
       maxAdminUsers: rawValue.maxAdminUsers,
       maxOrdersPerMonth: rawValue.maxOrdersPerMonth || undefined,
       isPublic: rawValue.isPublic,
+      isRecommended: rawValue.isRecommended,
+      featureKeys,
     };
 
     this.loading.set(true);
@@ -112,6 +121,8 @@ export class UpdatePlanComponent extends BaseModalComponent<
             maxAdminUsers: plan.maxAdminUsers,
             maxOrdersPerMonth: plan.maxOrdersPerMonth ?? 0,
             isPublic: plan.isPublic,
+            isRecommended: plan.isRecommended,
+            featureKeys: plan.featureKeys.join(', '),
           });
         },
       });

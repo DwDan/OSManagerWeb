@@ -112,6 +112,15 @@ export class PlansComponent implements OnInit {
         falseLabel: this.common().no,
       },
     },
+    {
+      property: 'isRecommended',
+      label: this.literals().columns.isRecommended,
+      type: 'boolean',
+      boolean: {
+        trueLabel: this.common().yes,
+        falseLabel: this.common().no,
+      },
+    },
   ]);
 
   ngOnInit(): void {

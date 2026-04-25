@@ -54,5 +54,22 @@
         formControlName="isPublic"
       ></po-switch>
     </div>
+
+    <div class="po-md-6">
+      <po-switch
+        name="createIsRecommended"
+        [p-hide-label-status]="true"
+        [p-label]="literals().fields.isRecommended"
+        formControlName="isRecommended"
+      ></po-switch>
+    </div>
+
+    <div class="po-md-12">
+      <po-textarea
+        name="createFeatureKeys"
+        [p-label]="literals().fields.featureKeys"
+        formControlName="featureKeys"
+      ></po-textarea>
+    </div>
   </form>
 </po-modal>

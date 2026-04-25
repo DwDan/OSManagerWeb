@@ -49,6 +49,24 @@
           />
         </div>
       </div>
+
+      <div class="po-md-6">
+        <strong>{{ literals().details.isRecommended }}:</strong>
+        <div class="po-mt-1">
+          <po-tag
+            [p-value]="plan.isRecommended ? common().yes : common().no"
+            [p-color]="plan.isRecommended ? 'color-11' : 'color-07'"
+            [p-icon]="plan.isRecommended ? 'an an-star' : 'an an-star'"
+          />
+        </div>
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().details.featureKeys }}:</strong>
+        <div class="po-mt-1">
+          {{ plan.featureKeys.length ? plan.featureKeys.join(', ') : common().notInformed }}
+        </div>
+      </div>
     </div>
   }
 </po-modal>

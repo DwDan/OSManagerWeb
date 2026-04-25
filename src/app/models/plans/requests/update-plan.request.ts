@@ -4,4 +4,6 @@ export interface UpdatePlanRequest {
   maxAdminUsers: number;
   maxOrdersPerMonth?: number;
   isPublic: boolean;
+  isRecommended: boolean;
+  featureKeys: string[];
 }

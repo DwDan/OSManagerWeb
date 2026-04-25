@@ -53,6 +53,8 @@ export class CreatePlanComponent extends BaseModalComponent<void, { confirmed: b
     maxAdminUsers: [1, [Validators.required]],
     maxOrdersPerMonth: [0],
     isPublic: [true],
+    isRecommended: [false],
+    featureKeys: [''],
   });
 
   readonly formInvalid = formInvalidSignal(this.form);
@@ -65,6 +67,11 @@ export class CreatePlanComponent extends BaseModalComponent<void, { confirmed: b
 
     const rawValue = this.form.getRawValue();
 
+    const featureKeys = rawValue.featureKeys
+      .split(',')
+      .map((item: string) => item.trim())
+      .filter((item: string) => item.length > 0);
+
     const request: CreatePlanRequest = {
       name: rawValue.name,
       code: rawValue.code,
@@ -72,6 +79,8 @@ export class CreatePlanComponent extends BaseModalComponent<void, { confirmed: b
       maxAdminUsers: rawValue.maxAdminUsers,
       maxOrdersPerMonth: rawValue.maxOrdersPerMonth || undefined,
       isPublic: rawValue.isPublic,
+      isRecommended: rawValue.isRecommended,
+      featureKeys,
     };
 
     this.loading.set(true);

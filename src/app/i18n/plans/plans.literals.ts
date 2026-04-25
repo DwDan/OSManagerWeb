@@ -23,6 +23,7 @@ export const plansLiterals = defineI18n({
       maxOrdersPerMonth: 'Máx. ordens/mês',
       isActive: 'Ativo',
       isPublic: 'Público',
+      isRecommended: 'Recomendado',
     },
 
     fields: {
@@ -32,6 +33,8 @@ export const plansLiterals = defineI18n({
       maxAdminUsers: 'Máx. usuários',
       maxOrdersPerMonth: 'Máx. ordens por mês',
       isPublic: 'Plano público',
+      isRecommended: 'Recomendado',
+      featureKeys: 'Funcionalidades',
     },
 
     details: {
@@ -42,6 +45,8 @@ export const plansLiterals = defineI18n({
       maxOrdersPerMonth: 'Máx. ordens por mês',
       isActive: 'Status',
       isPublic: 'Visibilidade',
+      isRecommended: 'Recomendado',
+      featureKeys: 'Funcionalidades',
     },
 
     modals: {
@@ -100,6 +105,7 @@ export const plansLiterals = defineI18n({
       maxOrdersPerMonth: 'Max orders/month',
       isActive: 'Active',
       isPublic: 'Public',
+      isRecommended: 'Recommended',
     },
 
     fields: {
@@ -109,6 +115,8 @@ export const plansLiterals = defineI18n({
       maxAdminUsers: 'Max users',
       maxOrdersPerMonth: 'Max orders per month',
       isPublic: 'Public plan',
+      isRecommended: 'Recommended',
+      featureKeys: 'Features',
     },
 
     details: {
@@ -119,6 +127,8 @@ export const plansLiterals = defineI18n({
       maxOrdersPerMonth: 'Max orders per month',
       isActive: 'Status',
       isPublic: 'Visibility',
+      isRecommended: 'Recommended',
+      featureKeys: 'Feature Keys',
     },
 
     modals: {
