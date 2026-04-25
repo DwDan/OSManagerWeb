@@ -5,7 +5,6 @@ import { BaseModalComponent } from '@directives/base-modal.component';
 import { commonLiterals } from '@i18n/common/common.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { tenantsLiterals } from '@i18n/tenants/tenants.literals';
-import { PlanListItemResponse } from '@models/plans/responses/plan-list-item.response';
 import { CreateTenantRequest } from '@models/tenants/requests/create-tenant.request';
 import {
   PoButtonModule,
@@ -13,7 +12,6 @@ import {
   PoModalAction,
   PoModalModule,
   PoNotificationService,
-  PoSelectOption,
 } from '@po-ui/ng-components';
 import { PlansService } from '@services/plans/plans.service';
 import { TenantsService } from '@services/tenants/tenants.service';
@@ -35,7 +33,6 @@ export class CreateTenantComponent extends BaseModalComponent<{}, { confirmed: b
   readonly literals = injectI18n(tenantsLiterals);
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
-  readonly plans = signal<PoSelectOption[]>([]);
 
   readonly primaryAction = computed<PoModalAction>(() => ({
     label: this.common().save,
@@ -53,17 +50,12 @@ export class CreateTenantComponent extends BaseModalComponent<{}, { confirmed: b
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
     slug: ['', [Validators.required]],
-    planId: ['', [Validators.required]],
     document: [''],
     email: [''],
     phoneNumber: [''],
   });
 
   readonly formInvalid = formInvalidSignal(this.form);
-
-  ngOnInit(): void {
-    this.loadPlans();
-  }
 
   save(): void {
     this.form.markAllAsTouched();
@@ -75,7 +67,6 @@ export class CreateTenantComponent extends BaseModalComponent<{}, { confirmed: b
     const request: CreateTenantRequest = {
       name: this.form.controls.name.getRawValue(),
       slug: this.form.controls.slug.getRawValue(),
-      planId: this.form.controls.planId.getRawValue(),
       document: this.form.controls.document.getRawValue() || undefined,
       email: this.form.controls.email.getRawValue() || undefined,
       phoneNumber: this.form.controls.phoneNumber.getRawValue() || undefined,
@@ -92,20 +83,5 @@ export class CreateTenantComponent extends BaseModalComponent<{}, { confirmed: b
           this.submit({ confirmed: true });
         },
       });
-  }
-
-  private loadPlans(): void {
-    this.plansService.getAllPlans().subscribe({
-      next: (plans: PlanListItemResponse[]) => {
-        this.plans.set(
-          plans
-            .filter((plan) => plan.isActive)
-            .map((plan) => ({
-              label: plan.name,
-              value: plan.id,
-            })),
-        );
-      },
-    });
   }
 }

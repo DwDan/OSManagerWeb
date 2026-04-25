@@ -28,7 +28,6 @@ import { ActivateTenantSubscriptionComponent } from './activate-tenant-subscript
 import { CreateTenantComponent } from './create-tenant/create-tenant.component';
 import { DetailTenantComponent } from './detail-tenant/detail-tenant.component';
 import { FilterTenantComponent } from './filter-tenant/filter-tenant.component';
-import { StartTenantTrialComponent } from './start-tenant-trial/start-tenant-trial.component';
 import { TenantListViewComponent } from './tenant-list-view/tenant-list-view.component';
 import { UpdateTenantComponent } from './update-tenant/update-tenant.component';
 
@@ -242,13 +241,15 @@ export class TenantsComponent implements OnInit {
   }
 
   openStartTrialModal(id: string): void {
-    this.modalService.open(StartTenantTrialComponent, { tenantId: id }).subscribe((result) => {
-      if (!result?.confirmed) {
-        return;
-      }
-
-      this.loadData();
-    });
+    this.tenantsService
+      .startTrial(id)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.poNotification.success(this.literals().notifications.trialStarted);
+          this.loadData();
+        },
+      });
   }
 
   openActivateSubscriptionModal(id: string): void {

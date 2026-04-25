@@ -5,7 +5,6 @@ import { PagedResponse } from '@models/pagination/response/paged.response';
 import { ActivateTenantSubscriptionRequest } from '@models/tenants/requests/activate-tenant-subscription.request';
 import { CreateTenantRequest } from '@models/tenants/requests/create-tenant.request';
 import { GetPagedTenantsRequest } from '@models/tenants/requests/get-paged-tenants.request';
-import { StartTenantTrialRequest } from '@models/tenants/requests/start-tenant-trial.request';
 import { UpdateTenantRequest } from '@models/tenants/requests/update-tenant.request';
 import { TenantDetailsResponse } from '@models/tenants/responses/tenant-details.response';
 import { TenantListItemResponse } from '@models/tenants/responses/tenant-list-item.response';
@@ -45,8 +44,8 @@ export class TenantsService {
     return this.http.put<void>(`${this.baseUrl}/${id}`, request);
   }
 
-  startTrial(id: string, request: StartTenantTrialRequest): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${id}/trial`, request);
+  startTrial(id: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/trial`, {});
   }
 
   activateSubscription(id: string, request: ActivateTenantSubscriptionRequest): Observable<void> {

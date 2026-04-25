@@ -43,7 +43,7 @@
         <strong>{{ literals().details.subscriptionEndsAtUtc }}:</strong>
         {{
           tenant.subscriptionEndsAtUtc
-            ? (tenant.subscriptionEndsAtUtc | date: 'dd/MM/yyyy')
+            ? (tenant.subscriptionEndsAtUtc | date: 'dd/MM/yyyy HH:mm')
             : common().notInformed
         }}
       </div>
@@ -52,7 +52,7 @@
         <strong>{{ literals().details.trialEndsAtUtc }}:</strong>
         {{
           tenant.trialEndsAtUtc
-            ? (tenant.trialEndsAtUtc | date: 'dd/MM/yyyy')
+            ? (tenant.trialEndsAtUtc | date: 'dd/MM/yyyy HH:mm')
             : common().notInformed
         }}
       </div>
@@ -117,14 +117,14 @@
 
                 <div>
                   <strong>{{ literals().subscriptions.startedAtUtc }}:</strong>
-                  {{ subscription.startedAtUtc | date: 'dd/MM/yyyy' }}
+                  {{ subscription.startedAtUtc | date: 'dd/MM/yyyy HH:mm' }}
                 </div>
 
                 <div>
                   <strong>{{ literals().subscriptions.endsAtUtc }}:</strong>
                   {{
                     subscription.endsAtUtc
-                      ? (subscription.endsAtUtc | date: 'dd/MM/yyyy')
+                      ? (subscription.endsAtUtc | date: 'dd/MM/yyyy HH:mm')
                       : common().notInformed
                   }}
                 </div>

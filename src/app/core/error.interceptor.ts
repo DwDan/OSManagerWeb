@@ -43,11 +43,11 @@ function handleError(
   const apiError = normalizeError(response.error);
 
   if (response.status === 401) {
+    notifyApiError(notificationService, apiError, 'Não autorizado.');
+
     if (isAuthRequest(response.url)) {
       return;
     }
-
-    notifyApiError(notificationService, apiError, 'Não autorizado.');
 
     inject(SessionService).clearSession();
     router.navigate(['/login']);
