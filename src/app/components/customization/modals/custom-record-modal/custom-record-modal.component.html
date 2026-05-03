@@ -1,5 +1,13 @@
 <po-modal #modal [p-title]="data?.item ? common().edit : literals().actions.createRecord" [p-primary-action]="primaryAction()" [p-secondary-action]="secondaryAction()" (p-close)="close()">
   <form [formGroup]="form" class="po-row">
+    <div class="po-md-12">
+      <po-select
+        name="customEntityId"
+        formControlName="customEntityId"
+        [p-label]="literals().fields.customEntity"
+        [p-options]="data?.customEntityOptions ?? []"
+      />
+    </div>
     <div class="po-md-4"><po-input name="key" formControlName="key" [p-label]="literals().fields.key" /></div>
     <div class="po-md-8"><po-input name="name" formControlName="name" [p-label]="literals().fields.name" /></div>
     <div class="po-md-12"><po-textarea name="values" formControlName="values" [p-label]="literals().fields.customFieldValues" [p-placeholder]="literals().placeholders.customFieldValues" /></div>

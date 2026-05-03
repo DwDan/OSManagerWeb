@@ -316,7 +316,19 @@
 
       @if (activeSection() === 'functions') {
         <po-widget [p-title]="literals().sections.functions">
-          @if (supports('functions')) {
+          <div class="po-row">
+            <div class="po-md-4">
+              <po-select
+                name="functionEntityName"
+                [p-label]="literals().fields.entity"
+                [p-options]="functionScopeOptions()"
+                [ngModel]="selectedFunctionScope()"
+                (ngModelChange)="onFunctionScopeChange($event)"
+              />
+            </div>
+          </div>
+
+          @if (supportsFunctionScope()) {
             @if (showFunctionForm()) {
             <form [formGroup]="functionForm" class="po-row">
               <div class="po-md-2">

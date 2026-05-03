@@ -14,5 +14,6 @@ export interface CustomFieldResponse {
   isFilterable: boolean;
   displayOrder: number;
   referenceEntityName?: string | null;
+  referenceCustomEntityId?: string | null;
   options: string[];
 }

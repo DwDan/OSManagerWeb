@@ -6,7 +6,7 @@ import { commonLiterals } from '@i18n/common/common.literals';
 import { customizationLiterals } from '@i18n/customization/customization.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomEntityRecordResponse } from '@models/customization/responses/custom-entity-record.response';
-import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService } from '@po-ui/ng-components';
+import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
 import { finalize, Observable } from 'rxjs';
 import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
@@ -18,7 +18,10 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
   templateUrl: './custom-record-modal.component.html',
 })
 export class CustomRecordModalComponent
-  extends BaseModalComponent<{ customEntityId: string; item?: CustomEntityRecordResponse }, { confirmed: boolean }>
+  extends BaseModalComponent<
+    { customEntityId: string; customEntityOptions: PoSelectOption[]; item?: CustomEntityRecordResponse },
+    { confirmed: boolean; customEntityId: string }
+  >
   implements OnInit
 {
   private readonly service = inject(CustomizationService);
@@ -27,15 +30,28 @@ export class CustomRecordModalComponent
   readonly literals = injectI18n(customizationLiterals);
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
-  readonly form = this.formBuilder.nonNullable.group({ key: ['', [Validators.required]], name: ['', [Validators.required]], values: [''] });
+  readonly form = this.formBuilder.nonNullable.group({
+    customEntityId: ['', [Validators.required]],
+    key: ['', [Validators.required]],
+    name: ['', [Validators.required]],
+    values: [''],
+  });
   readonly formInvalid = formInvalidSignal(this.form);
   readonly primaryAction = computed<PoModalAction>(() => ({ label: this.common().save, action: () => this.save(), loading: this.loading(), disabled: this.formInvalid() }));
   readonly secondaryAction = computed<PoModalAction>(() => ({ label: this.common().cancel, action: () => this.close(), loading: this.loading() }));
 
   ngOnInit(): void {
     const item = this.data?.item;
+    this.form.controls.customEntityId.setValue(this.data?.customEntityId ?? '');
+
     if (item) {
-      this.form.reset({ key: item.key, name: item.name, values: item.customFields.map((x) => `${x.key}=${x.value ?? ''}`).join('\n') });
+      this.form.reset({
+        customEntityId: item.customEntityId,
+        key: item.key,
+        name: item.name,
+        values: item.customFields.map((x) => `${x.key}=${x.value ?? ''}`).join('\n'),
+      });
+      this.form.controls.customEntityId.disable();
     }
   }
 
@@ -48,12 +64,12 @@ export class CustomRecordModalComponent
     const request = { key: raw.key, name: raw.name, customFields: this.parseValues(raw.values) };
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateCustomEntityRecord(this.data.item.id, request)
-      : this.service.createCustomEntityRecord(this.data!.customEntityId, request);
+      : this.service.createCustomEntityRecord(raw.customEntityId, request);
     this.loading.set(true);
     operation.pipe(finalize(() => this.loading.set(false))).subscribe({
       next: () => {
         this.notification.success(this.data?.item ? this.literals().notifications.updated : this.literals().notifications.created);
-        this.submit({ confirmed: true });
+        this.submit({ confirmed: true, customEntityId: raw.customEntityId });
       },
     });
   }

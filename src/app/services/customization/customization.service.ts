@@ -130,9 +130,15 @@ export class CustomizationService {
     return this.http.patch<void>(`${this.apiUrl}/custom-statuses/${id}/deactivate`, {});
   }
 
-  getFunctions(entityName: string): Observable<CustomFunctionResponse[]> {
+  getFunctions(entityName: string, customEntityId?: string | null): Observable<CustomFunctionResponse[]> {
+    const params: Record<string, string> = { entityName };
+
+    if (customEntityId) {
+      params['customEntityId'] = customEntityId;
+    }
+
     return this.http.get<CustomFunctionResponse[]>(`${this.apiUrl}/custom-functions`, {
-      params: { entityName },
+      params,
     });
   }
 

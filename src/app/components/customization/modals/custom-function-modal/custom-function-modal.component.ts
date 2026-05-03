@@ -23,7 +23,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 })
 export class CustomFunctionModalComponent
   extends BaseModalComponent<
-    { entityName: string; fields: CustomFieldResponse[]; statuses: CustomStatusResponse[]; item?: CustomFunctionResponse },
+    { entityName: string; customEntityId?: string | null; fields: CustomFieldResponse[]; statuses: CustomStatusResponse[]; item?: CustomFunctionResponse },
     { confirmed: boolean }
   >
   implements OnInit
@@ -77,6 +77,7 @@ export class CustomFunctionModalComponent
     const raw = this.form.getRawValue();
     const request = {
       entityName: this.data!.entityName,
+      customEntityId: this.data?.customEntityId ?? null,
       key: raw.key,
       name: raw.name,
       inputs: [],

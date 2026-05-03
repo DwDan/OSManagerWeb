@@ -20,6 +20,7 @@ export interface CustomFunctionStepResponse {
 export interface CustomFunctionResponse {
   id: string;
   entityName: string;
+  customEntityId?: string | null;
   key: string;
   name: string;
   isActive: boolean;

@@ -90,7 +90,7 @@ export class CustomFieldModalComponent
         displayOrder: item.displayOrder,
         isFilterable: item.isFilterable,
         isVisibleInList: item.isVisibleInList,
-        referenceEntityName: item.referenceEntityName ?? '',
+        referenceEntityName: this.toReferenceTargetValue(item.referenceEntityName, item.referenceCustomEntityId),
       });
       this.options.set(item.options);
     }
@@ -127,6 +127,7 @@ export class CustomFieldModalComponent
     }
 
     const raw = this.form.getRawValue();
+    const referenceTarget = this.parseReferenceTarget(raw.referenceEntityName);
     const request = {
       entityName: this.data!.entityName,
       customEntityId: this.data?.customEntityId ?? null,
@@ -138,7 +139,8 @@ export class CustomFieldModalComponent
       displayOrder: raw.displayOrder,
       isFilterable: raw.isFilterable,
       isVisibleInList: raw.isVisibleInList,
-      referenceEntityName: raw.referenceEntityName || null,
+      referenceEntityName: referenceTarget.entityName,
+      referenceCustomEntityId: referenceTarget.customEntityId,
     };
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateField(this.data.item.id, request)
@@ -153,5 +155,28 @@ export class CustomFieldModalComponent
         this.submit({ confirmed: true });
       },
     });
+  }
+
+  private parseReferenceTarget(value: string): { entityName: string | null; customEntityId: string | null } {
+    if (!value) {
+      return { entityName: null, customEntityId: null };
+    }
+
+    if (value.startsWith('custom:')) {
+      return {
+        entityName: 'CustomEntityRecord',
+        customEntityId: value.replace('custom:', ''),
+      };
+    }
+
+    return { entityName: value, customEntityId: null };
+  }
+
+  private toReferenceTargetValue(entityName?: string | null, customEntityId?: string | null): string {
+    if (entityName === 'CustomEntityRecord' && customEntityId) {
+      return `custom:${customEntityId}`;
+    }
+
+    return entityName ?? '';
   }
 }

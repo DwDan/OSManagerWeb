@@ -25,39 +25,6 @@
     <div class="po-md-4">
       <po-input name="mask" formControlName="mask" [p-label]="literals().fields.mask" />
     </div>
-    @if (isSelectType()) {
-      <div class="po-md-8">
-        <div class="po-row">
-          <div class="po-md-8">
-            <po-input
-              name="newOption"
-              formControlName="newOption"
-              [p-label]="literals().fields.newOption"
-            />
-          </div>
-          <div class="po-md-4">
-            <po-button
-              p-kind="secondary"
-              [p-label]="literals().actions.addOption"
-              (p-click)="addOption()"
-            />
-          </div>
-        </div>
-
-        <div class="po-mt-1">
-          @for (option of options(); track option) {
-            <po-tag [p-value]="option" p-color="color-08" class="po-mr-1" />
-            <po-button
-              p-kind="tertiary"
-              [p-label]="literals().actions.delete"
-              (p-click)="removeOption(option)"
-            />
-          } @empty {
-            <span class="po-text-color-neutral-light-30">{{ literals().messages.emptyOptions }}</span>
-          }
-        </div>
-      </div>
-    }
     <div class="po-md-4">
       <po-select
         name="reference"
@@ -66,14 +33,14 @@
         [p-options]="referenceTargetOptions()"
       />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-number
         name="order"
         formControlName="displayOrder"
         [p-label]="literals().fields.displayOrder"
       />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-switch
         name="required"
         formControlName="isRequired"
@@ -81,7 +48,7 @@
         [p-hide-label-status]="true"
       />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-switch
         name="filterable"
         formControlName="isFilterable"
@@ -89,7 +56,7 @@
         [p-hide-label-status]="true"
       />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-switch
         name="visible"
         formControlName="isVisibleInList"
@@ -97,5 +64,35 @@
         [p-hide-label-status]="true"
       />
     </div>
+    @if (isSelectType()) {
+      <div class="po-md-10">
+        <po-input
+          name="newOption"
+          formControlName="newOption"
+          [p-label]="literals().fields.newOption"
+        />
+      </div>
+      <div class="po-md-2 po-mt-4">
+        <po-button
+          p-kind="secondary"
+          [p-label]="literals().actions.addOption"
+          (p-click)="addOption()"
+        />
+      </div>
+      <div class="po-md-12 po-mt-3">
+        @for (option of options(); track option) {
+          <div class="po-row po-mb-1">
+            <div class="po-md-11">
+              <po-tag [p-value]="option" p-color="color-08" />
+            </div>
+            <div class="po-md-1">
+              <po-button p-kind="tertiary" p-icon="an an-trash" (p-click)="removeOption(option)" />
+            </div>
+          </div>
+        } @empty {
+          <span class="po-text-color-neutral-light-30">{{ literals().messages.emptyOptions }}</span>
+        }
+      </div>
+    }
   </form>
 </po-modal>

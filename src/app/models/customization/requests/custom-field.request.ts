@@ -12,6 +12,7 @@ export interface CreateCustomFieldRequest {
   isFilterable: boolean;
   isVisibleInList: boolean;
   referenceEntityName?: string | null;
+  referenceCustomEntityId?: string | null;
 }
 
 export type UpdateCustomFieldRequest = Omit<CreateCustomFieldRequest, 'entityName' | 'customEntityId'>;

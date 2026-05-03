@@ -90,6 +90,7 @@ export class CustomizationComponent implements OnInit {
   readonly selectedEntityName = signal<string>('CustomEntityRecord');
   readonly selectedFieldScope = signal<string>('entity:Order');
   readonly selectedStatusScope = signal<string>('entity:Order');
+  readonly selectedFunctionScope = signal<string>('entity:Order');
   readonly selectedCustomEntityId = signal<string | null>(null);
 
   readonly catalog = signal<CustomizableEntityResponse[]>([]);
@@ -121,6 +122,19 @@ export class CustomizationComponent implements OnInit {
     })),
   );
 
+  readonly referenceTargetOptions = computed<CustomizableEntityResponse[]>(() => [
+    ...this.catalog().filter((entity) => entity.name !== 'CustomEntityRecord'),
+    ...this.customEntities().map((entity) => ({
+      name: `custom:${entity.id}`,
+      displayName: entity.name,
+      supportsCustomFields: false,
+      supportsCustomStatuses: false,
+      supportsCustomFunctions: false,
+      properties: [],
+      referenceTargets: [],
+    })),
+  ]);
+
   readonly fieldScopeOptions = computed<PoSelectOption[]>(() => [
     ...this.catalog()
       .filter((entity) => entity.supportsCustomFields && entity.name !== 'CustomEntityRecord')
@@ -147,6 +161,19 @@ export class CustomizationComponent implements OnInit {
     })),
   ]);
 
+  readonly functionScopeOptions = computed<PoSelectOption[]>(() => [
+    ...this.catalog()
+      .filter((entity) => entity.supportsCustomFunctions && entity.name !== 'CustomEntityRecord')
+      .map((entity) => ({
+        label: entity.displayName,
+        value: `entity:${entity.name}`,
+      })),
+    ...this.customEntities().map((entity) => ({
+      label: entity.name,
+      value: `custom:${entity.id}`,
+    })),
+  ]);
+
   readonly fieldTypeOptions = computed<PoSelectOption[]>(() => [
     { label: this.literals().fieldTypes.text, value: CustomFieldType.Text },
     { label: this.literals().fieldTypes.number, value: CustomFieldType.Number },
@@ -156,13 +183,6 @@ export class CustomizationComponent implements OnInit {
     { label: this.literals().fieldTypes.select, value: CustomFieldType.Select },
     { label: this.literals().fieldTypes.entityReference, value: CustomFieldType.EntityReference },
   ]);
-
-  readonly referenceTargetOptions = computed<PoSelectOption[]>(() =>
-    (this.selectedEntity()?.referenceTargets ?? []).map((target) => ({
-      label: this.getEntityDisplayName(target),
-      value: target,
-    })),
-  );
 
   readonly customFieldOptions = computed<PoSelectOption[]>(() =>
     this.fields().map((field) => ({
@@ -436,15 +456,16 @@ export class CustomizationComponent implements OnInit {
   }
 
   openRecordForm(item?: CustomEntityRecordResponse): void {
-    const customEntityId = item?.customEntityId ?? this.selectedCustomEntityId();
+    const customEntityId = item?.customEntityId ?? this.selectedCustomEntityId() ?? String(this.customEntityOptions()[0]?.value ?? '');
 
     if (!customEntityId) {
       return;
     }
 
-    this.modalService.open(CustomRecordModalComponent, { customEntityId, item }).subscribe((result) => {
+    this.modalService.open(CustomRecordModalComponent, { customEntityId, customEntityOptions: this.customEntityOptions(), item }).subscribe((result) => {
       if (result?.confirmed) {
-        this.loadRecords(customEntityId);
+        this.selectedCustomEntityId.set(result.customEntityId);
+        this.loadRecords(result.customEntityId);
       }
     });
   }
@@ -458,9 +479,7 @@ export class CustomizationComponent implements OnInit {
         entityName: scope.entityName,
         customEntityId: scope.customEntityId,
         item,
-        referenceTargets: this.catalog().filter((entity) =>
-          (scopedEntity?.referenceTargets ?? []).includes(entity.name),
-        ),
+        referenceTargets: this.referenceTargetOptions(),
       })
       .subscribe((result) => {
         if (result?.confirmed) {
@@ -482,17 +501,25 @@ export class CustomizationComponent implements OnInit {
   }
 
   openFunctionForm(item?: CustomFunctionResponse): void {
-    this.modalService
-      .open(CustomFunctionModalComponent, {
-        entityName: this.selectedEntityName(),
-        fields: this.fields(),
-        statuses: this.statuses(),
-        item,
-      })
-      .subscribe((result) => {
-        if (result?.confirmed) {
-          this.loadFunctions(this.selectedEntityName());
-        }
+    const scope = this.getSelectedFunctionScope();
+
+    forkJoin({
+      fields: this.customizationService.getFields(scope.entityName, scope.customEntityId),
+      statuses: this.customizationService.getStatuses(scope.entityName, scope.customEntityId),
+    }).subscribe(({ fields, statuses }) => {
+      this.modalService
+        .open(CustomFunctionModalComponent, {
+          entityName: scope.entityName,
+          customEntityId: scope.customEntityId,
+          fields,
+          statuses,
+          item,
+        })
+        .subscribe((result) => {
+          if (result?.confirmed) {
+            this.loadSelectedFunctionScope();
+          }
+        });
       });
   }
 
@@ -513,6 +540,11 @@ export class CustomizationComponent implements OnInit {
   onStatusScopeChange(scope: string): void {
     this.selectedStatusScope.set(scope);
     this.loadSelectedStatusScope();
+  }
+
+  onFunctionScopeChange(scope: string): void {
+    this.selectedFunctionScope.set(scope);
+    this.loadSelectedFunctionScope();
   }
 
   selectCustomEntity(id: string): void {
@@ -688,16 +720,17 @@ export class CustomizationComponent implements OnInit {
   }
 
   saveFunction(): void {
-    const entityName = this.selectedEntityName();
+    const scope = this.getSelectedFunctionScope();
 
-    if (!this.supports('functions') || this.functionForm.invalid) {
+    if (!this.supportsFunctionScope() || this.functionForm.invalid) {
       this.functionForm.markAllAsTouched();
       return;
     }
 
     const rawValue = this.functionForm.getRawValue();
     const request: CreateCustomFunctionRequest = {
-      entityName,
+      entityName: scope.entityName,
+      customEntityId: scope.customEntityId,
       key: rawValue.key,
       name: rawValue.name,
       inputs: [],
@@ -727,7 +760,7 @@ export class CustomizationComponent implements OnInit {
           this.notification.success(this.literals().notifications.created);
           this.functionForm.reset({ stepType: CustomFunctionStepType.SetCustomField });
           this.showFunctionForm.set(false);
-          this.loadFunctions(entityName);
+          this.loadSelectedFunctionScope();
         },
       });
   }
@@ -777,6 +810,10 @@ export class CustomizationComponent implements OnInit {
 
   supportsStatusScope(): boolean {
     return this.statusScopeOptions().some((item) => item.value === this.selectedStatusScope());
+  }
+
+  supportsFunctionScope(): boolean {
+    return this.functionScopeOptions().some((item) => item.value === this.selectedFunctionScope());
   }
 
   private loadAll(): void {
@@ -831,7 +868,7 @@ export class CustomizationComponent implements OnInit {
           icon: 'an an-plus',
           type: 'primary',
           action: () => this.openFunctionForm(),
-          disabled: this.loading() || !this.supports('functions'),
+          disabled: this.loading() || !this.supportsFunctionScope(),
         };
       case 'records':
         return {
@@ -859,8 +896,10 @@ export class CustomizationComponent implements OnInit {
         this.selectedCustomEntityId.set(nextSelectedId);
         this.ensureSelectedFieldScope();
         this.ensureSelectedStatusScope();
+        this.ensureSelectedFunctionScope();
         this.loadSelectedFieldScope();
         this.loadSelectedStatusScope();
+        this.loadSelectedFunctionScope();
 
         if (nextSelectedId) {
           this.loadRecords(nextSelectedId);
@@ -887,6 +926,14 @@ export class CustomizationComponent implements OnInit {
     }
   }
 
+  private ensureSelectedFunctionScope(): void {
+    const options = this.functionScopeOptions();
+
+    if (!options.some((item) => item.value === this.selectedFunctionScope())) {
+      this.selectedFunctionScope.set(String(options[0]?.value ?? 'entity:Order'));
+    }
+  }
+
   private loadCustomization(entityName: string): void {
     if (!entityName) {
       return;
@@ -897,9 +944,7 @@ export class CustomizationComponent implements OnInit {
     forkJoin({
       fields: this.supportsFieldScope() ? this.getFieldsForSelectedFieldScope() : of([]),
       statuses: this.supportsStatusScope() ? this.getStatusesForSelectedStatusScope() : of([]),
-      functions: entity?.supportsCustomFunctions
-        ? this.customizationService.getFunctions(entityName)
-        : of([]),
+      functions: this.supportsFunctionScope() ? this.getFunctionsForSelectedFunctionScope() : of([]),
     }).subscribe({
       next: ({ fields, statuses, functions }) => {
         this.fields.set(fields);
@@ -945,10 +990,22 @@ export class CustomizationComponent implements OnInit {
     return this.customizationService.getStatuses(scope.entityName, scope.customEntityId);
   }
 
-  private loadFunctions(entityName: string): void {
-    this.customizationService.getFunctions(entityName).subscribe({
+  private loadFunctions(entityName: string, customEntityId: string | null = null): void {
+    this.customizationService.getFunctions(entityName, customEntityId).subscribe({
       next: (items) => this.functions.set(items),
     });
+  }
+
+  private loadSelectedFunctionScope(): void {
+    const scope = this.getSelectedFunctionScope();
+
+    this.loadFunctions(scope.entityName, scope.customEntityId);
+  }
+
+  private getFunctionsForSelectedFunctionScope(): Observable<CustomFunctionResponse[]> {
+    const scope = this.getSelectedFunctionScope();
+
+    return this.customizationService.getFunctions(scope.entityName, scope.customEntityId);
   }
 
   private loadRecords(customEntityId: string): void {
@@ -963,6 +1020,10 @@ export class CustomizationComponent implements OnInit {
 
   private getSelectedStatusScope(): CustomizationScope {
     return this.parseScope(this.selectedStatusScope());
+  }
+
+  private getSelectedFunctionScope(): CustomizationScope {
+    return this.parseScope(this.selectedFunctionScope());
   }
 
   private parseScope(value: string): CustomizationScope {
@@ -1017,23 +1078,19 @@ export class CustomizationComponent implements OnInit {
   }
 
   private activateFunction(id: string): void {
-    const entityName = this.selectedEntityName();
-
     this.customizationService.activateFunction(id).subscribe({
       next: () => {
         this.notification.success(this.literals().notifications.statusChanged);
-        this.loadFunctions(entityName);
+        this.loadSelectedFunctionScope();
       },
     });
   }
 
   private deactivateFunction(id: string): void {
-    const entityName = this.selectedEntityName();
-
     this.customizationService.deactivateFunction(id).subscribe({
       next: () => {
         this.notification.success(this.literals().notifications.statusChanged);
-        this.loadFunctions(entityName);
+        this.loadSelectedFunctionScope();
       },
     });
   }
