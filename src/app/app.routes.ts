@@ -64,6 +64,13 @@ export const routes: Routes = [
         canMatch: [menuPermissionGuard],
       },
       {
+        path: 'customization',
+        loadComponent: () =>
+          import('./components/customization/customization.component').then(
+            (m) => m.CustomizationComponent,
+          ),
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./components/auth/change-password/change-password.component').then(

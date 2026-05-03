@@ -1,0 +1,101 @@
+<po-modal
+  #modal
+  [p-title]="data?.item ? common().edit : literals().actions.createField"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    @if (data?.item) {
+      <div class="po-md-4">
+        <po-input name="key" formControlName="key" [p-label]="literals().fields.key" p-readonly />
+      </div>
+    }
+    <div class="po-md-4">
+      <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
+    </div>
+    <div class="po-md-4">
+      <po-select
+        name="type"
+        formControlName="type"
+        [p-label]="literals().fields.type"
+        [p-options]="fieldTypeOptions()"
+      />
+    </div>
+    <div class="po-md-4">
+      <po-input name="mask" formControlName="mask" [p-label]="literals().fields.mask" />
+    </div>
+    @if (isSelectType()) {
+      <div class="po-md-8">
+        <div class="po-row">
+          <div class="po-md-8">
+            <po-input
+              name="newOption"
+              formControlName="newOption"
+              [p-label]="literals().fields.newOption"
+            />
+          </div>
+          <div class="po-md-4">
+            <po-button
+              p-kind="secondary"
+              [p-label]="literals().actions.addOption"
+              (p-click)="addOption()"
+            />
+          </div>
+        </div>
+
+        <div class="po-mt-1">
+          @for (option of options(); track option) {
+            <po-tag [p-value]="option" p-color="color-08" class="po-mr-1" />
+            <po-button
+              p-kind="tertiary"
+              [p-label]="literals().actions.delete"
+              (p-click)="removeOption(option)"
+            />
+          } @empty {
+            <span class="po-text-color-neutral-light-30">{{ literals().messages.emptyOptions }}</span>
+          }
+        </div>
+      </div>
+    }
+    <div class="po-md-4">
+      <po-select
+        name="reference"
+        formControlName="referenceEntityName"
+        [p-label]="literals().fields.referenceTarget"
+        [p-options]="referenceTargetOptions()"
+      />
+    </div>
+    <div class="po-md-3">
+      <po-number
+        name="order"
+        formControlName="displayOrder"
+        [p-label]="literals().fields.displayOrder"
+      />
+    </div>
+    <div class="po-md-3">
+      <po-switch
+        name="required"
+        formControlName="isRequired"
+        [p-label]="literals().fields.required"
+        [p-hide-label-status]="true"
+      />
+    </div>
+    <div class="po-md-3">
+      <po-switch
+        name="filterable"
+        formControlName="isFilterable"
+        [p-label]="literals().fields.filterable"
+        [p-hide-label-status]="true"
+      />
+    </div>
+    <div class="po-md-3">
+      <po-switch
+        name="visible"
+        formControlName="isVisibleInList"
+        [p-label]="literals().fields.visibleInList"
+        [p-hide-label-status]="true"
+      />
+    </div>
+  </form>
+</po-modal>

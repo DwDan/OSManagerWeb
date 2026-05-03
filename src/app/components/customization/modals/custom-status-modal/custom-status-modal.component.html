@@ -1,0 +1,50 @@
+<po-modal
+  #modal
+  [p-title]="data?.item ? common().edit : literals().actions.createStatus"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-3">
+      <po-input name="key" formControlName="key" [p-label]="literals().fields.key" />
+    </div>
+    <div class="po-md-3">
+      <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
+    </div>
+    <div class="po-md-3">
+      <po-input name="color" formControlName="color" [p-label]="literals().fields.color" />
+    </div>
+    <div class="po-md-3">
+      <po-number
+        name="order"
+        formControlName="displayOrder"
+        [p-label]="literals().fields.displayOrder"
+      />
+    </div>
+    <div class="po-md-4">
+      <po-switch
+        name="initial"
+        formControlName="isInitial"
+        [p-hide-label-status]="true"
+        [p-label]="literals().fields.initial"
+      />
+    </div>
+    <div class="po-md-4">
+      <po-switch
+        name="final"
+        formControlName="isFinal"
+        [p-hide-label-status]="true"
+        [p-label]="literals().fields.final"
+      />
+    </div>
+    <div class="po-md-4">
+      <po-switch
+        name="canceled"
+        formControlName="isCanceled"
+        [p-hide-label-status]="true"
+        [p-label]="literals().fields.canceled"
+      />
+    </div>
+  </form>
+</po-modal>

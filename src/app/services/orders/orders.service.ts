@@ -31,9 +31,7 @@ export class OrdersService {
   }
 
   getOrders(request: GerOrdersRequest): Observable<PagedResponse<OrderListItemResponse>> {
-    const params = buildHttpParams(request);
-
-    return this.http.get<PagedResponse<OrderListItemResponse>>(this.baseUrl, { params });
+    return this.http.post<PagedResponse<OrderListItemResponse>>(`${this.baseUrl}/search`, request);
   }
 
   getById(id: string): Observable<OrderDetailsResponse> {

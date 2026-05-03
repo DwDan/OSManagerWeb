@@ -21,6 +21,7 @@ export const homeLiterals = defineI18n({
       customersShort: 'Clientes',
       services: 'Gerenciar serviços',
       servicesShort: 'Serviços',
+      customization: 'Customização',
     },
   },
   enUS: {
@@ -43,6 +44,7 @@ export const homeLiterals = defineI18n({
       customersShort: 'customers',
       services: 'Manage services',
       servicesShort: 'Services',
+      customization: 'Customization',
     },
   },
 });

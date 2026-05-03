@@ -1,0 +1,13 @@
+<po-modal
+  #modal
+  [p-title]="data?.item ? literals().actions.updateDefinition : literals().actions.createDefinition"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-12">
+      <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
+    </div>
+  </form>
+</po-modal>

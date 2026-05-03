@@ -1,0 +1,15 @@
+<po-modal #modal [p-title]="data?.item ? common().edit : literals().actions.createFunction" [p-primary-action]="primaryAction()" [p-secondary-action]="secondaryAction()" (p-close)="close()">
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-3"><po-input name="key" formControlName="key" [p-label]="literals().fields.key" /></div>
+    <div class="po-md-3"><po-input name="name" formControlName="name" [p-label]="literals().fields.name" /></div>
+    <div class="po-md-3"><po-select name="stepType" formControlName="stepType" [p-label]="literals().fields.stepType" [p-options]="stepTypeOptions()" /></div>
+    <div class="po-md-3"><po-select name="targetFieldKey" formControlName="targetFieldKey" [p-label]="literals().fields.targetField" [p-options]="customFieldOptions()" /></div>
+    <div class="po-md-12">
+      @if (shouldSelectStatusValue()) {
+        <po-select name="statusValue" [p-label]="literals().sections.statuses" [p-options]="statusOptions()" [ngModel]="form.controls.valueExpression.value" [ngModelOptions]="{ standalone: true }" (ngModelChange)="form.controls.valueExpression.setValue($event)" />
+      } @else {
+        <po-input name="valueExpression" formControlName="valueExpression" [p-label]="literals().fields.valueExpression" [p-placeholder]="literals().placeholders.valueExpression" />
+      }
+    </div>
+  </form>
+</po-modal>
