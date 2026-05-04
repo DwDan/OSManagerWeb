@@ -407,6 +407,37 @@
         </po-widget>
       }
 
+      @if (activeSection() === 'transitions') {
+        <po-widget [p-title]="literals().sections.transitions">
+          <div class="po-row">
+            <div class="po-md-4">
+              <po-select
+                name="transitionEntityName"
+                [p-label]="literals().fields.entity"
+                [p-options]="statusScopeOptions()"
+                [ngModel]="selectedTransitionScope()"
+                (ngModelChange)="onTransitionScopeChange($event)"
+              />
+            </div>
+          </div>
+
+          @if (supportsTransitionScope()) {
+            <po-table
+              [p-items]="transitionRows()"
+              [p-columns]="transitionColumns()"
+              [p-actions]="transitionActions()"
+              [p-hide-columns-manager]="true"
+              [p-spacing]="spacing.Small"
+              [p-loading]="loading()"
+            />
+          } @else {
+            <p class="po-text-color-neutral-light-30">
+              {{ literals().messages.unsupportedStatuses }}
+            </p>
+          }
+        </po-widget>
+      }
+
       @if (activeSection() === 'records') {
         <po-widget [p-title]="literals().sections.records">
           @if (showRecordForm()) {
@@ -479,6 +510,11 @@
             <section>
               <span>{{ literals().sections.statuses }}</span>
               <strong>{{ statuses().length }}</strong>
+            </section>
+            <i class="an an-arrow-right"></i>
+            <section>
+              <span>{{ literals().sections.transitions }}</span>
+              <strong>{{ transitions().length }}</strong>
             </section>
             <i class="an an-arrow-right"></i>
             <section>

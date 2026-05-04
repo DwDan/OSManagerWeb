@@ -15,11 +15,13 @@ import {
   CreateCustomStatusRequest,
   UpdateCustomStatusRequest,
 } from '@models/customization/requests/custom-status.request';
+import { CreateCustomStatusTransitionRequest } from '@models/customization/requests/custom-status-transition.request';
 import { CustomEntityRecordResponse } from '@models/customization/responses/custom-entity-record.response';
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
+import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { CustomizableEntityResponse } from '@models/customization/responses/customizable-entity.response';
 import { Observable } from 'rxjs';
 
@@ -128,6 +130,34 @@ export class CustomizationService {
 
   deactivateStatus(id: string): Observable<void> {
     return this.http.patch<void>(`${this.apiUrl}/custom-statuses/${id}/deactivate`, {});
+  }
+
+  getStatusTransitions(
+    entityName: string,
+    customEntityId?: string | null,
+  ): Observable<CustomStatusTransitionResponse[]> {
+    const params: Record<string, string> = { entityName };
+
+    if (customEntityId) {
+      params['customEntityId'] = customEntityId;
+    }
+
+    return this.http.get<CustomStatusTransitionResponse[]>(
+      `${this.apiUrl}/custom-status-transitions`,
+      { params },
+    );
+  }
+
+  createStatusTransition(request: CreateCustomStatusTransitionRequest): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/custom-status-transitions`, request);
+  }
+
+  activateStatusTransition(id: string): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/custom-status-transitions/${id}/activate`, {});
+  }
+
+  deactivateStatusTransition(id: string): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/custom-status-transitions/${id}/deactivate`, {});
   }
 
   getFunctions(entityName: string, customEntityId?: string | null): Observable<CustomFunctionResponse[]> {

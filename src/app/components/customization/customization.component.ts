@@ -14,6 +14,7 @@ import { CustomEntityResponse } from '@models/customization/responses/custom-ent
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
+import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { CustomizableEntityResponse } from '@models/customization/responses/customizable-entity.response';
 import { CustomFieldType } from '@models/customization/types/custom-field-type.enum';
 import { CustomFunctionConditionLogic } from '@models/customization/types/custom-function-condition-logic.enum';
@@ -41,6 +42,7 @@ import { CustomFieldModalComponent } from './modals/custom-field-modal/custom-fi
 import { CustomFunctionModalComponent } from './modals/custom-function-modal/custom-function-modal.component';
 import { CustomRecordModalComponent } from './modals/custom-record-modal/custom-record-modal.component';
 import { CustomStatusModalComponent } from './modals/custom-status-modal/custom-status-modal.component';
+import { CustomStatusTransitionModalComponent } from './modals/custom-status-transition-modal/custom-status-transition-modal.component';
 
 type EntityFeature = 'fields' | 'statuses' | 'functions';
 type CustomizationScope = { entityName: string; customEntityId: string | null };
@@ -49,6 +51,7 @@ type CustomizationSection =
   | 'definitions'
   | 'fields'
   | 'statuses'
+  | 'transitions'
   | 'functions'
   | 'records'
   | 'preview';
@@ -90,6 +93,7 @@ export class CustomizationComponent implements OnInit {
   readonly selectedEntityName = signal<string>('CustomEntityRecord');
   readonly selectedFieldScope = signal<string>('entity:Order');
   readonly selectedStatusScope = signal<string>('entity:Order');
+  readonly selectedTransitionScope = signal<string>('entity:Order');
   readonly selectedFunctionScope = signal<string>('entity:Order');
   readonly selectedCustomEntityId = signal<string | null>(null);
 
@@ -98,6 +102,7 @@ export class CustomizationComponent implements OnInit {
   readonly customEntityRecords = signal<CustomEntityRecordResponse[]>([]);
   readonly fields = signal<CustomFieldResponse[]>([]);
   readonly statuses = signal<CustomStatusResponse[]>([]);
+  readonly transitions = signal<CustomStatusTransitionResponse[]>([]);
   readonly functions = signal<CustomFunctionResponse[]>([]);
 
   readonly selectedEntity = computed(() =>
@@ -248,6 +253,12 @@ export class CustomizationComponent implements OnInit {
       count: this.statuses().length,
     },
     {
+      key: 'transitions' as const,
+      label: this.literals().navigation.transitions,
+      icon: 'an an-arrows-left-right',
+      count: this.transitions().length,
+    },
+    {
       key: 'functions' as const,
       label: this.literals().navigation.functions,
       icon: 'an an-flow-arrow',
@@ -271,6 +282,7 @@ export class CustomizationComponent implements OnInit {
     () =>
       this.fields().length +
       this.statuses().length +
+      this.transitions().length +
       this.functions().length +
       this.customEntityRecords().length,
   );
@@ -297,6 +309,12 @@ export class CustomizationComponent implements OnInit {
     { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
     { property: 'displayOrder', label: this.literals().columns.order },
+    { property: 'isActive', label: this.literals().columns.active, type: 'boolean' },
+  ]);
+
+  readonly transitionColumns = computed<PoTableColumn[]>(() => [
+    { property: 'fromStatusName', label: this.literals().columns.fromStatus },
+    { property: 'toStatusName', label: this.literals().columns.toStatus },
     { property: 'isActive', label: this.literals().columns.active, type: 'boolean' },
   ]);
 
@@ -352,6 +370,19 @@ export class CustomizationComponent implements OnInit {
     },
   ]);
 
+  readonly transitionActions = computed<PoTableAction[]>(() => [
+    {
+      label: this.literals().actions.activate,
+      action: (row: CustomStatusTransitionResponse) => this.activateTransition(row.id),
+      visible: (row: CustomStatusTransitionResponse) => !row.isActive,
+    },
+    {
+      label: this.literals().actions.deactivate,
+      action: (row: CustomStatusTransitionResponse) => this.deactivateTransition(row.id),
+      visible: (row: CustomStatusTransitionResponse) => row.isActive,
+    },
+  ]);
+
   readonly functionActions = computed<PoTableAction[]>(() => [
     {
       label: this.common().edit,
@@ -383,6 +414,14 @@ export class CustomizationComponent implements OnInit {
         ...item,
         typeLabel: this.getFieldTypeLabel(item.type),
       })),
+  );
+
+  readonly transitionRows = computed(() =>
+    this.transitions().map((item) => ({
+      ...item,
+      fromStatusName: this.getStatusName(item.fromStatusId),
+      toStatusName: this.getStatusName(item.toStatusId),
+    })),
   );
 
   readonly recordActions = computed<PoTableAction[]>(() => [
@@ -540,6 +579,11 @@ export class CustomizationComponent implements OnInit {
   onStatusScopeChange(scope: string): void {
     this.selectedStatusScope.set(scope);
     this.loadSelectedStatusScope();
+  }
+
+  onTransitionScopeChange(scope: string): void {
+    this.selectedTransitionScope.set(scope);
+    this.loadSelectedTransitionScope();
   }
 
   onFunctionScopeChange(scope: string): void {
@@ -765,6 +809,24 @@ export class CustomizationComponent implements OnInit {
       });
   }
 
+  openTransitionForm(): void {
+    const scope = this.getSelectedTransitionScope();
+
+    this.customizationService.getStatuses(scope.entityName, scope.customEntityId).subscribe((statuses) => {
+      this.modalService
+        .open(CustomStatusTransitionModalComponent, {
+          entityName: scope.entityName,
+          customEntityId: scope.customEntityId,
+          statuses,
+        })
+        .subscribe((result) => {
+          if (result?.confirmed) {
+            this.loadSelectedTransitionScope();
+          }
+        });
+    });
+  }
+
   getFieldTypeLabel(type: CustomFieldType): string {
     const option = this.fieldTypeOptions().find((item) => item.value === type);
     return option?.label ?? String(type);
@@ -810,6 +872,10 @@ export class CustomizationComponent implements OnInit {
 
   supportsStatusScope(): boolean {
     return this.statusScopeOptions().some((item) => item.value === this.selectedStatusScope());
+  }
+
+  supportsTransitionScope(): boolean {
+    return this.statusScopeOptions().some((item) => item.value === this.selectedTransitionScope());
   }
 
   supportsFunctionScope(): boolean {
@@ -862,6 +928,14 @@ export class CustomizationComponent implements OnInit {
           action: () => this.openStatusForm(),
           disabled: this.loading() || !this.supportsStatusScope(),
         };
+      case 'transitions':
+        return {
+          label: this.literals().actions.createTransition,
+          icon: 'an an-plus',
+          type: 'primary',
+          action: () => this.openTransitionForm(),
+          disabled: this.loading() || !this.supportsTransitionScope() || this.statuses().length < 2,
+        };
       case 'functions':
         return {
           label: this.literals().actions.createFunction,
@@ -896,9 +970,11 @@ export class CustomizationComponent implements OnInit {
         this.selectedCustomEntityId.set(nextSelectedId);
         this.ensureSelectedFieldScope();
         this.ensureSelectedStatusScope();
+        this.ensureSelectedTransitionScope();
         this.ensureSelectedFunctionScope();
         this.loadSelectedFieldScope();
         this.loadSelectedStatusScope();
+        this.loadSelectedTransitionScope();
         this.loadSelectedFunctionScope();
 
         if (nextSelectedId) {
@@ -926,6 +1002,14 @@ export class CustomizationComponent implements OnInit {
     }
   }
 
+  private ensureSelectedTransitionScope(): void {
+    const options = this.statusScopeOptions();
+
+    if (!options.some((item) => item.value === this.selectedTransitionScope())) {
+      this.selectedTransitionScope.set(String(options[0]?.value ?? 'entity:Order'));
+    }
+  }
+
   private ensureSelectedFunctionScope(): void {
     const options = this.functionScopeOptions();
 
@@ -944,11 +1028,13 @@ export class CustomizationComponent implements OnInit {
     forkJoin({
       fields: this.supportsFieldScope() ? this.getFieldsForSelectedFieldScope() : of([]),
       statuses: this.supportsStatusScope() ? this.getStatusesForSelectedStatusScope() : of([]),
+      transitions: this.supportsTransitionScope() ? this.getTransitionsForSelectedTransitionScope() : of([]),
       functions: this.supportsFunctionScope() ? this.getFunctionsForSelectedFunctionScope() : of([]),
     }).subscribe({
-      next: ({ fields, statuses, functions }) => {
+      next: ({ fields, statuses, transitions, functions }) => {
         this.fields.set(fields);
         this.statuses.set(statuses);
+        this.transitions.set(transitions);
         this.functions.set(functions);
       },
     });
@@ -996,6 +1082,30 @@ export class CustomizationComponent implements OnInit {
     });
   }
 
+  private loadTransitions(entityName: string, customEntityId: string | null = null): void {
+    this.customizationService.getStatusTransitions(entityName, customEntityId).subscribe({
+      next: (items) => this.transitions.set(items),
+    });
+  }
+
+  private loadSelectedTransitionScope(): void {
+    const scope = this.getSelectedTransitionScope();
+
+    forkJoin({
+      statuses: this.customizationService.getStatuses(scope.entityName, scope.customEntityId),
+      transitions: this.customizationService.getStatusTransitions(scope.entityName, scope.customEntityId),
+    }).subscribe(({ statuses, transitions }) => {
+      this.statuses.set(statuses);
+      this.transitions.set(transitions);
+    });
+  }
+
+  private getTransitionsForSelectedTransitionScope(): Observable<CustomStatusTransitionResponse[]> {
+    const scope = this.getSelectedTransitionScope();
+
+    return this.customizationService.getStatusTransitions(scope.entityName, scope.customEntityId);
+  }
+
   private loadSelectedFunctionScope(): void {
     const scope = this.getSelectedFunctionScope();
 
@@ -1020,6 +1130,10 @@ export class CustomizationComponent implements OnInit {
 
   private getSelectedStatusScope(): CustomizationScope {
     return this.parseScope(this.selectedStatusScope());
+  }
+
+  private getSelectedTransitionScope(): CustomizationScope {
+    return this.parseScope(this.selectedTransitionScope());
   }
 
   private getSelectedFunctionScope(): CustomizationScope {
@@ -1084,6 +1198,28 @@ export class CustomizationComponent implements OnInit {
         this.loadSelectedFunctionScope();
       },
     });
+  }
+
+  private activateTransition(id: string): void {
+    this.customizationService.activateStatusTransition(id).subscribe({
+      next: () => {
+        this.notification.success(this.literals().notifications.statusChanged);
+        this.loadSelectedTransitionScope();
+      },
+    });
+  }
+
+  private deactivateTransition(id: string): void {
+    this.customizationService.deactivateStatusTransition(id).subscribe({
+      next: () => {
+        this.notification.success(this.literals().notifications.statusChanged);
+        this.loadSelectedTransitionScope();
+      },
+    });
+  }
+
+  private getStatusName(id: string): string {
+    return this.statuses().find((status) => status.id === id)?.name ?? id;
   }
 
   private deactivateFunction(id: string): void {

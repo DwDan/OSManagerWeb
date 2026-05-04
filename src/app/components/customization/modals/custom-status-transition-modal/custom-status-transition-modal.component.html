@@ -1,0 +1,26 @@
+<po-modal
+  #modal
+  [p-title]="literals().actions.createTransition"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-6">
+      <po-select
+        name="fromStatusId"
+        formControlName="fromStatusId"
+        [p-label]="literals().fields.fromStatus"
+        [p-options]="statusOptions()"
+      />
+    </div>
+    <div class="po-md-6">
+      <po-select
+        name="toStatusId"
+        formControlName="toStatusId"
+        [p-label]="literals().fields.toStatus"
+        [p-options]="statusOptions()"
+      />
+    </div>
+  </form>
+</po-modal>
