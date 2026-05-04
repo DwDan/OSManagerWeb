@@ -50,7 +50,7 @@ export class HomeComponent implements OnInit {
   readonly menus = signal<PoMenuItem[]>([]);
 
   ngOnInit(): void {
-    this.menus.set(this.withCustomizationMenu(this.menuService.getMenus()));
+    this.menus.set(this.menuService.getMenus());
     this.loadLoggedUser();
   }
 
@@ -107,18 +107,4 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  private withCustomizationMenu(menus: PoMenuItem[]): PoMenuItem[] {
-    if (menus.some((item) => item.link === '/customization')) {
-      return menus;
-    }
-
-    return [
-      ...menus,
-      {
-        label: this.literals().menu.customization,
-        icon: 'an an-sliders',
-        link: '/customization',
-      },
-    ];
-  }
 }

@@ -466,6 +466,7 @@ export class CustomizationComponent implements OnInit {
     id: [''],
     key: ['', [Validators.required]],
     name: ['', [Validators.required]],
+    allowedCustomRoleNames: [[] as string[]],
   });
 
   readonly recordForm = this.formBuilder.nonNullable.group({
@@ -514,7 +515,7 @@ export class CustomizationComponent implements OnInit {
   }
 
   openDefinitionForm(item?: CustomEntityResponse): void {
-    this.modalService.open(CustomEntityModalComponent, { item }).subscribe((result) => {
+    this.modalService.open(CustomEntityModalComponent, { item, roles: this.customRoles() }).subscribe((result) => {
       if (result?.confirmed) {
         this.loadDefinitions();
       }
@@ -640,7 +641,11 @@ export class CustomizationComponent implements OnInit {
     }
 
     const rawValue = this.definitionForm.getRawValue();
-    const request: CustomEntityRequest = { key: rawValue.key, name: rawValue.name };
+    const request: CustomEntityRequest = {
+      key: rawValue.key,
+      name: rawValue.name,
+      allowedCustomRoleNames: rawValue.allowedCustomRoleNames,
+    };
     const operation: Observable<string | void> = rawValue.id
       ? this.customizationService.updateCustomEntity(rawValue.id, request)
       : this.customizationService.createCustomEntity(request);
@@ -664,6 +669,7 @@ export class CustomizationComponent implements OnInit {
       id: row.id,
       key: row.key,
       name: row.name,
+      allowedCustomRoleNames: row.allowedCustomRoleNames ?? [],
     });
   }
 

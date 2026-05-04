@@ -1,0 +1,33 @@
+<ng-template #filtersForm>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-sm-12 po-md-6 po-lg-4">
+      <po-input name="name" formControlName="name" [p-label]="common().name" />
+    </div>
+
+    <ng-container formGroupName="customFields">
+      @for (field of filterableFields(); track field.id) {
+        <div class="po-sm-12 po-md-6 po-lg-4">
+          @if (field.type === fieldType.Boolean) {
+            <po-switch [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
+          } @else if (field.type === fieldType.Select) {
+            <po-select [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-options]="options(field)" />
+          } @else if (field.type === fieldType.Date) {
+            <po-datepicker [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
+          } @else {
+            <po-input [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-mask]="field.mask ?? ''" />
+          }
+        </div>
+      }
+    </ng-container>
+  </form>
+</ng-template>
+
+<app-filter-container
+  [title]="title()"
+  [slide]="false"
+  [clearLabel]="common().clear"
+  [filterLabel]="common().filter"
+  [contentTemplate]="filtersForm"
+  (clear)="clearFilters()"
+  (filter)="filter()"
+/>

@@ -4,7 +4,7 @@ export interface CustomFieldValueRequest {
 }
 
 export interface CustomEntityRecordRequest {
-  key: string;
+  key?: string | null;
   name: string;
   customFields: CustomFieldValueRequest[];
 }

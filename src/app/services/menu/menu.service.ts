@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment';
 import { PoMenuItem } from '@po-ui/ng-components';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +15,6 @@ export class MenuService {
   readonly menus = signal<PoMenuItem[]>(this.getMenusFromStorage());
 
   loadMenus(): Observable<PoMenuItem[]> {
-    if (this.menus().length > 0) {
-      return of(this.menus());
-    }
-
     return this.http.get<PoMenuItem[]>(this.baseUrl).pipe(
       tap((menus) => {
         this.menus.set(menus);

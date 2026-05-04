@@ -25,7 +25,9 @@ import { CustomRoleResponse } from '@models/customization/responses/custom-role.
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { CustomizableEntityResponse } from '@models/customization/responses/customizable-entity.response';
+import { PagedResponse } from '@models/pagination/response/paged.response';
 import { Observable } from 'rxjs';
+import { buildHttpParams } from 'src/app/shared/extensions/http-params.extensions';
 
 @Injectable({
   providedIn: 'root',
@@ -76,6 +78,35 @@ export class CustomizationService {
     );
   }
 
+  getPagedCustomEntityRecords(
+    customEntityId: string,
+    request: {
+      page: number;
+      pageSize: number;
+      key?: string;
+      name?: string;
+      customFields?: Record<string, string>;
+    },
+  ): Observable<PagedResponse<CustomEntityRecordResponse>> {
+    let params = buildHttpParams({
+      page: request.page,
+      pageSize: request.pageSize,
+      key: request.key,
+      name: request.name,
+    });
+
+    for (const [key, value] of Object.entries(request.customFields ?? {})) {
+      if (value.trim()) {
+        params = params.set(`CustomFields[${key}]`, value);
+      }
+    }
+
+    return this.http.get<PagedResponse<CustomEntityRecordResponse>>(
+      `${this.apiUrl}/custom-entities/${customEntityId}/records/paged`,
+      { params },
+    );
+  }
+
   createCustomEntityRecord(
     customEntityId: string,
     request: CustomEntityRecordRequest,
@@ -92,6 +123,17 @@ export class CustomizationService {
 
   deleteCustomEntityRecord(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/custom-entities/records/${id}`);
+  }
+
+  executeCustomEntityRecordFunction(
+    recordId: string,
+    functionKey: string,
+    request: { inputs: { key: string; value: string }[] },
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiUrl}/custom-entities/records/${recordId}/functions/${functionKey}/execute`,
+      request,
+    );
   }
 
   getFields(entityName: string, customEntityId?: string | null): Observable<CustomFieldResponse[]> {

@@ -1,0 +1,29 @@
+<po-modal
+  #modal
+  [p-title]="data?.item ? common().edit : literals().actions.create"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    <div class="po-md-12">
+      <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
+    </div>
+
+    <ng-container formGroupName="values">
+      @for (field of fields(); track field.id) {
+        <div class="po-md-6">
+          @if (field.type === fieldType.Boolean) {
+            <po-switch [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
+          } @else if (field.type === fieldType.Select) {
+            <po-select [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-options]="options(field)" />
+          } @else if (field.type === fieldType.Date) {
+            <po-datepicker [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
+          } @else {
+            <po-input [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-mask]="field.mask ?? ''" />
+          }
+        </div>
+      }
+    </ng-container>
+  </form>
+</po-modal>

@@ -71,6 +71,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'custom/:key',
+        loadComponent: () =>
+          import('./components/custom-records/custom-records.component').then(
+            (m) => m.CustomRecordsComponent,
+          ),
+        canMatch: [menuPermissionGuard],
+      },
+      {
         path: 'change-password',
         loadComponent: () =>
           import('./components/auth/change-password/change-password.component').then(

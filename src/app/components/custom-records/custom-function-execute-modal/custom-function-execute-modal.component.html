@@ -1,0 +1,21 @@
+<po-modal
+  #modal
+  [p-title]="data?.function?.name ?? ''"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form" class="po-row">
+    @for (input of inputs(); track input.key) {
+      <div class="po-md-12">
+        @if (input.type === fieldType.Boolean) {
+          <po-switch [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />
+        } @else if (input.type === fieldType.Date) {
+          <po-datepicker [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />
+        } @else {
+          <po-input [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />
+        }
+      </div>
+    }
+  </form>
+</po-modal>

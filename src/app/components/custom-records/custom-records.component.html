@@ -1,0 +1,24 @@
+<po-page-default [p-title]="title()" [p-actions]="pageActions()">
+  <app-custom-fields-filter
+    [title]="common().filters"
+    [fields]="fields()"
+    (filterChange)="onFilterChange($event)"
+  />
+
+  <po-table
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-columns]="columns()"
+    [p-actions]="tableActions()"
+    [p-loading]="loading()"
+  />
+
+  <app-pagination
+    [page]="page()"
+    [pageSize]="pageSize()"
+    [totalItems]="totalItems()"
+    (pageChange)="onPageChange($event)"
+    (pageSizeChange)="onPageSizeChange($event)"
+  />
+</po-page-default>

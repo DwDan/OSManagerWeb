@@ -6,7 +6,8 @@ import { commonLiterals } from '@i18n/common/common.literals';
 import { customizationLiterals } from '@i18n/customization/customization.literals';
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
-import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService } from '@po-ui/ng-components';
+import { CustomRoleResponse } from '@models/customization/responses/custom-role.response';
+import { PoFieldModule, PoModalAction, PoModalModule, PoMultiselectOption, PoNotificationService } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
 import { finalize, Observable } from 'rxjs';
 import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
@@ -18,7 +19,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
   templateUrl: './custom-entity-modal.component.html',
 })
 export class CustomEntityModalComponent
-  extends BaseModalComponent<{ item?: CustomEntityResponse }, { confirmed: boolean }>
+  extends BaseModalComponent<{ item?: CustomEntityResponse; roles?: CustomRoleResponse[] }, { confirmed: boolean }>
   implements OnInit
 {
   private readonly service = inject(CustomizationService);
@@ -32,7 +33,12 @@ export class CustomEntityModalComponent
   readonly form = this.formBuilder.nonNullable.group({
     key: [''],
     name: ['', [Validators.required]],
+    allowedCustomRoleNames: [[] as string[]],
   });
+
+  readonly roleOptions = computed<PoMultiselectOption[]>(() =>
+    (this.data?.roles ?? []).map((role) => ({ label: role.name, value: role.name })),
+  );
 
   readonly formInvalid = formInvalidSignal(this.form);
   readonly primaryAction = computed<PoModalAction>(() => ({
@@ -49,7 +55,11 @@ export class CustomEntityModalComponent
 
   ngOnInit(): void {
     if (this.data?.item) {
-      this.form.reset({ key: this.data.item.key, name: this.data.item.name });
+      this.form.reset({
+        key: this.data.item.key,
+        name: this.data.item.name,
+        allowedCustomRoleNames: this.data.item.allowedCustomRoleNames ?? [],
+      });
       this.form.controls.key.setValidators([Validators.required]);
       this.form.controls.key.updateValueAndValidity();
     }
@@ -64,7 +74,10 @@ export class CustomEntityModalComponent
     const rawValue = this.form.getRawValue();
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateCustomEntity(this.data.item.id, rawValue)
-      : this.service.createCustomEntity({ name: rawValue.name });
+      : this.service.createCustomEntity({
+          name: rawValue.name,
+          allowedCustomRoleNames: rawValue.allowedCustomRoleNames,
+        });
 
     this.loading.set(true);
     operation.pipe(finalize(() => this.loading.set(false))).subscribe({
