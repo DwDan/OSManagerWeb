@@ -7,10 +7,11 @@ import { customizationLiterals } from '@i18n/customization/customization.literal
 import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
+import { CustomRoleResponse } from '@models/customization/responses/custom-role.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomFunctionConditionLogic } from '@models/customization/types/custom-function-condition-logic.enum';
 import { CustomFunctionStepType } from '@models/customization/types/custom-function-step-type.enum';
-import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
+import { PoFieldModule, PoModalAction, PoModalModule, PoMultiselectOption, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
 import { finalize, Observable } from 'rxjs';
 import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
@@ -23,7 +24,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 })
 export class CustomFunctionModalComponent
   extends BaseModalComponent<
-    { entityName: string; customEntityId?: string | null; fields: CustomFieldResponse[]; statuses: CustomStatusResponse[]; item?: CustomFunctionResponse },
+    { entityName: string; customEntityId?: string | null; fields: CustomFieldResponse[]; statuses: CustomStatusResponse[]; roles: CustomRoleResponse[]; item?: CustomFunctionResponse },
     { confirmed: boolean }
   >
   implements OnInit
@@ -40,12 +41,14 @@ export class CustomFunctionModalComponent
   ]);
   readonly customFieldOptions = computed<PoSelectOption[]>(() => (this.data?.fields ?? []).map((x) => ({ label: x.name, value: x.key })));
   readonly statusOptions = computed<PoSelectOption[]>(() => (this.data?.statuses ?? []).map((x) => ({ label: x.name, value: x.key })));
+  readonly roleOptions = computed<PoMultiselectOption[]>(() => (this.data?.roles ?? []).map((role) => ({ label: role.name, value: role.name })));
   readonly form = this.formBuilder.nonNullable.group({
     key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     stepType: [CustomFunctionStepType.SetCustomField, [Validators.required]],
     targetFieldKey: [''],
     valueExpression: ['', [Validators.required]],
+    allowedCustomRoleNames: [[] as string[]],
   });
   readonly formInvalid = formInvalidSignal(this.form);
   readonly primaryAction = computed<PoModalAction>(() => ({ label: this.common().save, action: () => this.save(), loading: this.loading(), disabled: this.formInvalid() }));
@@ -61,6 +64,7 @@ export class CustomFunctionModalComponent
         stepType: step?.type === 'UpdateStatus' ? CustomFunctionStepType.UpdateStatus : CustomFunctionStepType.SetCustomField,
         targetFieldKey: step?.targetFieldKey ?? '',
         valueExpression: step?.valueExpression ?? '',
+        allowedCustomRoleNames: item.allowedCustomRoleNames ?? [],
       });
     }
   }
@@ -83,7 +87,7 @@ export class CustomFunctionModalComponent
       inputs: [],
       steps: [{ type: raw.stepType, targetFieldKey: raw.stepType === CustomFunctionStepType.SetCustomField ? raw.targetFieldKey || null : null, valueExpression: raw.valueExpression, executionOrder: 1, conditionLogic: CustomFunctionConditionLogic.And, conditions: [] }],
       validations: [],
-      allowedCustomRoleNames: [],
+      allowedCustomRoleNames: raw.allowedCustomRoleNames,
     };
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateFunction(this.data.item.id, { ...request, isActive: this.data.item.isActive })

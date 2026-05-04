@@ -9,6 +9,7 @@ export const usersLiterals = defineI18n({
     tableActions: {
       edit: 'Editar',
       changeRole: 'Alterar perfil',
+      customRoles: 'Perfis customizados',
       activate: 'Ativar',
       deactivate: 'Desativar',
       delete: 'Excluir',
@@ -29,6 +30,7 @@ export const usersLiterals = defineI18n({
       email: 'E-mail',
       password: 'Senha',
       role: 'Perfil',
+      customRoles: 'Perfis customizados',
     },
     roles: {
       administrator: 'Administrador',
@@ -44,6 +46,9 @@ export const usersLiterals = defineI18n({
       changeRole: {
         title: 'Alterar perfil',
       },
+      customRoles: {
+        title: 'Perfis customizados',
+      },
     },
     validations: {
       fillAllFieldsToCreate: 'Preencha todos os campos para criar o usuário.',
@@ -52,6 +57,7 @@ export const usersLiterals = defineI18n({
       created: 'Usuário criado com sucesso.',
       updated: 'Usuário atualizado com sucesso.',
       roleChanged: 'Perfil alterado com sucesso.',
+      customRolesChanged: 'Perfis customizados atualizados com sucesso.',
       activated: 'Usuário ativado com sucesso.',
       deactivated: 'Usuário desativado com sucesso.',
       deleted: 'Usuário excluído com sucesso.',
@@ -84,6 +90,7 @@ export const usersLiterals = defineI18n({
     tableActions: {
       edit: 'Edit',
       changeRole: 'Change role',
+      customRoles: 'Custom roles',
       activate: 'Activate',
       deactivate: 'Deactivate',
       delete: 'Delete',
@@ -104,6 +111,7 @@ export const usersLiterals = defineI18n({
       email: 'Email',
       password: 'Password',
       role: 'Role',
+      customRoles: 'Custom roles',
     },
     roles: {
       administrator: 'Administrator',
@@ -119,6 +127,9 @@ export const usersLiterals = defineI18n({
       changeRole: {
         title: 'Change role',
       },
+      customRoles: {
+        title: 'Custom roles',
+      },
     },
     validations: {
       fillAllFieldsToCreate: 'Fill in all fields to create the user.',
@@ -127,6 +138,7 @@ export const usersLiterals = defineI18n({
       created: 'User created successfully.',
       updated: 'User updated successfully.',
       roleChanged: 'Role changed successfully.',
+      customRolesChanged: 'Custom roles updated successfully.',
       activated: 'User activated successfully.',
       deactivated: 'User deactivated successfully.',
       deleted: 'User deleted successfully.',

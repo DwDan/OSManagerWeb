@@ -102,6 +102,19 @@
         </po-widget>
       }
 
+      @if (activeSection() === 'roles') {
+        <po-widget [p-title]="literals().sections.roles">
+          <po-table
+            [p-items]="customRoles()"
+            [p-columns]="roleColumns()"
+            [p-actions]="roleActions()"
+            [p-hide-columns-manager]="true"
+            [p-spacing]="spacing.Small"
+            [p-loading]="loading()"
+          />
+        </po-widget>
+      }
+
       @if (activeSection() === 'fields') {
         <po-widget [p-title]="literals().sections.fields">
           <div class="po-row">

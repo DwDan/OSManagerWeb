@@ -21,6 +21,7 @@ import { DevicesService } from '@services/devices/devices.service';
 import { ModalService } from '@services/modal/modal.service';
 import { UsersService } from '@services/users/users.service';
 import { finalize } from 'rxjs';
+import { ChangeUserCustomRolesComponent } from './change-user-custom-roles/change-user-custom-roles.component';
 import { ChangeUserRoleComponent } from './change-user-role/change-user-role.component';
 import { CreateUserComponent } from './create-user/create-user.component';
 import { FilterUserComponent } from './filter-user/filter-user.component';
@@ -127,6 +128,10 @@ export class UsersComponent {
       action: (user: UserResponse) => this.openChangeRoleModal(user),
     },
     {
+      label: this.literals().tableActions.customRoles,
+      action: (user: UserResponse) => this.openCustomRolesModal(user),
+    },
+    {
       label: this.literals().tableActions.activate,
       action: (user: UserResponse) => this.activate(user),
       visible: (user: UserResponse) => !user.isActive,
@@ -174,6 +179,14 @@ export class UsersComponent {
 
   openChangeRoleModal(user: UserResponse): void {
     this.modalService.open(ChangeUserRoleComponent, { user }).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadData();
+      }
+    });
+  }
+
+  openCustomRolesModal(user: UserResponse): void {
+    this.modalService.open(ChangeUserCustomRolesComponent, { user }).subscribe((result) => {
       if (result?.confirmed) {
         this.loadData();
       }

@@ -13,6 +13,7 @@ import { CustomEntityRecordResponse } from '@models/customization/responses/cust
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
+import { CustomRoleResponse } from '@models/customization/responses/custom-role.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { CustomizableEntityResponse } from '@models/customization/responses/customizable-entity.response';
@@ -41,6 +42,7 @@ import { CustomEntityModalComponent } from './modals/custom-entity-modal/custom-
 import { CustomFieldModalComponent } from './modals/custom-field-modal/custom-field-modal.component';
 import { CustomFunctionModalComponent } from './modals/custom-function-modal/custom-function-modal.component';
 import { CustomRecordModalComponent } from './modals/custom-record-modal/custom-record-modal.component';
+import { CustomRoleModalComponent } from './modals/custom-role-modal/custom-role-modal.component';
 import { CustomStatusModalComponent } from './modals/custom-status-modal/custom-status-modal.component';
 import { CustomStatusTransitionModalComponent } from './modals/custom-status-transition-modal/custom-status-transition-modal.component';
 
@@ -49,6 +51,7 @@ type CustomizationScope = { entityName: string; customEntityId: string | null };
 type CustomizationSection =
   | 'entity'
   | 'definitions'
+  | 'roles'
   | 'fields'
   | 'statuses'
   | 'transitions'
@@ -99,6 +102,7 @@ export class CustomizationComponent implements OnInit {
 
   readonly catalog = signal<CustomizableEntityResponse[]>([]);
   readonly customEntities = signal<CustomEntityResponse[]>([]);
+  readonly customRoles = signal<CustomRoleResponse[]>([]);
   readonly customEntityRecords = signal<CustomEntityRecordResponse[]>([]);
   readonly fields = signal<CustomFieldResponse[]>([]);
   readonly statuses = signal<CustomStatusResponse[]>([]);
@@ -241,6 +245,12 @@ export class CustomizationComponent implements OnInit {
       count: this.customEntities().length,
     },
     {
+      key: 'roles' as const,
+      label: this.literals().navigation.roles,
+      icon: 'an an-identification-card',
+      count: this.customRoles().length,
+    },
+    {
       key: 'fields' as const,
       label: this.literals().navigation.fields,
       icon: 'an an-textbox',
@@ -281,6 +291,7 @@ export class CustomizationComponent implements OnInit {
   readonly previewScore = computed(
     () =>
       this.fields().length +
+      this.customRoles().length +
       this.statuses().length +
       this.transitions().length +
       this.functions().length +
@@ -290,6 +301,11 @@ export class CustomizationComponent implements OnInit {
   readonly definitionColumns = computed<PoTableColumn[]>(() => [
     { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
+  ]);
+
+  readonly roleColumns = computed<PoTableColumn[]>(() => [
+    { property: 'name', label: this.literals().columns.name },
+    { property: 'description', label: this.literals().columns.description },
   ]);
 
   readonly recordColumns = computed<PoTableColumn[]>(() => [
@@ -367,6 +383,17 @@ export class CustomizationComponent implements OnInit {
       label: this.literals().actions.deactivate,
       action: (row: CustomStatusResponse) => this.deactivateStatus(row.id),
       visible: (row: CustomStatusResponse) => row.isActive,
+    },
+  ]);
+
+  readonly roleActions = computed<PoTableAction[]>(() => [
+    {
+      label: this.common().edit,
+      action: (row: CustomRoleResponse) => this.openRoleForm(row),
+    },
+    {
+      label: this.literals().actions.delete,
+      action: (row: CustomRoleResponse) => this.deleteRole(row.id),
     },
   ]);
 
@@ -494,6 +521,14 @@ export class CustomizationComponent implements OnInit {
     });
   }
 
+  openRoleForm(item?: CustomRoleResponse): void {
+    this.modalService.open(CustomRoleModalComponent, { item }).subscribe((result) => {
+      if (result?.confirmed) {
+        this.loadRoles();
+      }
+    });
+  }
+
   openRecordForm(item?: CustomEntityRecordResponse): void {
     const customEntityId = item?.customEntityId ?? this.selectedCustomEntityId() ?? String(this.customEntityOptions()[0]?.value ?? '');
 
@@ -545,13 +580,15 @@ export class CustomizationComponent implements OnInit {
     forkJoin({
       fields: this.customizationService.getFields(scope.entityName, scope.customEntityId),
       statuses: this.customizationService.getStatuses(scope.entityName, scope.customEntityId),
-    }).subscribe(({ fields, statuses }) => {
+      roles: this.customizationService.getCustomRoles(),
+    }).subscribe(({ fields, statuses, roles }) => {
       this.modalService
         .open(CustomFunctionModalComponent, {
           entityName: scope.entityName,
           customEntityId: scope.customEntityId,
           fields,
           statuses,
+          roles,
           item,
         })
         .subscribe((result) => {
@@ -639,6 +676,19 @@ export class CustomizationComponent implements OnInit {
         next: () => {
           this.notification.success(this.literals().notifications.deleted);
           this.loadDefinitions();
+        },
+      });
+  }
+
+  deleteRole(id: string): void {
+    this.loading.set(true);
+    this.customizationService
+      .deleteCustomRole(id)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: () => {
+          this.notification.success(this.literals().notifications.deleted);
+          this.loadRoles();
         },
       });
   }
@@ -897,6 +947,7 @@ export class CustomizationComponent implements OnInit {
           }
 
           this.loadDefinitions();
+          this.loadRoles();
           this.loadCustomization(this.selectedEntityName());
         },
       });
@@ -910,6 +961,14 @@ export class CustomizationComponent implements OnInit {
           icon: 'an an-plus',
           type: 'primary',
           action: () => this.openDefinitionForm(),
+          disabled: this.loading(),
+        };
+      case 'roles':
+        return {
+          label: this.literals().actions.createRole,
+          icon: 'an an-plus',
+          type: 'primary',
+          action: () => this.openRoleForm(),
           disabled: this.loading(),
         };
       case 'fields':
@@ -1000,6 +1059,12 @@ export class CustomizationComponent implements OnInit {
     if (!options.some((item) => item.value === this.selectedStatusScope())) {
       this.selectedStatusScope.set(String(options[0]?.value ?? 'entity:Order'));
     }
+  }
+
+  private loadRoles(): void {
+    this.customizationService.getCustomRoles().subscribe({
+      next: (items) => this.customRoles.set(items),
+    });
   }
 
   private ensureSelectedTransitionScope(): void {

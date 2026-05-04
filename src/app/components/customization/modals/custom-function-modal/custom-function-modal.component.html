@@ -11,5 +11,13 @@
         <po-input name="valueExpression" formControlName="valueExpression" [p-label]="literals().fields.valueExpression" [p-placeholder]="literals().placeholders.valueExpression" />
       }
     </div>
+    <div class="po-md-12">
+      <po-multiselect
+        name="allowedCustomRoleNames"
+        formControlName="allowedCustomRoleNames"
+        [p-label]="literals().fields.allowedRoles"
+        [p-options]="roleOptions()"
+      />
+    </div>
   </form>
 </po-modal>

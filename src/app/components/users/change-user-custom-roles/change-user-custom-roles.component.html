@@ -1,0 +1,22 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.customRoles.title"
+  [p-primary-action]="primaryAction()"
+  [p-secondary-action]="secondaryAction()"
+  (p-close)="close()"
+>
+  <form [formGroup]="form">
+    <div class="po-row">
+      <div class="po-md-12">
+        <po-multiselect
+          *ngIf="loaded()"
+          name="customRoleIds"
+          [p-label]="literals().fields.customRoles"
+          [p-options]="roleOptions()"
+          formControlName="customRoleIds"
+        >
+        </po-multiselect>
+      </div>
+    </div>
+  </form>
+</po-modal>

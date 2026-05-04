@@ -66,4 +66,12 @@ export class UsersService {
   changeRole(id: string, request: ChangeUserRoleRequest): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/${id}/role`, request);
   }
+
+  assignCustomRole(userId: string, customRoleId: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${userId}/custom-roles/${customRoleId}`, {});
+  }
+
+  removeCustomRole(userId: string, customRoleId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${userId}/custom-roles/${customRoleId}`);
+  }
 }

@@ -1,3 +1,5 @@
+import { CustomRoleResponse } from '@models/customization/responses/custom-role.response';
+
 export interface UserResponse {
   id: string;
   firstName: string;
@@ -6,4 +8,5 @@ export interface UserResponse {
   role: string;
   isActive: boolean;
   emailConfirmed: boolean;
+  customRoles: CustomRoleResponse[];
 }

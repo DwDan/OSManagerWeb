@@ -11,6 +11,7 @@ import {
   UpdateCustomFieldRequest,
 } from '@models/customization/requests/custom-field.request';
 import { CreateCustomFunctionRequest } from '@models/customization/requests/custom-function.request';
+import { CustomRoleRequest } from '@models/customization/requests/custom-role.request';
 import {
   CreateCustomStatusRequest,
   UpdateCustomStatusRequest,
@@ -20,6 +21,7 @@ import { CustomEntityRecordResponse } from '@models/customization/responses/cust
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
+import { CustomRoleResponse } from '@models/customization/responses/custom-role.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { CustomizableEntityResponse } from '@models/customization/responses/customizable-entity.response';
@@ -38,6 +40,22 @@ export class CustomizationService {
 
   getCustomEntities(): Observable<CustomEntityResponse[]> {
     return this.http.get<CustomEntityResponse[]>(`${this.apiUrl}/custom-entities`);
+  }
+
+  getCustomRoles(): Observable<CustomRoleResponse[]> {
+    return this.http.get<CustomRoleResponse[]>(`${this.apiUrl}/custom-roles`);
+  }
+
+  createCustomRole(request: CustomRoleRequest): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/custom-roles`, request);
+  }
+
+  updateCustomRole(id: string, request: CustomRoleRequest): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/custom-roles/${id}`, request);
+  }
+
+  deleteCustomRole(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/custom-roles/${id}`);
   }
 
   createCustomEntity(request: CreateCustomEntityRequest): Observable<string> {
