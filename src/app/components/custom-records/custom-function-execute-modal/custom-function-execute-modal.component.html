@@ -8,9 +8,11 @@
   <form [formGroup]="form" class="po-row">
     @for (input of inputs(); track input.key) {
       <div class="po-md-12">
-        @if (input.type === fieldType.Boolean) {
+        @if (isBoolean(input.type)) {
           <po-switch [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />
-        } @else if (input.type === fieldType.Date) {
+        } @else if (isEntityReference(input.type)) {
+          <po-select [name]="input.key" [formControlName]="input.key" [p-label]="input.label" [p-options]="options(input.key)" />
+        } @else if (isDate(input.type)) {
           <po-datepicker [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />
         } @else {
           <po-input [name]="input.key" [formControlName]="input.key" [p-label]="input.label" />

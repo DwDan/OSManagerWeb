@@ -64,6 +64,14 @@
         [p-hide-label-status]="true"
       />
     </div>
+    <div class="po-md-4">
+      <po-switch
+        name="editable"
+        formControlName="isEditableInForm"
+        [p-label]="literals().fields.editableInForm"
+        [p-hide-label-status]="true"
+      />
+    </div>
     @if (isSelectType()) {
       <div class="po-md-10">
         <po-input

@@ -9,9 +9,15 @@ import { CustomEntityRecordResponse } from '@models/customization/responses/cust
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFieldType } from '@models/customization/types/custom-field-type.enum';
+import { CustomerResponse } from '@models/customers/responses/customer.response';
+import { ServiceResponse } from '@models/services/responses/service.response';
+import { UserResponse } from '@models/users/responses/user.response';
 import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
+import { CustomersService } from '@services/customers/customers.service';
 import { CustomizationService } from '@services/customization/customization.service';
-import { finalize, Observable } from 'rxjs';
+import { ServicesService } from '@services/services/services.service';
+import { UsersService } from '@services/users/users.service';
+import { finalize, Observable, of } from 'rxjs';
 import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 
 @Component({
@@ -28,15 +34,23 @@ export class CustomRecordModalComponent
   implements OnInit
 {
   private readonly service = inject(CustomizationService);
+  private readonly usersService = inject(UsersService);
+  private readonly customersService = inject(CustomersService);
+  private readonly servicesService = inject(ServicesService);
   private readonly notification = inject(PoNotificationService);
   private readonly formBuilder = inject(FormBuilder);
 
   readonly literals = injectI18n(customRecordsLiterals);
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
+  readonly referenceOptions = signal<Record<string, PoSelectOption[]>>({});
   readonly fieldType = CustomFieldType;
 
-  readonly fields = computed(() => (this.data?.fields ?? []).filter((field) => field.isActive).sort((a, b) => a.displayOrder - b.displayOrder));
+  readonly fields = computed(() =>
+    (this.data?.fields ?? [])
+      .filter((field) => field.isActive && field.isEditableInForm !== false)
+      .sort((a, b) => a.displayOrder - b.displayOrder),
+  );
 
   readonly form = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required]],
@@ -64,6 +78,8 @@ export class CustomRecordModalComponent
       );
     }
 
+    this.loadReferenceOptions();
+
     if (!this.data?.item) {
       return;
     }
@@ -77,6 +93,10 @@ export class CustomRecordModalComponent
 
   options(field: CustomFieldResponse): PoSelectOption[] {
     return field.options.map((option) => ({ label: option, value: option }));
+  }
+
+  referenceFieldOptions(fieldKey: string): PoSelectOption[] {
+    return this.referenceOptions()[fieldKey] ?? [];
   }
 
   save(): void {
@@ -107,5 +127,86 @@ export class CustomRecordModalComponent
         this.submit({ confirmed: true });
       },
     });
+  }
+
+  private loadReferenceOptions(): void {
+    for (const field of this.fields().filter((item) => this.isEntityReference(item.type))) {
+      this.getReferenceOptions(field).subscribe({
+        next: (options) => {
+          this.referenceOptions.update((current) => ({
+            ...current,
+            [field.key]: options,
+          }));
+        },
+      });
+    }
+  }
+
+  private getReferenceOptions(field: CustomFieldResponse): Observable<PoSelectOption[]> {
+    if (!field.referenceEntityName) {
+      return of([]);
+    }
+
+    if (field.referenceEntityName === 'User') {
+      return new Observable<PoSelectOption[]>((subscriber) => {
+        this.usersService.getAllUsers().subscribe({
+          next: (users: UserResponse[]) => {
+            subscriber.next(users.map((user) => ({ label: `${user.firstName} ${user.lastName}`, value: user.id })));
+            subscriber.complete();
+          },
+          error: (error) => subscriber.error(error),
+        });
+      });
+    }
+
+    if (field.referenceEntityName === 'Customer') {
+      return new Observable<PoSelectOption[]>((subscriber) => {
+        this.customersService.getAllCustomers().subscribe({
+          next: (customers: CustomerResponse[]) => {
+            subscriber.next(customers.map((customer) => ({ label: customer.name, value: customer.id })));
+            subscriber.complete();
+          },
+          error: (error) => subscriber.error(error),
+        });
+      });
+    }
+
+    if (field.referenceEntityName === 'Service') {
+      return new Observable<PoSelectOption[]>((subscriber) => {
+        this.servicesService.getAllServices().subscribe({
+          next: (services: ServiceResponse[]) => {
+            subscriber.next(services.map((service) => ({ label: service.name, value: service.id })));
+            subscriber.complete();
+          },
+          error: (error) => subscriber.error(error),
+        });
+      });
+    }
+
+    if (field.referenceEntityName === 'CustomEntityRecord' && field.referenceCustomEntityId) {
+      return new Observable<PoSelectOption[]>((subscriber) => {
+        this.service.getCustomEntityRecords(field.referenceCustomEntityId!).subscribe({
+          next: (records) => {
+            subscriber.next(records.map((record) => ({ label: record.name, value: record.id })));
+            subscriber.complete();
+          },
+          error: (error) => subscriber.error(error),
+        });
+      });
+    }
+
+    return of([]);
+  }
+
+  isBoolean(type: CustomFieldType | string): boolean {
+    return type === CustomFieldType.Boolean || type === 'Boolean';
+  }
+
+  isDate(type: CustomFieldType | string): boolean {
+    return type === CustomFieldType.Date || type === 'Date';
+  }
+
+  isEntityReference(type: CustomFieldType | string): boolean {
+    return type === CustomFieldType.EntityReference || type === 'EntityReference';
   }
 }

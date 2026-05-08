@@ -1,0 +1,34 @@
+<po-modal
+  #modal
+  [p-title]="literals().modals.details.title"
+  [p-primary-action]="primaryAction()"
+  (p-close)="close()"
+>
+  @if (record(); as recordData) {
+    <div class="po-row">
+      <div class="po-md-12">
+        <strong>{{ literals().fields.name }}:</strong> {{ displayValue(recordData.name) }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().fields.key }}:</strong> {{ displayValue(recordData.key) }}
+      </div>
+
+      <div class="po-md-12">
+        <strong>{{ literals().fields.status }}:</strong> {{ statusName(recordData.customStatusId) }}
+      </div>
+
+      @if (recordData.customFields.length > 0) {
+        <div class="po-md-12 po-mt-2">
+          <strong>{{ literals().fields.customFields }}</strong>
+        </div>
+
+        @for (field of recordData.customFields; track field.key) {
+          <div class="po-md-12">
+            <strong>{{ field.name }}:</strong> {{ displayValue(field.displayValue ?? field.value) }}
+          </div>
+        }
+      }
+    </div>
+  }
+</po-modal>

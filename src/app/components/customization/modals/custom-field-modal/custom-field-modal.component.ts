@@ -60,6 +60,7 @@ export class CustomFieldModalComponent
     displayOrder: [1, [Validators.required]],
     isFilterable: [false],
     isVisibleInList: [true],
+    isEditableInForm: [true],
     referenceEntityName: [''],
   });
 
@@ -90,6 +91,7 @@ export class CustomFieldModalComponent
         displayOrder: item.displayOrder,
         isFilterable: item.isFilterable,
         isVisibleInList: item.isVisibleInList,
+        isEditableInForm: item.isEditableInForm !== false,
         referenceEntityName: this.toReferenceTargetValue(item.referenceEntityName, item.referenceCustomEntityId),
       });
       this.options.set(item.options);
@@ -139,6 +141,7 @@ export class CustomFieldModalComponent
       displayOrder: raw.displayOrder,
       isFilterable: raw.isFilterable,
       isVisibleInList: raw.isVisibleInList,
+      isEditableInForm: raw.isEditableInForm,
       referenceEntityName: referenceTarget.entityName,
       referenceCustomEntityId: referenceTarget.customEntityId,
     };

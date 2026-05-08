@@ -17,6 +17,7 @@ import { CustomizationService } from '@services/customization/customization.serv
 import { ModalService } from '@services/modal/modal.service';
 import { finalize, forkJoin } from 'rxjs';
 import { CustomFunctionExecuteModalComponent } from './custom-function-execute-modal/custom-function-execute-modal.component';
+import { CustomRecordDetailModalComponent } from './custom-record-detail-modal/custom-record-detail-modal.component';
 import { CustomRecordModalComponent } from './custom-record-modal/custom-record-modal.component';
 
 type Row = CustomEntityRecordResponse & {
@@ -82,6 +83,10 @@ export class CustomRecordsComponent implements OnInit {
   ]);
 
   readonly tableActions = computed<PoTableAction[]>(() => [
+    {
+      label: this.literals().actions.details,
+      action: (row: Row) => this.openDetails(row),
+    },
     {
       label: this.literals().actions.edit,
       action: (row: Row) => this.openRecordModal(row),
@@ -200,9 +205,13 @@ export class CustomRecordsComponent implements OnInit {
     });
   }
 
+  private openDetails(row: Row): void {
+    this.modalService.open(CustomRecordDetailModalComponent, { recordId: row.id, statuses: this.statuses() }).subscribe();
+  }
+
   private executeFunction(row: Row, fn: CustomFunctionResponse): void {
     if (fn.inputs.length > 0) {
-      this.modalService.open(CustomFunctionExecuteModalComponent, { recordId: row.id, function: fn }).subscribe((result) => {
+      this.modalService.open(CustomFunctionExecuteModalComponent, { recordId: row.id, function: fn, fields: this.fields() }).subscribe((result) => {
         if (result?.confirmed) {
           this.loadRecords();
         }
@@ -265,7 +274,7 @@ export class CustomRecordsComponent implements OnInit {
     const row: Row = { ...item };
 
     for (const field of item.customFields) {
-      row[`field_${field.key}`] = field.value;
+      row[`field_${field.key}`] = field.displayValue ?? field.value;
     }
 
     return row;

@@ -485,6 +485,7 @@ export class CustomizationComponent implements OnInit {
     displayOrder: [1, [Validators.required]],
     isFilterable: [false],
     isVisibleInList: [true],
+    isEditableInForm: [true],
     referenceEntityName: [''],
   });
 
@@ -767,6 +768,7 @@ export class CustomizationComponent implements OnInit {
       displayOrder: rawValue.displayOrder,
       isFilterable: rawValue.isFilterable,
       isVisibleInList: rawValue.isVisibleInList,
+      isEditableInForm: rawValue.isEditableInForm,
       referenceEntityName: rawValue.referenceEntityName || null,
     };
 
@@ -777,7 +779,7 @@ export class CustomizationComponent implements OnInit {
       .subscribe({
         next: () => {
           this.notification.success(this.literals().notifications.created);
-          this.fieldForm.reset({ type: CustomFieldType.Text, displayOrder: 1, isVisibleInList: true });
+          this.fieldForm.reset({ type: CustomFieldType.Text, displayOrder: 1, isVisibleInList: true, isEditableInForm: true });
           this.showFieldForm.set(false);
           this.loadSelectedFieldScope();
         },

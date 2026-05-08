@@ -11,6 +11,7 @@ export interface CreateCustomFieldRequest {
   displayOrder: number;
   isFilterable: boolean;
   isVisibleInList: boolean;
+  isEditableInForm: boolean;
   referenceEntityName?: string | null;
   referenceCustomEntityId?: string | null;
 }

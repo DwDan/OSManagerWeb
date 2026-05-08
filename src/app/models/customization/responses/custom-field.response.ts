@@ -12,6 +12,7 @@ export interface CustomFieldResponse {
   isActive: boolean;
   isVisibleInList: boolean;
   isFilterable: boolean;
+  isEditableInForm?: boolean;
   displayOrder: number;
   referenceEntityName?: string | null;
   referenceCustomEntityId?: string | null;

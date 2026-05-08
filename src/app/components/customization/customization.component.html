@@ -204,6 +204,14 @@
                   [p-label]="literals().fields.visibleInList"
                 />
               </div>
+              <div class="po-md-2">
+                <po-switch
+                  name="fieldEditable"
+                  formControlName="isEditableInForm"
+                  [p-hide-label-status]="true"
+                  [p-label]="literals().fields.editableInForm"
+                />
+              </div>
               <div class="po-md-12">
                 <po-button
                   p-kind="primary"

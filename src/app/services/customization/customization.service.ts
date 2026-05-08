@@ -107,6 +107,10 @@ export class CustomizationService {
     );
   }
 
+  getCustomEntityRecordById(id: string): Observable<CustomEntityRecordResponse> {
+    return this.http.get<CustomEntityRecordResponse>(`${this.apiUrl}/custom-entities/records/${id}`);
+  }
+
   createCustomEntityRecord(
     customEntityId: string,
     request: CustomEntityRecordRequest,
