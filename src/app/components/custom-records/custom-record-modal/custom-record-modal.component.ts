@@ -8,6 +8,7 @@ import { injectI18n } from '@i18n/shared/inject-i18n';
 import { CustomEntityRecordResponse } from '@models/customization/responses/custom-entity-record.response';
 import { CustomEntityResponse } from '@models/customization/responses/custom-entity.response';
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
+import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomFieldType } from '@models/customization/types/custom-field-type.enum';
 import { PoFieldModule, PoModalAction, PoModalModule, PoNotificationService, PoSelectOption } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
@@ -22,7 +23,7 @@ import { formInvalidSignal } from 'src/app/shared/extensions/form-extensions';
 })
 export class CustomRecordModalComponent
   extends BaseModalComponent<
-    { entity: CustomEntityResponse; fields: CustomFieldResponse[]; item?: CustomEntityRecordResponse },
+    { entity: CustomEntityResponse; fields: CustomFieldResponse[]; statuses: CustomStatusResponse[]; item?: CustomEntityRecordResponse },
     { confirmed: boolean }
   >
   implements OnInit
@@ -93,6 +94,7 @@ export class CustomRecordModalComponent
     const request = {
       key: this.data?.item?.key,
       name: raw.name,
+      customStatusId: this.data?.item?.customStatusId ?? this.initialStatus()?.id ?? null,
       customFields,
     };
 
@@ -107,5 +109,9 @@ export class CustomRecordModalComponent
         this.submit({ confirmed: true });
       },
     });
+  }
+
+  private initialStatus(): CustomStatusResponse | undefined {
+    return this.data?.statuses.find((status) => status.isActive && status.isInitial);
   }
 }

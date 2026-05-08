@@ -11,6 +11,7 @@ import { CustomEntityResponse } from '@models/customization/responses/custom-ent
 import { CustomFieldResponse } from '@models/customization/responses/custom-field.response';
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
+import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
 import { PoDialogService, PoNotificationService, PoPageAction, PoPageModule, PoTableAction, PoTableColumn, PoTableModule } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
 import { ModalService } from '@services/modal/modal.service';
@@ -42,6 +43,7 @@ export class CustomRecordsComponent implements OnInit {
   readonly entity = signal<CustomEntityResponse | null>(null);
   readonly fields = signal<CustomFieldResponse[]>([]);
   readonly statuses = signal<CustomStatusResponse[]>([]);
+  readonly statusTransitions = signal<CustomStatusTransitionResponse[]>([]);
   readonly functions = signal<CustomFunctionResponse[]>([]);
   readonly items = signal<Row[]>([]);
   readonly page = signal(1);
@@ -77,6 +79,7 @@ export class CustomRecordsComponent implements OnInit {
     ...this.functions().map((fn) => ({
       label: fn.name,
       action: (row: Row) => this.executeFunction(row, fn),
+      visible: (row: Row) => this.canExecuteFunction(row, fn),
     })),
     {
       label: this.literals().actions.delete,
@@ -134,13 +137,15 @@ export class CustomRecordsComponent implements OnInit {
     forkJoin({
       fields: this.service.getFields('CustomEntityRecord', entity.id),
       statuses: this.service.getStatuses('CustomEntityRecord', entity.id),
+      statusTransitions: this.service.getStatusTransitions('CustomEntityRecord', entity.id),
       functions: this.service.getFunctions('CustomEntityRecord', entity.id),
     })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: ({ fields, statuses, functions }) => {
+        next: ({ fields, statuses, statusTransitions, functions }) => {
           this.fields.set(fields);
           this.statuses.set(statuses);
+          this.statusTransitions.set(statusTransitions);
           this.functions.set(functions);
           this.loadRecords();
         },
@@ -178,7 +183,7 @@ export class CustomRecordsComponent implements OnInit {
       return;
     }
 
-    this.modalService.open(CustomRecordModalComponent, { entity, fields: this.fields(), item }).subscribe((result) => {
+    this.modalService.open(CustomRecordModalComponent, { entity, fields: this.fields(), statuses: this.statuses(), item }).subscribe((result) => {
       if (result?.confirmed) {
         this.loadRecords();
       }
@@ -205,6 +210,26 @@ export class CustomRecordsComponent implements OnInit {
           this.loadRecords();
         },
       });
+  }
+
+  private canExecuteFunction(row: Row, fn: CustomFunctionResponse): boolean {
+    const updateStatusStep = fn.steps.find((step) => step.type === 'UpdateStatus');
+
+    if (!updateStatusStep) {
+      return true;
+    }
+
+    const targetStatus = this.statuses().find((status) => status.key === updateStatusStep.valueExpression);
+
+    if (!targetStatus || !row.customStatusId) {
+      return false;
+    }
+
+    return this.statusTransitions().some((transition) =>
+      transition.isActive &&
+      transition.fromStatusId === row.customStatusId &&
+      transition.toStatusId === targetStatus.id,
+    );
   }
 
   private deleteRecord(row: Row): void {

@@ -6,5 +6,6 @@ export interface CustomFieldValueRequest {
 export interface CustomEntityRecordRequest {
   key?: string | null;
   name: string;
+  customStatusId?: string | null;
   customFields: CustomFieldValueRequest[];
 }
