@@ -65,6 +65,16 @@ export class CustomRecordsComponent implements OnInit {
 
   readonly columns = computed<PoTableColumn[]>(() => [
     { property: 'name', label: this.literals().columns.name },
+    {
+      property: 'customStatusId',
+      label: this.literals().columns.status,
+      type: 'label',
+      labels: this.statuses().map((status) => ({
+        value: status.id,
+        label: status.name,
+        color: status.color || 'color-10',
+      })),
+    },
     ...this.fields()
       .filter((field) => field.isVisibleInList)
       .sort((a, b) => a.displayOrder - b.displayOrder)
@@ -183,7 +193,7 @@ export class CustomRecordsComponent implements OnInit {
       return;
     }
 
-    this.modalService.open(CustomRecordModalComponent, { entity, fields: this.fields(), statuses: this.statuses(), item }).subscribe((result) => {
+    this.modalService.open(CustomRecordModalComponent, { entity, fields: this.fields(), item }).subscribe((result) => {
       if (result?.confirmed) {
         this.loadRecords();
       }
