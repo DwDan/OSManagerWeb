@@ -17,6 +17,15 @@ export interface CustomFunctionStepResponse {
   conditions: unknown[];
 }
 
+export interface CustomFunctionValidationResponse {
+  source: string;
+  operator: string;
+  fieldKey: string;
+  expectedValue?: string | null;
+  errorMessage: string;
+  executionOrder: number;
+}
+
 export interface CustomFunctionResponse {
   id: string;
   entityName: string;
@@ -26,6 +35,6 @@ export interface CustomFunctionResponse {
   isActive: boolean;
   inputs: CustomFunctionInputResponse[];
   steps: CustomFunctionStepResponse[];
-  validations: unknown[];
+  validations: CustomFunctionValidationResponse[];
   allowedCustomRoleNames: string[];
 }

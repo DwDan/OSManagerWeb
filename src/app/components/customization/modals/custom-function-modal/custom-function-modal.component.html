@@ -1,14 +1,21 @@
 <po-modal #modal [p-title]="data?.item ? common().edit : literals().actions.createFunction" [p-primary-action]="primaryAction()" [p-secondary-action]="secondaryAction()" (p-close)="close()">
   <form [formGroup]="form" class="po-row">
     <div class="po-md-4"><po-input name="name" formControlName="name" [p-label]="literals().fields.name" /></div>
-    <div class="po-md-3"><po-select name="stepType" formControlName="stepType" [p-label]="literals().fields.stepType" [p-options]="stepTypeOptions()" /></div>
-    <div class="po-md-5"><po-select name="targetFieldKey" formControlName="targetFieldKey" [p-label]="literals().fields.targetField" [p-options]="customFieldOptions()" /></div>
+    <div class="po-md-8">
+      <po-multiselect
+        name="fieldKeys"
+        formControlName="fieldKeys"
+        [p-label]="literals().fields.targetFields"
+        [p-options]="customFieldOptions()"
+      />
+    </div>
     <div class="po-md-12">
-      @if (shouldSelectStatusValue()) {
-        <po-select name="statusValue" [p-label]="literals().sections.statuses" [p-options]="statusOptions()" [ngModel]="form.controls.valueExpression.value" [ngModelOptions]="{ standalone: true }" (ngModelChange)="form.controls.valueExpression.setValue($event)" />
-      } @else {
-        <po-input name="valueExpression" formControlName="valueExpression" [p-label]="literals().fields.valueExpression" [p-placeholder]="literals().placeholders.valueExpression" />
-      }
+      <po-select
+        name="targetStatusKey"
+        formControlName="targetStatusKey"
+        [p-label]="literals().fields.targetStatus"
+        [p-options]="targetStatusOptions()"
+      />
     </div>
     <div class="po-md-12">
       <po-multiselect
@@ -17,6 +24,69 @@
         [p-label]="literals().fields.allowedRoles"
         [p-options]="roleOptions()"
       />
+    </div>
+    <div class="po-md-12">
+      <strong>{{ literals().fields.executionRules }}</strong>
+    </div>
+    <div class="po-md-3">
+      <po-select
+        name="ruleType"
+        formControlName="ruleType"
+        [p-label]="literals().fields.rule"
+        [p-options]="ruleTypeOptions()"
+      />
+    </div>
+    @if (form.controls.ruleType.value === 'currentStatusIs') {
+      <div class="po-md-6">
+        <po-select
+          name="ruleStatusId"
+          formControlName="ruleStatusId"
+          [p-label]="literals().fields.status"
+          [p-options]="allowedStatusOptions()"
+        />
+      </div>
+    } @else {
+      <div class="po-md-4">
+        <po-select
+          name="ruleFieldKey"
+          formControlName="ruleFieldKey"
+          [p-label]="literals().fields.field"
+          [p-options]="customFieldOptions()"
+        />
+      </div>
+      @if (form.controls.ruleType.value === 'fieldIs') {
+        <div class="po-md-4">
+          <po-input
+            name="ruleExpectedValue"
+            formControlName="ruleExpectedValue"
+            [p-label]="literals().fields.expectedValue"
+          />
+        </div>
+      }
+    }
+    <div class="po-md-9">
+      <po-input
+        name="ruleErrorMessage"
+        formControlName="ruleErrorMessage"
+        [p-label]="literals().fields.ruleErrorMessage"
+      />
+    </div>
+    <div class="po-md-3 po-mt-4">
+      <button type="button" class="po-button" (click)="addValidation()">
+        {{ literals().actions.addOption }}
+      </button>
+    </div>
+    <div class="po-md-12">
+      @for (validation of validations(); track validation.executionOrder; let index = $index) {
+        <div class="po-row po-mb-1">
+          <div class="po-md-10">{{ validationDescription(validation) }}</div>
+          <div class="po-md-2">
+            <button type="button" class="po-button" (click)="removeValidation(index)">
+              {{ literals().actions.delete }}
+            </button>
+          </div>
+        </div>
+      }
     </div>
   </form>
 </po-modal>

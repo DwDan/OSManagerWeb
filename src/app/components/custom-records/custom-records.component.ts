@@ -233,6 +233,16 @@ export class CustomRecordsComponent implements OnInit {
   }
 
   private canExecuteFunction(row: Row, fn: CustomFunctionResponse): boolean {
+    const allowedStatusValidation = fn.validations.find((validation) =>
+      validation.source === 'Entity' &&
+      validation.operator === 'Equals' &&
+      validation.fieldKey === 'customStatusId'
+    );
+
+    if (allowedStatusValidation?.expectedValue && row.customStatusId !== allowedStatusValidation.expectedValue) {
+      return false;
+    }
+
     const updateStatusStep = fn.steps.find((step) => step.type === 'UpdateStatus');
 
     if (!updateStatusStep) {

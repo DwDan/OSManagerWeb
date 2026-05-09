@@ -19,13 +19,22 @@ export interface CreateCustomFunctionStepRequest {
   conditions: unknown[];
 }
 
+export interface CreateCustomFunctionValidationRequest {
+  source: number;
+  operator: number;
+  fieldKey: string;
+  expectedValue?: string | null;
+  errorMessage: string;
+  executionOrder: number;
+}
+
 export interface CreateCustomFunctionRequest {
   entityName: string;
   customEntityId?: string | null;
   name: string;
   inputs: CreateCustomFunctionInputRequest[];
   steps: CreateCustomFunctionStepRequest[];
-  validations: unknown[];
+  validations: CreateCustomFunctionValidationRequest[];
   allowedCustomRoleNames: string[];
 }
 

@@ -7,11 +7,13 @@
     <ng-container formGroupName="customFields">
       @for (field of filterableFields(); track field.id) {
         <div class="po-sm-12 po-md-6 po-lg-4">
-          @if (field.type === fieldType.Boolean) {
+          @if (isBoolean(field.type)) {
             <po-switch [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
-          } @else if (field.type === fieldType.Select) {
+          } @else if (isSelect(field.type)) {
             <po-select [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-options]="options(field)" />
-          } @else if (field.type === fieldType.Date) {
+          } @else if (isEntityReference(field.type)) {
+            <po-select [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-options]="referenceFieldOptions(field.key)" />
+          } @else if (isDate(field.type)) {
             <po-datepicker [name]="field.key" [formControlName]="field.key" [p-label]="field.name" />
           } @else {
             <po-input [name]="field.key" [formControlName]="field.key" [p-label]="field.name" [p-mask]="field.mask ?? ''" />
