@@ -6,16 +6,13 @@
   (p-close)="close()"
 >
   <form [formGroup]="form" class="po-row">
-    <div class="po-md-3">
-      <po-input name="key" formControlName="key" [p-label]="literals().fields.key" />
-    </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-input name="color" formControlName="color" [p-label]="literals().fields.color" />
     </div>
-    <div class="po-md-3">
+    <div class="po-md-4">
       <po-number
         name="order"
         formControlName="displayOrder"

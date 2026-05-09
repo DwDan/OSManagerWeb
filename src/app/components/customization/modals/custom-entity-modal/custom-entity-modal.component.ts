@@ -60,8 +60,6 @@ export class CustomEntityModalComponent
         name: this.data.item.name,
         allowedCustomRoleNames: this.data.item.allowedCustomRoleNames ?? [],
       });
-      this.form.controls.key.setValidators([Validators.required]);
-      this.form.controls.key.updateValueAndValidity();
     }
   }
 

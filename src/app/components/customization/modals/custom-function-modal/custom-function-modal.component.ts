@@ -43,7 +43,6 @@ export class CustomFunctionModalComponent
   readonly statusOptions = computed<PoSelectOption[]>(() => (this.data?.statuses ?? []).map((x) => ({ label: x.name, value: x.key })));
   readonly roleOptions = computed<PoMultiselectOption[]>(() => (this.data?.roles ?? []).map((role) => ({ label: role.name, value: role.name })));
   readonly form = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     stepType: [CustomFunctionStepType.SetCustomField, [Validators.required]],
     targetFieldKey: [''],
@@ -59,7 +58,6 @@ export class CustomFunctionModalComponent
     const step = item?.steps[0];
     if (item) {
       this.form.reset({
-        key: item.key,
         name: item.name,
         stepType: step?.type === 'UpdateStatus' ? CustomFunctionStepType.UpdateStatus : CustomFunctionStepType.SetCustomField,
         targetFieldKey: step?.targetFieldKey ?? '',
@@ -82,7 +80,6 @@ export class CustomFunctionModalComponent
     const request = {
       entityName: this.data!.entityName,
       customEntityId: this.data?.customEntityId ?? null,
-      key: raw.key,
       name: raw.name,
       inputs: [],
       steps: [{ type: raw.stepType, targetFieldKey: raw.stepType === CustomFunctionStepType.SetCustomField ? raw.targetFieldKey || null : null, valueExpression: raw.valueExpression, executionOrder: 1, conditionLogic: CustomFunctionConditionLogic.And, conditions: [] }],
@@ -90,7 +87,7 @@ export class CustomFunctionModalComponent
       allowedCustomRoleNames: raw.allowedCustomRoleNames,
     };
     const operation: Observable<string | void> = this.data?.item
-      ? this.service.updateFunction(this.data.item.id, { ...request, isActive: this.data.item.isActive })
+      ? this.service.updateFunction(this.data.item.id, { ...request, key: this.data.item.key, isActive: this.data.item.isActive })
       : this.service.createFunction(request);
     this.loading.set(true);
     operation.pipe(finalize(() => this.loading.set(false))).subscribe({

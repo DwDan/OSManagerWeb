@@ -8,8 +8,7 @@
         [p-options]="data?.customEntityOptions ?? []"
       />
     </div>
-    <div class="po-md-4"><po-input name="key" formControlName="key" [p-label]="literals().fields.key" /></div>
-    <div class="po-md-8"><po-input name="name" formControlName="name" [p-label]="literals().fields.name" /></div>
+    <div class="po-md-12"><po-input name="name" formControlName="name" [p-label]="literals().fields.name" /></div>
     <div class="po-md-12"><po-textarea name="values" formControlName="values" [p-label]="literals().fields.customFieldValues" [p-placeholder]="literals().placeholders.customFieldValues" /></div>
   </form>
 </po-modal>

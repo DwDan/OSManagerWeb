@@ -12,22 +12,23 @@ import { CustomFieldResponse } from '@models/customization/responses/custom-fiel
 import { CustomFunctionResponse } from '@models/customization/responses/custom-function.response';
 import { CustomStatusResponse } from '@models/customization/responses/custom-status.response';
 import { CustomStatusTransitionResponse } from '@models/customization/responses/custom-status-transition.response';
-import { PoDialogService, PoNotificationService, PoPageAction, PoPageModule, PoTableAction, PoTableColumn, PoTableModule } from '@po-ui/ng-components';
+import { PoDialogService, PoNotificationService, PoPageAction, PoPageModule, PoTableAction, PoTableColumn } from '@po-ui/ng-components';
 import { CustomizationService } from '@services/customization/customization.service';
 import { ModalService } from '@services/modal/modal.service';
 import { finalize, forkJoin } from 'rxjs';
 import { CustomFunctionExecuteModalComponent } from './custom-function-execute-modal/custom-function-execute-modal.component';
 import { CustomRecordDetailModalComponent } from './custom-record-detail-modal/custom-record-detail-modal.component';
+import { CustomRecordListViewComponent } from './custom-record-list-view/custom-record-list-view.component';
 import { CustomRecordModalComponent } from './custom-record-modal/custom-record-modal.component';
 
-type Row = CustomEntityRecordResponse & {
+export type Row = CustomEntityRecordResponse & {
   [key: `field_${string}`]: string | null | undefined;
 };
 
 @Component({
   selector: 'app-custom-records',
   standalone: true,
-  imports: [CommonModule, PoPageModule, PoTableModule, PaginationComponent, CustomFieldsFilterComponent],
+  imports: [CommonModule, PoPageModule, PaginationComponent, CustomFieldsFilterComponent, CustomRecordListViewComponent],
   templateUrl: './custom-records.component.html',
 })
 export class CustomRecordsComponent implements OnInit {

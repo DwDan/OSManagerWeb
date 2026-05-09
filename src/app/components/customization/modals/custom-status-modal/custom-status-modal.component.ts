@@ -28,7 +28,7 @@ export class CustomStatusModalComponent
   readonly common = injectI18n(commonLiterals);
   readonly loading = signal(false);
   readonly form = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
+    key: [''],
     name: ['', [Validators.required]],
     color: ['#0C9ABE'],
     displayOrder: [1, [Validators.required]],
@@ -55,7 +55,7 @@ export class CustomStatusModalComponent
     const raw = this.form.getRawValue();
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateStatus(this.data.item.id, { ...raw, color: raw.color || null, isActive: this.data.item.isActive })
-      : this.service.createStatus({ ...raw, color: raw.color || null, entityName: this.data!.entityName, customEntityId: this.data?.customEntityId ?? null });
+      : this.service.createStatus({ name: raw.name, color: raw.color || null, displayOrder: raw.displayOrder, isInitial: raw.isInitial, isFinal: raw.isFinal, isCanceled: raw.isCanceled, entityName: this.data!.entityName, customEntityId: this.data?.customEntityId ?? null });
     this.loading.set(true);
     operation.pipe(finalize(() => this.loading.set(false))).subscribe({
       next: () => {

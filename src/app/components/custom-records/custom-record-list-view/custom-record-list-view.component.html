@@ -1,0 +1,69 @@
+@if (!isMobile()) {
+  <po-table
+    [p-auto-collapse]="true"
+    [p-actions]="actions()"
+    [p-columns]="columns()"
+    [p-hide-columns-manager]="true"
+    [p-hide-table-search]="true"
+    [p-items]="items()"
+    [p-loading]="loading()"
+    [p-sort]="true"
+    [p-striped]="true"
+    [p-spacing]="spacing.Large"
+  />
+} @else {
+  @for (item of items(); track item.id) {
+    <div class="mb-md">
+      <po-widget>
+        <div class="custom-record-list-view__content po-row">
+          <div class="po-sm-12">
+            <po-info
+              [p-label]="literals().columns.name"
+              [p-value]="item.name || common().notInformed"
+            />
+          </div>
+
+          <div class="po-sm-12">
+            <div class="custom-record-list-view__tag-field">
+              <div class="custom-record-list-view__tag-label">
+                {{ literals().columns.status }}
+              </div>
+
+              @if (getStatusTag(item.customStatusId); as statusTag) {
+                <po-tag
+                  [p-value]="statusTag.label"
+                  [p-color]="statusTag.color!"
+                  [p-icon]="statusTag.icon!"
+                />
+              }
+            </div>
+          </div>
+
+          @for (field of mobileFields(); track field.key) {
+            <div class="po-sm-12">
+              <po-info
+                [p-label]="field.name"
+                [p-value]="fieldValue(item, field)"
+              />
+            </div>
+          }
+
+          <div class="po-sm-12">
+            <div class="custom-record-list-view__actions">
+              @for (action of getVisibleActions(item); track action.label) {
+                <button
+                  type="button"
+                  class="custom-record-list-view__action"
+                  [disabled]="loading()"
+                  (click)="executeAction(action, item)"
+                >
+                  {{ action.label }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+      </po-widget>
+    </div>
+  }
+}

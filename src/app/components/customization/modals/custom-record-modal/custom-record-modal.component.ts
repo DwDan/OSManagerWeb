@@ -32,7 +32,7 @@ export class CustomRecordModalComponent
   readonly loading = signal(false);
   readonly form = this.formBuilder.nonNullable.group({
     customEntityId: ['', [Validators.required]],
-    key: ['', [Validators.required]],
+    key: [''],
     name: ['', [Validators.required]],
     values: [''],
   });
@@ -61,7 +61,7 @@ export class CustomRecordModalComponent
       return;
     }
     const raw = this.form.getRawValue();
-    const request = { key: raw.key, name: raw.name, customFields: this.parseValues(raw.values) };
+    const request = { name: raw.name, customFields: this.parseValues(raw.values) };
     const operation: Observable<string | void> = this.data?.item
       ? this.service.updateCustomEntityRecord(this.data.item.id, request)
       : this.service.createCustomEntityRecord(raw.customEntityId, request);

@@ -55,9 +55,7 @@ type CustomizationSection =
   | 'fields'
   | 'statuses'
   | 'transitions'
-  | 'functions'
-  | 'records'
-  | 'preview';
+  | 'functions';
 
 @Component({
   selector: 'app-customization',
@@ -274,32 +272,9 @@ export class CustomizationComponent implements OnInit {
       icon: 'an an-flow-arrow',
       count: this.functions().length,
     },
-    {
-      key: 'records' as const,
-      label: this.literals().navigation.records,
-      icon: 'an an-list-bullets',
-      count: this.customEntityRecords().length,
-    },
-    {
-      key: 'preview' as const,
-      label: this.literals().navigation.preview,
-      icon: 'an an-eye',
-      count: this.previewScore(),
-    },
   ]);
 
-  readonly previewScore = computed(
-    () =>
-      this.fields().length +
-      this.customRoles().length +
-      this.statuses().length +
-      this.transitions().length +
-      this.functions().length +
-      this.customEntityRecords().length,
-  );
-
   readonly definitionColumns = computed<PoTableColumn[]>(() => [
-    { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
   ]);
 
@@ -309,12 +284,10 @@ export class CustomizationComponent implements OnInit {
   ]);
 
   readonly recordColumns = computed<PoTableColumn[]>(() => [
-    { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
   ]);
 
   readonly fieldColumns = computed<PoTableColumn[]>(() => [
-    { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
     { property: 'typeLabel', label: this.literals().columns.type },
     { property: 'displayOrder', label: this.literals().columns.order },
@@ -322,7 +295,6 @@ export class CustomizationComponent implements OnInit {
   ]);
 
   readonly statusColumns = computed<PoTableColumn[]>(() => [
-    { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
     { property: 'displayOrder', label: this.literals().columns.order },
     { property: 'isActive', label: this.literals().columns.active, type: 'boolean' },
@@ -335,7 +307,6 @@ export class CustomizationComponent implements OnInit {
   ]);
 
   readonly functionColumns = computed<PoTableColumn[]>(() => [
-    { property: 'key', label: this.literals().columns.key },
     { property: 'name', label: this.literals().columns.name },
     { property: 'firstStepLabel', label: this.literals().columns.step },
     { property: 'isActive', label: this.literals().columns.active, type: 'boolean' },
@@ -464,19 +435,17 @@ export class CustomizationComponent implements OnInit {
 
   readonly definitionForm = this.formBuilder.nonNullable.group({
     id: [''],
-    key: ['', [Validators.required]],
+    key: [''],
     name: ['', [Validators.required]],
     allowedCustomRoleNames: [[] as string[]],
   });
 
   readonly recordForm = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     values: [''],
   });
 
   readonly fieldForm = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     type: [CustomFieldType.Text, [Validators.required]],
     isRequired: [false],
@@ -490,7 +459,6 @@ export class CustomizationComponent implements OnInit {
   });
 
   readonly statusForm = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     color: ['#0C9ABE'],
     displayOrder: [1, [Validators.required]],
@@ -500,7 +468,6 @@ export class CustomizationComponent implements OnInit {
   });
 
   readonly functionForm = this.formBuilder.nonNullable.group({
-    key: ['', [Validators.required]],
     name: ['', [Validators.required]],
     stepType: [CustomFunctionStepType.SetCustomField, [Validators.required]],
     targetFieldKey: [''],
@@ -710,7 +677,6 @@ export class CustomizationComponent implements OnInit {
 
     const rawValue = this.recordForm.getRawValue();
     const request: CustomEntityRecordRequest = {
-      key: rawValue.key,
       name: rawValue.name,
       customFields: this.parseFieldValues(rawValue.values),
     };
@@ -798,7 +764,6 @@ export class CustomizationComponent implements OnInit {
     const request: CreateCustomStatusRequest = {
       entityName: scope.entityName,
       customEntityId: scope.customEntityId,
-      key: rawValue.key,
       name: rawValue.name,
       color: rawValue.color || null,
       displayOrder: rawValue.displayOrder,
@@ -833,7 +798,6 @@ export class CustomizationComponent implements OnInit {
     const request: CreateCustomFunctionRequest = {
       entityName: scope.entityName,
       customEntityId: scope.customEntityId,
-      key: rawValue.key,
       name: rawValue.name,
       inputs: [],
       steps: [
@@ -1010,14 +974,6 @@ export class CustomizationComponent implements OnInit {
           type: 'primary',
           action: () => this.openFunctionForm(),
           disabled: this.loading() || !this.supportsFunctionScope(),
-        };
-      case 'records':
-        return {
-          label: this.literals().actions.createRecord,
-          icon: 'an an-plus',
-          type: 'primary',
-          action: () => this.openRecordForm(),
-          disabled: this.loading() || !this.selectedCustomEntityId(),
         };
       default:
         return null;

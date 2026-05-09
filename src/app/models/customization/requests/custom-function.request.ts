@@ -22,10 +22,14 @@ export interface CreateCustomFunctionStepRequest {
 export interface CreateCustomFunctionRequest {
   entityName: string;
   customEntityId?: string | null;
-  key: string;
   name: string;
   inputs: CreateCustomFunctionInputRequest[];
   steps: CreateCustomFunctionStepRequest[];
   validations: unknown[];
   allowedCustomRoleNames: string[];
 }
+
+export type UpdateCustomFunctionRequest = CreateCustomFunctionRequest & {
+  key: string;
+  isActive: boolean;
+};

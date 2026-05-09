@@ -64,14 +64,7 @@
         <po-widget [p-title]="literals().sections.customEntities">
           @if (showDefinitionForm()) {
           <form [formGroup]="definitionForm" class="po-row">
-            <div class="po-md-3">
-              <po-input
-                name="definitionKey"
-                formControlName="key"
-                [p-label]="literals().fields.key"
-              />
-            </div>
-            <div class="po-md-5">
+            <div class="po-md-8">
               <po-input
                 name="definitionName"
                 formControlName="name"
@@ -132,9 +125,6 @@
           @if (supportsFieldScope()) {
             @if (showFieldForm()) {
             <form [formGroup]="fieldForm" class="po-row">
-              <div class="po-md-3">
-                <po-input name="fieldKey" formControlName="key" [p-label]="literals().fields.key" />
-              </div>
               <div class="po-md-3">
                 <po-input
                   name="fieldName"
@@ -258,13 +248,6 @@
             <form [formGroup]="statusForm" class="po-row">
               <div class="po-md-3">
                 <po-input
-                  name="statusKey"
-                  formControlName="key"
-                  [p-label]="literals().fields.key"
-                />
-              </div>
-              <div class="po-md-3">
-                <po-input
                   name="statusName"
                   formControlName="name"
                   [p-label]="literals().fields.name"
@@ -352,13 +335,6 @@
           @if (supportsFunctionScope()) {
             @if (showFunctionForm()) {
             <form [formGroup]="functionForm" class="po-row">
-              <div class="po-md-2">
-                <po-input
-                  name="functionKey"
-                  formControlName="key"
-                  [p-label]="literals().fields.key"
-                />
-              </div>
               <div class="po-md-3">
                 <po-input
                   name="functionName"
@@ -459,126 +435,6 @@
         </po-widget>
       }
 
-      @if (activeSection() === 'records') {
-        <po-widget [p-title]="literals().sections.records">
-          @if (showRecordForm()) {
-          <form [formGroup]="recordForm" class="po-row">
-            <div class="po-md-3">
-              <po-select
-                name="customEntity"
-                [p-label]="literals().fields.customEntity"
-                [p-options]="customEntityOptions()"
-                [ngModel]="selectedCustomEntityId()"
-                [ngModelOptions]="{ standalone: true }"
-                (ngModelChange)="selectCustomEntity($event)"
-              />
-            </div>
-            <div class="po-md-2">
-              <po-input name="recordKey" formControlName="key" [p-label]="literals().fields.key" />
-            </div>
-            <div class="po-md-3">
-              <po-input
-                name="recordName"
-                formControlName="name"
-                [p-label]="literals().fields.name"
-              />
-            </div>
-            <div class="po-md-3">
-              <po-textarea
-                name="recordValues"
-                formControlName="values"
-                [p-label]="literals().fields.customFieldValues"
-                [p-placeholder]="literals().placeholders.customFieldValues"
-              />
-            </div>
-            <div class="po-md-1 customization__button-column">
-              <po-button
-                p-kind="primary"
-                [p-label]="common().save"
-                [p-loading]="loading()"
-                (p-click)="saveRecord()"
-              />
-            </div>
-          </form>
-          }
-
-          <po-table
-            [p-items]="customEntityRecords()"
-            [p-columns]="recordColumns()"
-            [p-actions]="recordActions()"
-            [p-hide-columns-manager]="true"
-            [p-spacing]="spacing.Small"
-            [p-loading]="loading()"
-          />
-        </po-widget>
-      }
-
-      @if (activeSection() === 'preview') {
-        <po-widget [p-title]="literals().sections.preview">
-          <p class="customization__hint">{{ literals().messages.previewHint }}</p>
-
-          <div class="customization__flow">
-            <section>
-              <span>{{ literals().sections.entity }}</span>
-              <strong>{{ selectedEntity()?.displayName || common().notInformed }}</strong>
-            </section>
-            <i class="an an-arrow-right"></i>
-            <section>
-              <span>{{ literals().sections.fields }}</span>
-              <strong>{{ fields().length }}</strong>
-            </section>
-            <i class="an an-arrow-right"></i>
-            <section>
-              <span>{{ literals().sections.statuses }}</span>
-              <strong>{{ statuses().length }}</strong>
-            </section>
-            <i class="an an-arrow-right"></i>
-            <section>
-              <span>{{ literals().sections.transitions }}</span>
-              <strong>{{ transitions().length }}</strong>
-            </section>
-            <i class="an an-arrow-right"></i>
-            <section>
-              <span>{{ literals().sections.functions }}</span>
-              <strong>{{ functions().length }}</strong>
-            </section>
-            <i class="an an-arrow-right"></i>
-            <section>
-              <span>{{ literals().sections.records }}</span>
-              <strong>{{ customEntityRecords().length }}</strong>
-            </section>
-          </div>
-
-          <div class="customization__preview-grid">
-            <div>
-              <span class="customization__caption">{{ literals().sections.customEntities }}</span>
-              @for (item of customEntities(); track item.id) {
-                <po-tag [p-value]="item.key" p-color="color-08" />
-              } @empty {
-                <span>{{ literals().messages.emptyDefinitions }}</span>
-              }
-            </div>
-            <div>
-              <span class="customization__caption">{{ literals().sections.fields }}</span>
-              @for (item of fields(); track item.id) {
-                <po-tag [p-value]="item.key" p-color="color-11" />
-              }
-            </div>
-            <div>
-              <span class="customization__caption">{{ literals().sections.statuses }}</span>
-              @for (item of statuses(); track item.id) {
-                <po-tag [p-value]="item.key" [p-color]="item.color || 'color-10'" />
-              }
-            </div>
-            <div>
-              <span class="customization__caption">{{ literals().sections.functions }}</span>
-              @for (item of functions(); track item.id) {
-                <po-tag [p-value]="item.key" p-color="color-12" />
-              }
-            </div>
-          </div>
-        </po-widget>
-      }
     </main>
   </div>
 </po-page-default>

@@ -6,11 +6,6 @@
   (p-close)="close()"
 >
   <form [formGroup]="form" class="po-row">
-    @if (data?.item) {
-      <div class="po-md-4">
-        <po-input name="key" formControlName="key" [p-label]="literals().fields.key" p-readonly />
-      </div>
-    }
     <div class="po-md-4">
       <po-input name="name" formControlName="name" [p-label]="literals().fields.name" />
     </div>

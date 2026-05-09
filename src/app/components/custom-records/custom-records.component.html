@@ -5,13 +5,12 @@
     (filterChange)="onFilterChange($event)"
   />
 
-  <po-table
-    [p-hide-columns-manager]="true"
-    [p-hide-table-search]="true"
-    [p-items]="items()"
-    [p-columns]="columns()"
-    [p-actions]="tableActions()"
-    [p-loading]="loading()"
+  <app-custom-record-list-view
+    [items]="items()"
+    [columns]="columns()"
+    [actions]="tableActions()"
+    [fields]="fields()"
+    [loading]="loading()"
   />
 
   <app-pagination

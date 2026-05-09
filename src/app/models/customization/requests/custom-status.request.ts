@@ -1,7 +1,6 @@
 export interface CreateCustomStatusRequest {
   entityName: string;
   customEntityId?: string | null;
-  key: string;
   name: string;
   color?: string | null;
   displayOrder: number;
@@ -11,5 +10,6 @@ export interface CreateCustomStatusRequest {
 }
 
 export interface UpdateCustomStatusRequest extends Omit<CreateCustomStatusRequest, 'entityName' | 'customEntityId'> {
+  key: string;
   isActive: boolean;
 }

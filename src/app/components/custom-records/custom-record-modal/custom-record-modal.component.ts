@@ -111,7 +111,6 @@ export class CustomRecordModalComponent
       .map(([fieldKey, value]) => ({ fieldKey, value: String(value) }));
 
     const request = {
-      key: this.data?.item?.key,
       name: raw.name,
       customFields,
     };

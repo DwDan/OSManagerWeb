@@ -10,7 +10,7 @@ import {
   CreateCustomFieldRequest,
   UpdateCustomFieldRequest,
 } from '@models/customization/requests/custom-field.request';
-import { CreateCustomFunctionRequest } from '@models/customization/requests/custom-function.request';
+import { CreateCustomFunctionRequest, UpdateCustomFunctionRequest } from '@models/customization/requests/custom-function.request';
 import { CustomRoleRequest } from '@models/customization/requests/custom-role.request';
 import {
   CreateCustomStatusRequest,
@@ -240,7 +240,7 @@ export class CustomizationService {
     return this.http.post<string>(`${this.apiUrl}/custom-functions`, request);
   }
 
-  updateFunction(id: string, request: CreateCustomFunctionRequest & { isActive: boolean }): Observable<void> {
+  updateFunction(id: string, request: UpdateCustomFunctionRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/custom-functions/${id}`, request);
   }
 
